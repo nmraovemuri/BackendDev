@@ -21,16 +21,14 @@ exports.adminSignIn = function (req, res){
                 error:"Invalid EmailID or password"
             });
 
-        else {
-            if(rows[0].password !== password)
+        else if(rows.length === 0 || rows[0].password !== password)
                 return res.status(422).json({
                     status: "failed",
                     error:"Invalid EmailID or password"
                 });
-            else{
-                const token = jwt.sign({emailID}, 'my-secret-key');
-                res.json({status: "success", token, emailID})
-            }
+        else{
+            const token = jwt.sign({emailID}, 'my-secret-key');
+            res.json({status: "success", token, emailID})
         }
     });
 }
