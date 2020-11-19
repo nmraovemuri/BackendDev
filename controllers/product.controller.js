@@ -15,7 +15,7 @@ exports.getSingleProduct = function(req,res){
     let sql = 'SELECT * FROM products WHERE product_id=?';
     let pid = req.params.pid;
     console.log("pid:",pid);
-    db.query(sql,pid,(err,rows,fields)=>{
+    db.query(sql,pid,(err,rows)=>{
         if(err) throw err;
         else 
         res.send(rows);
