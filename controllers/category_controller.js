@@ -7,7 +7,7 @@ exports.createCategory = function(req,res){
     console.log("Data:",data);
     const category_name = data.categoryName
     const feature_img= 'Not Available';
-    const category_description = data.descripiton;
+    const category_description = data.description;
     const status = data.status;
     const create_date = `now()`;
     data = [
@@ -29,7 +29,8 @@ exports.createCategory = function(req,res){
     //     create_date
     // }
     // let sql = 'INSERT INTO  asm_mt_category SET ?';
-    const sql = `INSERT INTO asm_mt_category  (category_name, feature_img, 
+    const sql = `INSERT INTO asm_mt_category  (category_name, 
+                    feature_img, 
                     category_description, status, create_date) 
                     values (?, ?, ?, ?, now())`;
     db.query(sql,data,(err,rows)=>{
