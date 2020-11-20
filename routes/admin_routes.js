@@ -6,6 +6,9 @@ const adminController = require('../controllers/admin_controller');
 //Admin SignIn
 router.post('/adminsignin', adminController.adminSignIn);
 
+//Admin forgot password
+router.post('/adminForgotPassword', adminController.adminForgotPassword);
+
 //Change Password
 router.post('/change_admin_password', ensureToken, adminController.changeAdminPassword);
 
