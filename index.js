@@ -1,18 +1,21 @@
 var express = require('express');
 var db = require('./config/db');
-var route = require('./routes/product.routes');
+
 var bodyParser = require('body-parser');
 var fileUpload = require('express-fileupload');
 var cors = require('cors');
 var app = express();
+const auth = require('./auth');
 console.log(" index page is working");
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(cors());
-app.use(route);
+
 app.use(fileUpload());  
 app.use(require('./routes/admin_routes'))
+app.use(require('./routes/category_routes'));
+app.use(require('./routes/product.routes'));
 
 app.listen(3000,function(err){
     if(err) throw err;
