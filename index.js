@@ -15,6 +15,7 @@ app.use(cors());
 app.use(fileUpload());  
 app.use(require('./routes/admin_routes'))
 app.use(require('./routes/category_routes'));
+app.use(require('./routes/subcategory_routes'));
 app.use(require('./routes/product.routes'));
 
 app.listen(3000,function(err){

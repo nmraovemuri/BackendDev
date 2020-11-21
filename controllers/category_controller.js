@@ -1,15 +1,32 @@
 
 var db = require('../config/db');
+let formidable = require('formidable');
+let fs = require('fs');
 
 exports.createCategory = function(req,res){
     console.log("req.body :", req.body);
     let data = req.body;
     console.log("Data:",data);
     const category_name = data.categoryName
-    const feature_img= 'Not Available';
+    const feature_img= req.files.featureImg.name;
     const category_description = data.description;
     const status = data.status;
     const create_date = `now()`;
+    let form = new formidable.IncomingForm();
+    console.log("form data");
+    console.log(req);
+    form.parse(req, function (err, fields, files) {
+        console.log(files);
+        console.log(err);
+        console.log("some changes");
+        var oldpath = files.filetoupload.path;
+        // var newpath = 'C:/Users/Your Name/' + files.filetoupload.name;
+        // fs.rename(oldpath, newpath, function (err) {
+        //   if (err) throw err;
+        //   res.write('File uploaded and moved!');
+        //   res.end();
+        // });
+    });
     data = [
         category_name,
         feature_img,
@@ -22,6 +39,21 @@ exports.createCategory = function(req,res){
             error: 'category_name is mandatory'
         });
     }
+    if(!feature_img){
+        res.status(503).json({
+            status: "failed",
+            error: 'create category is rejected due to invalid Image'
+        });
+    }
+    let path = `assets/images/categories/`+feature_img;
+    fs.writeFile(path, req.files.featureImg.data, function (err) {
+        if (err) 
+            res.status(503).json({
+                status: "failed",
+                error: 'create category is rejected due to error while Image saving'
+            });
+        console.log('Image Saved!');
+    });
     // data = {
     //     category_name,
     //     category_description,
@@ -31,8 +63,11 @@ exports.createCategory = function(req,res){
     // let sql = 'INSERT INTO  asm_mt_category SET ?';
     const sql = `INSERT INTO asm_mt_category  (category_name, 
                     feature_img, 
-                    category_description, status, create_date) 
-                    values (?, ?, ?, ?, now())`;
+                    category_description, 
+                    status, 
+                    create_date,
+                    end_date) 
+                    values (?, ?, ?, ?, now(), now())`;
     db.query(sql,data,(err,rows)=>{
         console.log(err);
         console.log(rows);
@@ -43,11 +78,12 @@ exports.createCategory = function(req,res){
                 error: err.message
             });
         }
-        else
+        else{
            res.json({
                 status: "succes",
                 id: rows.insertId
             });
+        }
     })
 }
 
