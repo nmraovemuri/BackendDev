@@ -6,7 +6,7 @@ exports.createUnit = function(req,res){
     console.log("req.body :", req.body);
     let data = req.body;
     
-    const unit_name = data.unit_value;
+    const unit_value = data.unit_value;
     const unit_type = data.unit_type
     const status = data.status;
     const created_date = `now()`;
