@@ -9,8 +9,8 @@ exports.createUnit = function(req,res){
     const unit_value = data.unit_value;
     const unit_type = data.unit_type
     const status = data.status;
-    const created_date = `now()`;
-    const updated_date = `now()`;
+    const created_date = `UNIX_TIMESTAMP()`;
+    const updated_date = `UNIX_TIMESTAMP()`;
 
     if(!unit_value){
         res.status(503).json({
@@ -42,7 +42,7 @@ exports.createUnit = function(req,res){
                     status, 
                     created_date,
                     updated_date) 
-                    values (?, ?, ?, now(), now())`;
+                    values (?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`;
     db.query(sql, data, (err,rows)=>{
         console.log(err);
         console.log(rows);
@@ -62,9 +62,13 @@ exports.createUnit = function(req,res){
     })
 }
 
-
 exports.getAllUnits = function(req,res){
-    db.query('SELECT * from asm_mt_units ', function (err, rows, fields) {
+    db.query(`SELECT id, 
+                    unit_value,
+                    unit_type,
+                    status,
+                    FROM_UNIXTIME(created_date) as created_date,
+                    FROM_UNIXTIME(updated_date) as updated_date from asm_mt_units `, function (err, rows, fields) {
         if (!err)
             res.json({
                 status: 'success',
