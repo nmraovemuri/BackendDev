@@ -13,6 +13,6 @@ router.post('/create_product',  auth.ensureToken, productsController.createProdu
 router.get('/admin/getAllProducts',  auth.ensureToken, productsController.getAllProducts);
 
 // Get All Products  For Client
-// router.get('/client/getAllProducts',  productsController.getAllproducts);
+router.get('/client/getAllProducts',  productsController.getAllProducts);
 
 module.exports = router
