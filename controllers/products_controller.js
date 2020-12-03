@@ -116,7 +116,9 @@ exports.getAllProducts = function(req,res){
             status,
             subcat_id, 
             FROM_UNIXTIME(created_date) as created_date,
-            FROM_UNIXTIME(updated_date) as updated_date from asm_products `, function (err, rows, fields) {
+            FROM_UNIXTIME(updated_date) as updated_date from asm_products `, 
+            function (err, rows, fields) {
+                console.log(err);
         if (!err)
             res.json({
                 status: 'success',

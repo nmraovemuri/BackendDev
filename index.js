@@ -17,7 +17,7 @@ app.use(require('./routes/admin_routes'))
 app.use(require('./routes/category_routes'));
 app.use(require('./routes/subcategory_routes'));
 app.use(require('./routes/product.routes'));
-app.use(require('./routes/products.routes'));
+app.use(require('./routes/products_routes'));
 app.use(require('./routes/units_routes'));
 
 app.listen(3000,function(err){
