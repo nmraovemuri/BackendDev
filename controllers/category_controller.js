@@ -5,7 +5,6 @@ let fs = require('fs');
 exports.createCategory = function(req,res){
     console.log("req.body :", req.body);
     let data = req.body;
-    console.log("Data:",data);
     const category_name = data.categoryName
     let feature_img = '';
     const category_description = data.description;
@@ -19,12 +18,7 @@ exports.createCategory = function(req,res){
             error: `category's feature_img is mandatory`
         });
     }
-    data = [
-        category_name,
-        feature_img,
-        category_description,
-        "1",
-    ]
+    
     if(!category_name){
         res.status(503).json({
             status: "failed",
@@ -37,6 +31,18 @@ exports.createCategory = function(req,res){
             error: 'create category is rejected due to invalid Image'
         });
     }
+    if(!category_description){
+        res.status(503).json({
+            status: "failed",
+            error: 'category description is mandatory'
+        });
+    }
+    if(!status){
+        res.status(503).json({
+            status: "failed",
+            error: 'category status is mandatory'
+        });
+    }
     let path = `assets/images/categories/`+feature_img;
     fs.writeFile(path, req.files.featureImg.data, function (err) {
         if (err) 
@@ -47,14 +53,20 @@ exports.createCategory = function(req,res){
         console.log('Image Saved!');
     });
     
+    data = [
+        category_name,
+        feature_img,
+        category_description,
+        status,
+    ];
     const sql = `INSERT INTO asm_mt_category  (category_name, 
                     feature_img, 
                     category_description, 
                     status, 
-                    create_date,
-                    end_date) 
-                    values (?, ?, ?, ?, now(), now())`;
-    db.query(sql,data,(err,rows)=>{
+                    created_date,
+                    updated_date) 
+                    values (?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`;
+    db.query(sql, data, (err, rows)=>{
         console.log(err);
         console.log(rows);
         if(err){
@@ -75,7 +87,15 @@ exports.createCategory = function(req,res){
 
 
 exports.getAllCategories = function(req,res){
-    db.query('SELECT * from asm_mt_category ', function (err, rows, fields) {
+    
+    db.query(`SELECT id, 
+                category_name, 
+                CONCAT('images/categories/', feature_img) as product_img, 
+                category_description, 
+                status, 
+                FROM_UNIXTIME(created_date, '%Y-%m-%d %H:%i:%s') as created_date,
+                FROM_UNIXTIME(updated_date, '%Y-%m-%d %H:%i:%s') as updated_date
+                from asm_mt_category `, function (err, rows, fields) {
         if (!err)
             res.json({
                 status: 'success',

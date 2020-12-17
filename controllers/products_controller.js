@@ -115,8 +115,8 @@ exports.getAllProducts = function(req,res){
             description_snd,
             status,
             subcat_id, 
-            FROM_UNIXTIME(created_date) as created_date,
-            FROM_UNIXTIME(updated_date) as updated_date from asm_products `, 
+            FROM_UNIXTIME(created_date, '%Y-%m-%d %H:%i:%s') as created_date,
+            FROM_UNIXTIME(updated_date, '%Y-%m-%d %H:%i:%s') as updated_date from asm_products `, 
             function (err, rows, fields) {
                 console.log(err);
         if (!err)

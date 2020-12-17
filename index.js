@@ -19,7 +19,7 @@ app.use(require('./routes/subcategory_routes'));
 app.use(require('./routes/product.routes'));
 app.use(require('./routes/products_routes'));
 app.use(require('./routes/units_routes'));
-
+app.use(express.static('./assets'));
 app.listen(3000,function(err){
     if(err) throw err;
     console.log("The port is connecte on 3000")
