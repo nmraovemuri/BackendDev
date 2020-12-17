@@ -15,7 +15,7 @@ exports.createProduct = function(req,res){
     const updated_date = `UNIX_TIMESTAMP()`;
 
     if(!product_name){
-        res.status(503).json({
+        return res.status(503).json({
             status: "failed",
             error: 'product_name is mandatory'
         });
@@ -23,38 +23,38 @@ exports.createProduct = function(req,res){
     try{
         product_img = req.files.product_img.name;
     }catch(error){
-        res.status(503).json({
+        return res.status(503).json({
             status: "failed",
             error: `Products's product_img is mandatory`
         });
     }
     if(!product_img){
-        res.status(503).json({
+        return res.status(503).json({
             status: "failed",
             error: 'create Product is rejected due to invalid Image'
         });
     }
 
     if(!description_fst){
-        res.status(503).json({
+        return res.status(503).json({
             status: "failed",
             error: 'description_fst is mandatory'
         });
     }
     if(!description_snd){
-        res.status(503).json({
+        return res.status(503).json({
             status: "failed",
             error: 'description_snd is mandatory'
         });
     }
     if(!status){
-        res.status(503).json({
+        return res.status(503).json({
             status: "failed",
             error: 'status is mandatory'
         });
     }
     if(!subcat_id){
-        res.status(503).json({
+        return res.status(503).json({
             status: "failed",
             error: 'subcat_id is mandatory'
         });
@@ -71,7 +71,7 @@ exports.createProduct = function(req,res){
     let path = `assets/images/products/`+product_img;
     fs.writeFile(path, req.files.product_img.data, function (err) {
         if (err) 
-            res.status(503).json({
+            return res.status(503).json({
                 status: "failed",
                 error: 'create product is rejected due to error while Image saving'
             });
@@ -116,16 +116,18 @@ exports.getAllProducts = function(req,res){
             status,
             subcat_id, 
             FROM_UNIXTIME(created_date, '%Y-%m-%d %H:%i:%s') as created_date,
-            FROM_UNIXTIME(updated_date, '%Y-%m-%d %H:%i:%s') as updated_date from asm_products `, 
+            FROM_UNIXTIME(updated_date, '%Y-%m-%d %H:%i:%s') as updated_date 
+            from asm_products 
+            where status = 1`, 
             function (err, rows, fields) {
                 console.log(err);
         if (!err)
-            res.json({
+            return res.json({
                 status: 'success',
                 data: rows
             })
         else
-            res.json([{
+            return res.json([{
                 status: 'failed',
                 errMsg: 'Error while performing query.'
             }])

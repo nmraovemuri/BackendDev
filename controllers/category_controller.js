@@ -9,7 +9,6 @@ exports.createCategory = function(req,res){
     let feature_img = '';
     const category_description = data.description;
     const status = data.status;
-    const create_date = `now()`;
     try{
         feature_img = req.files.featureImg.name;
     }catch(error){
@@ -20,25 +19,25 @@ exports.createCategory = function(req,res){
     }
     
     if(!category_name){
-        res.status(503).json({
+        return res.status(503).json({
             status: "failed",
             error: 'category_name is mandatory'
         });
     }
     if(!feature_img){
-        res.status(503).json({
+        return res.status(503).json({
             status: "failed",
             error: 'create category is rejected due to invalid Image'
         });
     }
     if(!category_description){
-        res.status(503).json({
+        return res.status(503).json({
             status: "failed",
             error: 'category description is mandatory'
         });
     }
     if(!status){
-        res.status(503).json({
+        return res.status(503).json({
             status: "failed",
             error: 'category status is mandatory'
         });
@@ -46,7 +45,7 @@ exports.createCategory = function(req,res){
     let path = `assets/images/categories/`+feature_img;
     fs.writeFile(path, req.files.featureImg.data, function (err) {
         if (err) 
-            res.status(503).json({
+            return res.status(503).json({
                 status: "failed",
                 error: 'create category is rejected due to error while Image saving'
             });
@@ -71,13 +70,13 @@ exports.createCategory = function(req,res){
         console.log(rows);
         if(err){
             console.log(err.message);
-            res.json({
+            return res.json({
                 status: "failed",
                 error: err.message
             });
         }
         else{
-           res.json({
+           return res.json({
                 status: "succes",
                 id: rows.insertId
             });
@@ -95,60 +94,21 @@ exports.getAllCategories = function(req,res){
                 status, 
                 FROM_UNIXTIME(created_date, '%Y-%m-%d %H:%i:%s') as created_date,
                 FROM_UNIXTIME(updated_date, '%Y-%m-%d %H:%i:%s') as updated_date
-                from asm_mt_category `, function (err, rows, fields) {
+                from asm_mt_category where status = 1`, function (err, rows, fields) {
         if (!err)
-            res.json({
+            return res.json({
                 status: 'success',
                 data: rows
             })
         else
-            res.json([{
+            return res.json([{
                 status: 'failed',
                 errMsg: 'Error while performing query.'
             }])
     });
 }
-// exports.createCategory = function(req,res){
-//     console.log("req :",req);
-//     message = '';
-//     if(req.method == "POST"){
-//        var post  = req.body;
-//        var category_name = post.category_name;
-//        var category_description = post.category_description;
-//        var status = post.status;
-//        var create_date = post.create_date;
-//        var end_date = post.end_date;
-//        console.log("************")
-//        console.log("req:",req.files);
-//        console.log("****************")
-  
-//        if (!req.files)
-       
-//                  return res.status(400).send('No files were uploaded.');
-  
-//          var file = req.files.feature_img;
-//          var img_name = file.name;
-  
-//             if(file.mimetype == "image/jpeg" ||file.mimetype == "image/png"||file.mimetype == "image/gif"||file.mimetype == "image/svg" ){
-                                  
-//                file.mv('public/images/upload_images/'+file.name, function(err) {
-                              
-//                    if (err)
-  
-//                      return res.status(500).send(err);
-//                            var sql = "INSERT INTO `users_image`(`category_name`,`category_description`,`status`,`create_date`, `end_date` ,`feature_img`) VALUES ('" + category_name + "','" + category_description + "','" + status + "','" + create_date + "','" + end_date + "','" + img_name + "')";
-  
-//                               db.query(sql, function(err, result) {
-//                                   res.send('profile/'+result.insertId);
-//                              });
-//                         });
-//            } else {
-//              message = "This format is not allowed , please upload file with '.png','.gif','.jpg','.svg'";
-//              res.send('index file',{message: message});
-//            }
-//     } else {
-//        throw err;
-//     }
-    
-// }
+// if(file.mimetype == "image/jpeg" ||file.mimetype == "image/png"||file.mimetype == "image/gif"||file.mimetype == "image/svg" ){
+
+//     file.mv('public/images/upload_images/'+file.name, function(err) {
+//     message = "This format is not allowed , please upload file with '.png','.gif','.jpg','.svg'";
 
