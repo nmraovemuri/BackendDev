@@ -110,7 +110,7 @@ exports.createProduct = function(req,res){
 exports.getAllProducts = function(req,res){
     db.query(`SELECT id,
             product_name,
-            CONCAT("assets/images/products/", product_img) as product_img, 
+            CONCAT("/images/products/", product_img) as product_img, 
             description_fst,
             description_snd,
             status,
@@ -119,6 +119,42 @@ exports.getAllProducts = function(req,res){
             FROM_UNIXTIME(updated_date, '%Y-%m-%d %H:%i:%s') as updated_date 
             from asm_products 
             where status = 1`, 
+            function (err, rows, fields) {
+                console.log(err);
+        if (!err)
+            return res.json({
+                status: 'success',
+                data: rows
+            })
+        else
+            return res.json([{
+                status: 'failed',
+                errMsg: 'Error while performing query.'
+            }])
+    });
+}
+
+
+exports.getProductsBySubcatId = function(req,res){
+    let subcat_id = req.body.subcat_id;
+    db.query(`SELECT p.id,
+            p.product_name,
+            CONCAT("/images/products/200/", p.product_img) as product_img, 
+            p.description_fst,
+            p.description_snd,
+            u.unit_value,
+            u.unit_type,
+            pup.price
+            from asm_products p,
+            asm_product_unit_price pup,
+            asm_mt_units u
+            where p.subcat_id = ? and 
+            p.id = pup.product_id and
+            pup.unit_id = u.id and
+            p.status = 1 and
+            u.status = 1 and 
+            pup.status = 1
+            `, [subcat_id],
             function (err, rows, fields) {
                 console.log(err);
         if (!err)
