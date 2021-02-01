@@ -2,6 +2,7 @@
 var db = require('../config/db');
 let fs = require('fs');
 
+
 exports.createProduct = function(req,res){
     console.log("req.body :", req.body);
     let data = req.body;
@@ -148,7 +149,7 @@ exports.getProductsBySubcatId = function(req,res){
             pup.mrp,
             pup.sale_price,
             (pup.mrp - pup.sale_price) discount_amount,
-            (pup.mrp - pup.sale_price)/100 discount_percentage
+            round(100-(pup.sale_price*100)/pup.mrp) discount_percentage
             from asm_products p,
             asm_product_unit_price pup,
             asm_mt_units u
