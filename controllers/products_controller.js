@@ -148,8 +148,8 @@ exports.getProductsBySubcatId = function(req,res){
             u.unit_type,
             pup.mrp,
             pup.sale_price,
-            (pup.mrp - pup.sale_price) discount_amount,
-            round(100-(pup.sale_price*100)/pup.mrp) discount_percentage
+            (pup.mrp - pup.sale_price) as discount_amount,
+            round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage
             from asm_products p,
             asm_product_unit_price pup,
             asm_mt_units u
