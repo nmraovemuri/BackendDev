@@ -12,7 +12,7 @@
     {
         res.status(401).send("Invalid Token");
     }
-    jwt.verify(token,'secret_key',(error,payload)=>{
+    jwt.verify(token,'my-secret-key',(error,payload)=>{
         console.log("payload :",payload);
         if(error) 
           {

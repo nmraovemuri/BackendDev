@@ -137,6 +137,7 @@ exports.getAllProducts = function(req,res){
 
 exports.getProductsBySubcatId = function(req,res){
     let subcat_id = req.body.subcat_id;
+    console.log("subcat_id:", subcat_id);
     db.query(`SELECT p.id,
             p.product_name,
             CONCAT("/images/products/200/", p.product_img) as product_img, 
@@ -144,7 +145,8 @@ exports.getProductsBySubcatId = function(req,res){
             p.description_snd,
             u.unit_value,
             u.unit_type,
-            pup.price
+            pup.mrp,
+            pup.sale_price
             from asm_products p,
             asm_product_unit_price pup,
             asm_mt_units u

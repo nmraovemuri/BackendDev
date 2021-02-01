@@ -1,5 +1,5 @@
 
-var db = require('./../config/db');
+var db = require('../config/db');
 
 exports.createCategory = function(req,res){
     console.log("req :",req);
