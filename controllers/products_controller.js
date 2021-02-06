@@ -148,17 +148,21 @@ exports.getProductsBySubcatId = function(req,res){
             u.unit_type,
             pup.mrp,
             pup.sale_price,
+            amt.gst_slab,
             (pup.mrp - pup.sale_price) as discount_amount,
             round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage
             from asm_products p,
             asm_product_unit_price pup,
-            asm_mt_units u
+            asm_mt_units u,
+            asm_mt_tax amt
             where p.subcat_id = ? and 
             p.id = pup.product_id and
             pup.unit_id = u.id and
+            p.gst_slab_id = amt.id and 
             p.status = 1 and
             u.status = 1 and 
-            pup.status = 1
+            pup.status = 1 and
+            amt.status = 1
             `, [subcat_id],
             function (err, rows, fields) {
                 console.log(err);
