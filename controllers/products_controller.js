@@ -157,12 +157,14 @@ exports.getProductsBySubcatId = function(req,res){
             asm_mt_tax amt
             where p.subcat_id = ? and 
             p.id = pup.product_id and
+            p.gst_slab_id = amt.id and
             pup.unit_id = u.id and
-            p.gst_slab_id = amt.id and 
+             
             p.status = 1 and
             u.status = 1 and 
             pup.status = 1 and
             amt.status = 1
+            order by p.id
             `, [subcat_id],
             function (err, rows, fields) {
                 console.log(err);
