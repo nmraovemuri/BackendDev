@@ -1,0 +1,6 @@
+Rules for asm_service Database
+================================
+1)Data base name must be in small case.
+2)All tables must be in small case.
+3)If table name contains multiple words, then underscore ( _ ) is used to join the words.
+4)All columns must be in small case.
