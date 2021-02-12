@@ -19,6 +19,9 @@ app.use(require('./routes/subcategory_routes'));
 app.use(require('./routes/product.routes'));
 app.use(require('./routes/products_routes'));
 app.use(require('./routes/units_routes'));
+
+
+app.use(require('./routes/client_routes'));
 app.use(require('./routes/order_routes'));
 app.use(express.static('./assets'));
 app.use(express.static('./public'));
