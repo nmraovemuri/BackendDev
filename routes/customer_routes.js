@@ -1,19 +1,22 @@
 const express = require('express')
 const router = express.Router()
 const jwt = require('jsonwebtoken');
-const clientController = require('../controllers/client_controller');
+const customerController = require('../controllers/customer_controller');
 
-//Client SignUp
-router.post('/client_signup', clientController.clientSignup);
+//Customer SignUp
+router.post('/customer_signup', customerController.customerSignup);
 
-//Client SignIn
-// router.post('/adminsignin', adminController.adminSignIn);
+//Customer SignUp Activation
+router.get('/customer_signup_activate/:customer_id', customerController.customerSignupActivation);
 
-//Client forgot password
-// router.post('/adminForgotPassword', adminController.adminForgotPassword);
+//Customer SignIn
+router.post('/customer_signin', customerController.customerSignIn);
 
-//Client Change Password
-// router.post('/change_admin_password', ensureToken, adminController.changeAdminPassword);
+//Customer forgot password
+router.post('/customerForgotPassword', customerController.customerForgotPassword);
+
+//Customer Change Password
+// router.post('/customer_change_password', ensureToken, customerController.customerChangePassword);
 
 // Ensuring Authorization
 function ensureToken(req, res, next){
