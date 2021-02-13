@@ -134,7 +134,7 @@ exports.customerSignupActivation = function(req, res){
         console.log("err=", err);
         console.log("rows=", rows);
         if (!err){
-            res.redirect('http://localhost:3000/signup-activation-status');
+            res.redirect('http://localhost:4200/signup-activation-status');
             // res.status(200).json({
             //   status: 'success',
             //   data: rows.rows[0]
