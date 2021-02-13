@@ -131,8 +131,10 @@ exports.customerSignupActivation = function(req, res){
                                             is_active =1 
                                         where customer_id = ?`;
     asmdb.query(query, [customer_id], function (err, rows, fields) {
+        console.log("err=", err);
+        console.log("rows=", rows);
         if (!err){
-            res.redirect('http://localhost:3000/signupActivationSuccess');
+            res.redirect('http://localhost:3000/signup-activation-status');
             // res.status(200).json({
             //   status: 'success',
             //   data: rows.rows[0]
