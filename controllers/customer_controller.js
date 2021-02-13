@@ -3,6 +3,15 @@ let fs = require('fs');
 var bcrypt = require('bcrypt');
 let nodemailer = require('nodemailer');
 const strformat = require('string-format');
+const jwt = require('jsonwebtoken');
+
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+    user: 'customercare.aswika@gmail.com',
+    pass: '112233ti'
+    }
+});
 
 exports.customerSignup = async function(req, res){
     console.log("from clientSignup");
@@ -68,13 +77,7 @@ exports.customerSignup = async function(req, res){
                 lastName: last_name,
                 customer_id: result.insertId
             };
-            let transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                user: 'customercare.aswika@gmail.com',
-                pass: '112233ti'
-                }
-            });
+            
             //resources\mail_template\customer_signup_status.html
             fs.readFile('resources/mail_template/customer_signup_status.html', function(err, data) {
             
@@ -165,32 +168,43 @@ exports.customerSignIn = async function (req, res){
                 [email_id], function (err, result, fields) {
         console.log('err =', err);
         console.log('result = ', result);
-        if (!err && result.length!=0){
+        if(err)
+            return res.status(502).json([{
+                status: 'failed',
+                message: err.message
+            }]);
+        else if(result.length==0)
+            //Email Id is not existed with us.
+            return res.status(422).json({
+                status: "failed",
+                error:"Invalid EmailID or Password"
+            });
+        else if (result.length!=0){
+            //Email Id is found.
             console.log("result[0].password=", result[0].password);
             let hashpassowrd = result[0].password;
             bcrypt.compare(password, hashpassowrd, function(err2, bcresult) {
                 console.log('err2 =', err2);
-                if(  bcresult == true)
+                console.log("bcresult=", bcresult);
+                //If password matched
+                if(bcresult == true){
+                    const token = jwt.sign({email_id}, 'my-secret-key');
                     return res.status(200).json({
                         status: 'success',
-                        customer: result[0]
+                        customer: result[0],
+                        token
                     });
+                }
                 else{
+                    //If password not matched
                     return res.status(502).json([{
                         status: 'failed',
                         message: 'Invalid email id or password.'
                     }]);
                 }
-                console.log(result);
             });
-      
         }
-        else if(err)
-            return res.status(502).json([{
-                status: 'failed',
-                message: err.message
-            }])
-        });
+    });
 }
 
 exports.customerForgotPassword = async function (req, res){

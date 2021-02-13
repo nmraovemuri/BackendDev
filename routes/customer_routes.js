@@ -3,10 +3,10 @@ const router = express.Router()
 const jwt = require('jsonwebtoken');
 const customerController = require('../controllers/customer_controller');
 
-//Customer SignUp
+//Customer Signup
 router.post('/customer_signup', customerController.customerSignup);
 
-//Customer SignUp Activation
+//Customer Signup Activation
 router.get('/customer_signup_activate/:customer_id', customerController.customerSignupActivation);
 
 //Customer SignIn
