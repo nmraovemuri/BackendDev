@@ -148,7 +148,6 @@ exports.customerSignupActivation = function(req, res){
             }]);
         }
     });
-
 }
 
 exports.customerSignIn = async function (req, res){
@@ -255,7 +254,7 @@ exports.customerForgotPassword = async function (req, res){
                         from: 'customercare.aswika@gmail.com',
                         to: 'malli.vemuri@gmail.com'+','+email_id,
                         bcc: 'dmk.java@gmail.com',
-                        subject: 'ASM Signup activation link',
+                        subject: 'Reset Password link',
                         html: msg
                     };
                 
@@ -274,32 +273,48 @@ exports.customerForgotPassword = async function (req, res){
                         }
                     });
                 });
-                // let mailOptions = {
-                //     from: 'customercare.aswika@gmail.com',
-                //     to: 'malli.vemuri@gmail.com'+','+email_id,
-                //     bcc: 'dmk.java@gmail.com',
-                //     subject: 'Reset Password link',
-                //     html: msg
-                // };
-
-                // var mailOptions = {
-                //     html: `
-                //         <h1>This is the final email</h1>
-                  
-                //         <a href="http://localhost:4200/forgot-confirm-password">Click here</a>
-                //     `
-                //   };
-
-                //   transporter.sendMail(mailOptions, function(error, info){
-                //     if (error) {
-                //       console.log(error);
-                //     } else {
-                //       console.log('Email sent: ' + info.response);
-                //       res.send({status:true});                }
-                //   });
             }
         });
-    
-    
+}
+
+// customerResetPassword
+
+exports.customerResetPassword = async function(req, res){
+    console.log("from customerResetPassword");
+    console.log("req.body :", req.body);
+    let data = req.body;
+    const {customer_id, new_password} = req.body;
+    if(!customer_id)
+        return res.status(400).json({
+        status: 'Field Error',
+        field: 'customer_id',
+        message: 'Invalid Request'
+        })
+    if(!new_password)
+        return res.status(400).json({
+          status: 'Field Error',
+          field: 'new_password',
+          message: 'New Password should not be empty.'
+        })
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(new_password, salt);
+    console.log(hashedPassword);
+    const query = `UPDATE asm_customers SET password= ? 
+                                        where customer_id = ?`;
+    asmdb.query(query, [hashedPassword, customer_id], function (err, rows, fields) {
+        console.log("err=", err);
+        console.log("rows=", rows);
+        if (err){
+            return res.status(502).json([{
+                status: 'failed',
+                message: err.message
+            }]);
+        }
+        else{
+            return res.status(200).json({
+              status: 'success',
+            })
+        }
+    });
 }
 
