@@ -85,7 +85,7 @@ exports.customerSignup = async function(req, res){
                 let msg = strformat(template, customerDetails);
                 // console.log(msg);
                 let mailOptions = {
-                    from: 'impactivenoreply@gmail.com',
+                    from: 'customercare.aswika@gmail.com',
                     to: 'malli.vemuri@gmail.com'+','+email_id,
                     bcc: 'dmk.java@gmail.com',
                     subject: 'ASM Signup activation link',
@@ -208,8 +208,98 @@ exports.customerSignIn = async function (req, res){
         }
     });
 }
-
+// Customer Forgot Password
 exports.customerForgotPassword = async function (req, res){
     console.log("from customerForgotPassword");
     console.log("req.body=", req.body);
+    const { email_id } = req.body;
+    if(!email_id){
+        return res.status(422).json({
+            status: 'Field Error',
+            field: 'email_id',
+            message: 'Email Id should not be empty.'
+         });
+     } else if(!email_id.includes('@') || !email_id.includes('.'))
+        return res.status(400).json({
+            status: 'Field Error',
+            field: 'email_id',
+            message: 'Invalid EmailId'
+        });
+        let sql = 'SELECT * from asm_customers where email_id = ? ' 
+        asmdb.query(sql, [email_id], (err, rows, fields)=>{
+            console.log("err:", err);
+            console.log("rows :", rows)
+            if(err) 
+                return res.status(422).json({
+                    status: "failed",
+                    message: err.message
+                });
+            else if(rows.length === 0)
+                    return res.status(422).json({
+                        status: "failed",
+                        message:"This mail id is not registered with us."
+                    });
+            else{
+                const { customer_id, first_name, last_name } = rows[0];
+                let customerDetails = {
+                    firstName: first_name,
+                    lastName: last_name,
+                    customer_id
+                };
+                fs.readFile('resources/mail_template/customer_reset_password.html', function(err, data) {
+            
+                    let template = data.toString();
+                    let msg = strformat(template, customerDetails);
+                    // console.log(msg);
+                    let mailOptions = {
+                        from: 'customercare.aswika@gmail.com',
+                        to: 'malli.vemuri@gmail.com'+','+email_id,
+                        bcc: 'dmk.java@gmail.com',
+                        subject: 'ASM Signup activation link',
+                        html: msg
+                    };
+                
+                    transporter.sendMail(mailOptions, function(error, info){
+                        if(error){
+                            console.log(error);
+                            return res.status(502).json([{
+                                status: 'error',
+                                message: error.message
+                            }]);
+                        }else{
+                            console.log("Email send" + info.response);
+                            return res.status(200).json([{
+                                status: 'success',
+                            }]);
+                        }
+                    });
+                });
+                // let mailOptions = {
+                //     from: 'customercare.aswika@gmail.com',
+                //     to: 'malli.vemuri@gmail.com'+','+email_id,
+                //     bcc: 'dmk.java@gmail.com',
+                //     subject: 'Reset Password link',
+                //     html: msg
+                // };
+
+                // var mailOptions = {
+                //     html: `
+                //         <h1>This is the final email</h1>
+                  
+                //         <a href="http://localhost:4200/forgot-confirm-password">Click here</a>
+                //     `
+                //   };
+
+                //   transporter.sendMail(mailOptions, function(error, info){
+                //     if (error) {
+                //       console.log(error);
+                //     } else {
+                //       console.log('Email sent: ' + info.response);
+                //       res.send({status:true});                }
+                //   });
+            }
+        });
+    
+    
 }
+
