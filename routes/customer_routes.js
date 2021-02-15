@@ -13,7 +13,7 @@ router.get('/customer_signup_activate/:customer_id', customerController.customer
 router.post('/customer_signin', customerController.customerSignIn);
 
 //Customer forgot password
-router.post('/customer-forgot-password', customerController.customerForgotPassword);
+router.post('/customer_forgot_password', customerController.customerForgotPassword);
 
 //Customer Change Password
 // router.post('/customer_change_password', ensureToken, customerController.customerChangePassword);
