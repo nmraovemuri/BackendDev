@@ -1,5 +1,6 @@
 var asmdb = require('../config/db');
-const transporter = require('../config/mail_transporter');
+let nodemailer = require('nodemailer');
+// let transporter = require('../config/mail_transporter');
 let fs = require('fs');
 var bcrypt = require('bcrypt');
 
@@ -7,7 +8,14 @@ const strformat = require('string-format');
 const jwt = require('jsonwebtoken');
 
 
-
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'customercare.aswika@gmail.com',
+        pass: '112233ti'
+    }
+});
+console.log("transporter =", transporter);
 exports.customerSignup = async function(req, res){
     console.log("from clientSignup");
     console.log("req.body :", req.body);
