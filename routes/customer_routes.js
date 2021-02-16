@@ -29,7 +29,11 @@ function ensureToken(req, res, next){
     if(typeof bearerHeader !== 'undefined'){
         const bearer = bearerHeader.split(" ");
         console.log("baerer=", bearer);
-        const bearerToken = bearer[1]
+        let bearerToken;
+        if(bearer.length == 2)
+            bearerToken = bearer[1];
+        else if(bearer.length == 3)
+            bearerToken = bearer[2]
         jwt.verify(bearerToken, 'my-secret-key', function (err, data){
             if(err){
                 return res.status(403).json({
