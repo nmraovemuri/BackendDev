@@ -1,6 +1,6 @@
 
 let nodemailer = require('nodemailer');
-exports.transporter = nodemailer.createTransport({
+module.exports = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: 'customercare.aswika@gmail.com',

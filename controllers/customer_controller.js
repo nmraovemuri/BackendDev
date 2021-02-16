@@ -1,21 +1,22 @@
 var asmdb = require('../config/db');
 let nodemailer = require('nodemailer');
-// let transporter = require('../config/mail_transporter');
+let transporter = require('../config/mail_transporter');
 let fs = require('fs');
 var bcrypt = require('bcrypt');
+const urls = require('../config/urls');
 
 const strformat = require('string-format');
 const jwt = require('jsonwebtoken');
 
-
-let transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: 'customercare.aswika@gmail.com',
-        pass: '112233ti'
-    }
-});
-console.log("transporter =", transporter);
+console.log("urls=", urls);
+// let transporter = nodemailer.createTransport({
+//     service: 'gmail',
+//     auth: {
+//         user: 'customercare.aswika@gmail.com',
+//         pass: '112233ti'
+//     }
+// });
+// console.log("transporter =", transporter);
 exports.customerSignup = async function(req, res){
     console.log("from clientSignup");
     console.log("req.body :", req.body);
@@ -78,7 +79,8 @@ exports.customerSignup = async function(req, res){
             let customerDetails = {
                 firstName: first_name,
                 lastName: last_name,
-                customer_id: result.insertId
+                customer_id: result.insertId,
+                server_origin: urls.SERVER
             };
             
             //resources\mail_template\customer_signup_status.html
@@ -136,8 +138,9 @@ exports.customerSignupActivation = function(req, res){
     asmdb.query(query, [customer_id], function (err, rows, fields) {
         console.log("err=", err);
         console.log("rows=", rows);
+        let CLIENT_ORIGIN = urls.CLIENT;
         if (!err){
-            res.redirect('http://localhost:4200/signup-activation-status');
+            res.redirect(CLIENT_ORIGIN+'/signup-activation-status');
             // res.status(200).json({
             //   status: 'success',
             //   data: rows.rows[0]
@@ -243,9 +246,11 @@ exports.customerForgotPassword = async function (req, res){
                     });
             else{
                 const { customer_id, first_name, last_name } = rows[0];
+
                 let customerDetails = {
                     firstName: first_name,
                     lastName: last_name,
+                    client_origin: urls.CLIENT,
                     customer_id
                 };
                 fs.readFile('resources/mail_template/customer_reset_password.html', function(err, data) {
