@@ -19,7 +19,8 @@ router.post('/customer_forgot_password', customerController.customerForgotPasswo
 router.post('/customer_reset_password', customerController.customerResetPassword);
 
 //Customer Change Password
-// router.post('/customer_change_password', ensureToken, customerController.customerChangePassword);
+// router.post('/customer_change_password', customerController.customerChangePassword);
+router.post('/customer_change_password', ensureToken, customerController.customerChangePassword);
 
 // Ensuring Authorization
 function ensureToken(req, res, next){

@@ -278,7 +278,6 @@ exports.customerForgotPassword = async function (req, res){
 }
 
 // customerResetPassword
-
 exports.customerResetPassword = async function(req, res){
     console.log("from customerResetPassword");
     console.log("req.body :", req.body);
@@ -317,4 +316,96 @@ exports.customerResetPassword = async function(req, res){
         }
     });
 }
+// CustomerChangePassword
+exports.customerChangePassword = async function(req, res){
+    console.log("from customerChangePassword");
+    console.log("req.body :", req.body);
+    let data = req.body;
+    const {customer_id, old_password, new_password} = req.body;
+    if(!customer_id)
+        return res.status(400).json({
+        status: 'Field Error',
+        field: 'customer_id',
+        message: 'Invalid Request'
+        })
+    if(!old_password)
+        return res.status(400).json({
+          status: 'Field Error',
+          field: 'old_password',
+          message: 'Invalid Request.'
+        })
+    if(!new_password)
+        return res.status(400).json({
+          status: 'Field Error',
+          field: 'new_password',
+          message: 'New Password should not be empty.'
+        })
+    // const salt = await bcrypt.genSalt();
+    // const hashedPassword = await bcrypt.hash(new_password, salt);
+    // console.log(hashedPassword);
+    
+    asmdb.query(`SELECT customer_id, password 
+                from asm_customers 
+                where customer_id = ? 
+                and email_id_verified = 1 
+                and is_active = 1`, 
+                [customer_id], function (err, result, fields) {
 
+        console.log('err =', err);
+        console.log('result = ', result);
+        if(err)
+            return res.status(502).json([{
+                status: 'failed',
+                message: err.message
+            }]);
+        else if(result.length==0)
+            return res.status(422).json({
+                status: "failed",
+                message: 'Invalid Request.'
+            });
+        else if (result.length!=0){
+            console.log("result[0].password=", result[0].password);
+            let hashpassowrd = result[0].password;
+            bcrypt.compare(old_password, hashpassowrd, async function(err2, bcresult) {
+                console.log('err2 =', err2);
+                console.log("bcresult=", bcresult);
+                //If password matched
+                if(err2){
+                    return res.status(502).json([{
+                        status: 'failed',
+                        message: err2.message
+                    }]);
+                }
+                else if(bcresult != true){
+                    return res.status(502).json([{
+                        status: 'Field Error',
+                        field: 'old_password',
+                        message: 'Old password is not matched.'
+                    }]);
+                }
+                else{
+                    const salt = await bcrypt.genSalt();
+                    const new_hashedPassword = await bcrypt.hash(new_password, salt);
+                    console.log('new_hashedPassword=', new_hashedPassword);
+                    const query = `UPDATE asm_customers SET password= ? 
+                                    where customer_id = ?`;
+                    asmdb.query(query, [new_hashedPassword, customer_id], function (err, rows, fields) {
+                        console.log("err=", err);
+                        console.log("rows=", rows);
+                        if (err){
+                            return res.status(502).json([{
+                                status: 'failed',
+                                message: err.message
+                            }]);
+                        }
+                        else{
+                            return res.status(200).json({
+                            status: 'success',
+                            })
+                        }
+                    });
+                }
+            });
+        }
+    });
+}
