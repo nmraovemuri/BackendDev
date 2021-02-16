@@ -28,6 +28,7 @@ function ensureToken(req, res, next){
     const bearerHeader = req.headers["authorization"];
     if(typeof bearerHeader !== 'undefined'){
         const bearer = bearerHeader.split(" ");
+        console.log("baerer=", bearer);
         const bearerToken = bearer[1]
         jwt.verify(bearerToken, 'my-secret-key', function (err, data){
             if(err){
