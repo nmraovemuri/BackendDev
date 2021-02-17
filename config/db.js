@@ -3,8 +3,8 @@ var mysql = require('mysql');
 var mysqlConnect = mysql.createConnection({
     host : 'localhost',
     user : 'root',
-    password : '',
-    database : 'ecom',
+    password : 'root',
+    database : 'asm',
     multipleStatements : 'true'
 }) 
 mysqlConnect.connect((err)=>{
