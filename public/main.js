@@ -5521,6 +5521,8 @@ class ChangeUserPasswordComponent {
         this.asmCustomerService.changePassword(data).subscribe((_result) => {
             console.log("reset password data is updated:", _result);
             if (_result.status = "success") {
+                localStorage.removeItem('customer');
+                localStorage.removeItem('token');
                 return this.router.navigate([`/reset_password_status`]);
             }
         }, error => {
@@ -7004,10 +7006,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class ASMService {
+    // ASM_SERVER_BASE_URL = "http://localhost:3000";
     constructor(http) {
         this.http = http;
-        // ASM_SERVER_BASE_URL = "http://52.15.233.153:3000";
-        this.ASM_SERVER_BASE_URL = "http://localhost:3000";
+        this.ASM_SERVER_BASE_URL = "http://3.131.91.97:3000";
     }
     getAllContent() {
         return this.http.get(this.ASM_SERVER_BASE_URL + "/aboutus");
@@ -9584,8 +9586,7 @@ __webpack_require__.r(__webpack_exports__);
 class ASMCustomerService {
     constructor(http) {
         this.http = http;
-        // ASM_SERVER_BASE_URL = "http://52.15.233.153:3000";
-        this.ASM_SERVER_BASE_URL = "http://localhost:3000";
+        this.ASM_SERVER_BASE_URL = "http://3.131.91.97:3000";
     }
     customerSignup(customerDetails) {
         return this.http.post(this.ASM_SERVER_BASE_URL + "/customer_signup", customerDetails);
