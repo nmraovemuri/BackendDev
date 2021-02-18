@@ -52,7 +52,7 @@ exports.createSubCategory = function(req,res){
 
 exports.getAllSubCategories = function(req,res){
     let sql = `select sctr.id, sctr.sub_category_name, ctr.category_name, sctr.status
-                from ecom.asm_mt_subcategory sctr, ecom.asm_mt_category ctr
+                from asm_mt_subcategory sctr, asm_mt_category ctr
                 where sctr.category_id = ctr.id 
                 and ctr.status = 1 
                 and sctr.status = 1`;
