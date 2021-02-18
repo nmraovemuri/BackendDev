@@ -7009,7 +7009,7 @@ class ASMService {
     // ASM_SERVER_BASE_URL = "http://localhost:3000";
     constructor(http) {
         this.http = http;
-        this.ASM_SERVER_BASE_URL = "http://3.131.91.97:3000";
+        this.ASM_SERVER_BASE_URL = "http://43.241.36.16:3000";
     }
     getAllContent() {
         return this.http.get(this.ASM_SERVER_BASE_URL + "/aboutus");
@@ -9586,7 +9586,7 @@ __webpack_require__.r(__webpack_exports__);
 class ASMCustomerService {
     constructor(http) {
         this.http = http;
-        this.ASM_SERVER_BASE_URL = "http://3.131.91.97:3000";
+        this.ASM_SERVER_BASE_URL = "http://43.241.36.16:3000";
     }
     customerSignup(customerDetails) {
         return this.http.post(this.ASM_SERVER_BASE_URL + "/customer_signup", customerDetails);
