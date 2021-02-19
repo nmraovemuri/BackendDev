@@ -24,7 +24,11 @@ app.use(require('./routes/units_routes'));
 app.use(require('./routes/customer_routes'));
 app.use(require('./routes/order_routes'));
 app.use(express.static('./assets'));
-app.use(express.static('./public'));
+// app.use(express.static('./public'));
+app.use(express.static(__dirname + '/public'))
+app.get('*', function (request, response){
+    response.sendFile(path.resolve(__dirname, 'public', 'index.html'))
+  })
 app.listen(3000,function(err){
     if(err) throw err;
     console.log("The port is connecte on 3000")
