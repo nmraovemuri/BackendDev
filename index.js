@@ -1,6 +1,6 @@
 var express = require('express');
 var db = require('./config/db');
-
+const path = require('path');
 var bodyParser = require('body-parser');
 var fileUpload = require('express-fileupload');
 var cors = require('cors');
