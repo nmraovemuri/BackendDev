@@ -9,7 +9,7 @@ let getCartTotalPrice=(cartList)=>{
     return 0;
   if(cartList.length == 1)                                                            
     return cartList[0].sale_price * cartList[0].quantity
-  return this.cartList.reduce((tot, item)=> (tot instanceof Object? tot.sale_price * tot.quantity : tot) + item.sale_price*item.quantity );
+  return cartList.reduce((tot, item)=> (tot instanceof Object? tot.sale_price * tot.quantity : tot) + item.sale_price*item.quantity );
 }
 let getCartDiscountPrice=(cartList)=>{
   if(cartList.length == 0)   
@@ -103,7 +103,7 @@ const storeBillingAddress = (customer_id, billing_address)=>{
     }
   });
 }
-sendOrderConfirmMail=(cartList)=>{
+sendOrderConfirmMail=(order_id, customer_id, cartList)=>{
   let open = `<table>
                 <tr>
                   <th>Sl.No.</th>
@@ -182,30 +182,35 @@ sendOrderConfirmMail=(cartList)=>{
   });
 };
 exports.ordersubmit = function(req,res){
+  console.log("from ordersubmit");
   console.log("body:", req.body);
   let {customer_id, delivery_address, billing_address, cartList} = req.body;
-  if(customer_id){
+  console.log(customer_id);
+  console.log(delivery_address);
+  console.log(billing_address);
+  console.log(cartList);
+  if(!customer_id){
     return res.status(400).json({
       status: 'Field Error',
       field: 'customer_id',
       message: 'Invalid Customer Id.'
     });
   }
-  if(delivery_address){
+  if(!delivery_address){
     return res.status(400).json({
       status: 'Field Error',
       field: 'delivery_address',
       message: 'Invalid Delivery Address.'
     });
   }
-  if(billing_address){
+  if(!billing_address){
     return res.status(400).json({
       status: 'Field Error',
       field: 'billing_address',
       message: 'Invalid Billing Address.'
     });
   }
-  if(cartList){
+  if(!cartList){
     return res.status(400).json({
       status: 'Field Error',
       field: 'cartList',
@@ -214,6 +219,7 @@ exports.ordersubmit = function(req,res){
   }
   let total_items = getCartQuantity(cartList);
   let total_amount = getCartTotalPrice(cartList);
+  let status = "submitted"
   let orderMasterQuery = `INSERT INTO asm_customer_order_master 
       (total_items, total_amount, status, customer_id, created_date, updated_date) 
       values (?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`;
@@ -235,8 +241,8 @@ exports.ordersubmit = function(req,res){
       console.log('result = ', result);
       storeDeliveryAddress(customer_id, delivery_address);
       storeBillingAddress(customer_id, billing_address);
-      storeCartList(order_id, cartList);
-      sendOrderConfirmMail(order_id, cartList);
+      // storeCartList(order_id, cartList);
+      sendOrderConfirmMail(order_id, customer_id, cartList);
       return res.status(200).json({
         status: 'success',
         order_id
