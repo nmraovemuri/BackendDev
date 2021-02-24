@@ -141,6 +141,7 @@ exports.customerSignupActivation = function(req, res){
         let CLIENT_ORIGIN = urls.CLIENT;
         if (!err){
             res.redirect(CLIENT_ORIGIN+'/signup-activation-status');
+            // res.redirect(CLIENT_ORIGIN+'/signup-activation-status');
             // res.status(200).json({
             //   status: 'success',
             // })
