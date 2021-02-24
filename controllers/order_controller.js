@@ -40,7 +40,7 @@ const storeDeliveryAddress = (customer_id, delivery_address)=>{
         (first_name, last_name, mobile, email_id, addr_field1, addr_field2, addr_field3,
         addr_field4, addr_field5, addr_field6, city, state, country, pin_code,
         customer_id, created_date, updated_date) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-        ?, ?, ?, now(), now())`
+        ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`
           
       asmDb.query(insertDAQuery, [da.first_name, da.last_name, da.mobile, da.email_id, da.addr_field1, 
         da.addr_field2, da.addr_field3, da.addr_field4, da.addr_field5, 
@@ -53,7 +53,7 @@ const storeDeliveryAddress = (customer_id, delivery_address)=>{
       first_name = ?, last_name = ?, mobile = ?, email_id = ?, addr_field1 = ?, 
       addr_field2 = ?, addr_field3 = ?, addr_field4 = ?, addr_field5 = ?, 
       addr_field6 = ?, city = ?, state =? , country = ?, pin_code = ?,
-      updated_date = now() where customer_id = ?
+      updated_date = UNIX_TIMESTAMP() where customer_id = ?
         `
       asmDb.query(updateDAQuery, [da.first_name, da.last_name, da.mobile, da.email_id, da.addr_field1, 
         da.addr_field2, da.addr_field3, da.addr_field4, da.addr_field5, 
@@ -79,7 +79,7 @@ const storeBillingAddress = (customer_id, billing_address)=>{
       (first_name, last_name, mobile, email_id, addr_field1, addr_field2, addr_field3,
         addr_field4, addr_field5, addr_field6, city, state, country, pin_code,
         customer_id, created_date, updated_date) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-        ?, ?, ?, now(), now())`
+        ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`
           
       asmDb.query(insertBAQuery, [ba.first_name, ba.last_name, ba.mobile, ba.email_id, ba.addr_field1, 
         ba.addr_field2, ba.addr_field3, ba.addr_field4, ba.addr_field5, 
@@ -92,7 +92,7 @@ const storeBillingAddress = (customer_id, billing_address)=>{
       first_name = ?, last_name = ?, mobile = ?, email_id = ?, addr_field1 = ?, 
       addr_field2 = ?, addr_field3 = ?, addr_field4 = ?, addr_field5 = ?, 
       addr_field6 = ?, city = ?, state =? , country = ?, pin_code = ?,
-      updated_date = now() where customer_id = ?
+      updated_date = UNIX_TIMESTAMP() where customer_id = ?
         `
       asmDb.query(updateBAQuery, [ba.first_name, ba.last_name, ba.mobile, ba.email_id, ba.addr_field1, 
         ba.addr_field2, ba.addr_field3, ba.addr_field4, ba.addr_field5, 
@@ -212,9 +212,11 @@ exports.ordersubmit = function(req,res){
       message: 'Invalid Cart.'
     });
   }
+  let total_items = getCartQuantity(cartList);
+  let total_amount = getCartTotalPrice(cartList);
   let orderMasterQuery = `INSERT INTO asm_customer_order_master 
       (total_items, total_amount, status, customer_id, created_date, updated_date) 
-      values (?, ?, ?, ?, now(), now())`;
+      values (?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`;
   asmDb.query(orderMasterQuery, [total_items, total_amount, status, customer_id], function (err, result) {
     console.log("result=", result);
     console.log("err=", err);
