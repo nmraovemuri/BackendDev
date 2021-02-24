@@ -27,6 +27,7 @@ let getCartQuantity=(cartList)=>{
 }
 
 const storeDeliveryAddress = (customer_id, delivery_address)=>{
+  console.log("from storeDeliveryAddress");
   let da = delivery_address
   let findCustomerDAQuery = `SELECT id from asm_customer_shipping_address
       where customer_id =?`
@@ -39,12 +40,13 @@ const storeDeliveryAddress = (customer_id, delivery_address)=>{
       let insertDAQuery = `INSERT INTO asm_customer_shipping_address 
         (first_name, last_name, mobile, email_id, addr_field1, addr_field2, addr_field3,
         addr_field4, addr_field5, addr_field6, city, state, country, pin_code,
-        customer_id, created_date, updated_date) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-        ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`
+        customer_id, created_date, updated_date) values (?, ?, ?, ?, 
+          ?, ?, ?, ?, ?, ?, 
+          ?, ?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`
           
-      asmDb.query(insertDAQuery, [da.first_name, da.last_name, da.mobile, da.email_id, da.addr_field1, 
-        da.addr_field2, da.addr_field3, da.addr_field4, da.addr_field5, 
-        da.addr_field6, da.city, da.state, da.country, da.pin_code, customer_id], function (daInsertErr, daInsertResult) {
+      asmDb.query(insertDAQuery, [da.first_name, da.last_name, da.mobile, da.email_id, 
+        da.addr_field1, da.addr_field2, da.addr_field3, da.addr_field4, da.addr_field5, da.addr_field6, 
+        da.city, da.state, da.country, da.pin_code, customer_id], function (daInsertErr, daInsertResult) {
         console.log("daInsertErr=", daInsertErr);
         console.log("daInsertResult=", daInsertResult);   
         });
@@ -66,6 +68,7 @@ const storeDeliveryAddress = (customer_id, delivery_address)=>{
 }
 
 const storeBillingAddress = (customer_id, billing_address)=>{
+  console.log("from storeBillingAddress");
   let ba = billing_address;
   let findCustomerBAQuery = `SELECT id from asm_customer_billing_address
           where customer_id =?`
@@ -103,7 +106,26 @@ const storeBillingAddress = (customer_id, billing_address)=>{
     }
   });
 }
-sendOrderConfirmMail=(order_id, customer_id, cartList)=>{
+storeCartList=(order_id, cartList)=>{
+  console.log("from storeCartList");
+  let orderDetailsQuery = `INSERT INTO asm_cutomer_order_details 
+    (order_id, product_id, product_name, unit_value, unit_type, mrp, sale_price, quantity, 
+    gst_slab, discount_amount, discount_percentage, total_amount ) VALUES ?`;
+  let orderList = [];
+  cartList.forEach(item=>{
+    orderList.push([order_id, item.product_id, item.product_name, item.unit_value, item.unit_type, item.mrp, item.sale_price, item.quantity, 
+      item.gst_slab, item.discount_amount, item.discount_percentage, item.total_amount]);
+  });
+
+  console.log(orderList);
+  asmDb.query(orderDetailsQuery, [orderList], function (odiqErr, odiqResult) {
+    console.log("odiqErr=", odiqErr);
+    console.log("odiqResult=", odiqResult);   
+  });
+}
+sendOrderConfirmMail=(order_id, customer_id, billing_address, cartList)=>{
+  console.log("from sendOrderConfirmMail");
+  let ba = billing_address;
   let open = `<table>
                 <tr>
                   <th>Sl.No.</th>
@@ -142,17 +164,11 @@ sendOrderConfirmMail=(order_id, customer_id, cartList)=>{
   let invoice = tr;
   console.log(invoice);
   let orderDetails = {
-      firstName: 'MuraliKrishna',
-      lastName: 'Dokuparthi',
+      firstName: ba.first_name,
+      lastName: ba.last_name,
       invoice
   };
-  // let transporter = nodemailer.createTransport({
-  //     service: 'gmail',
-  //     auth: {
-  //       user: 'customercare.aswika@gmail.com',
-  //       pass: '112233ti'
-  //     }
-  // });
+  
   //resources\mail_template\sign-up status.html
   // resources/mail_template/invoice_template.html'
   // resources\mail_template\example1\invoice_template.html
@@ -164,7 +180,7 @@ sendOrderConfirmMail=(order_id, customer_id, cartList)=>{
     // console.log(msg);
     let mailOptions = {
         from: 'customercare.aswika@gmail.com',
-        to: 'malli.vemuri@gmail.com',
+        to: 'malli.vemuri@gmail.com,'+ba.email_id,
         bcc: 'dmk.java@gmail.com',
         subject: `ASM Service Customer's Order Confirmation`,
         html: msg
@@ -174,7 +190,6 @@ sendOrderConfirmMail=(order_id, customer_id, cartList)=>{
     transporter.sendMail(mailOptions, function(error, info){
         if(error){
             console.log(error);
-            
         }else{
             console.log("Email send" + info.response);
         }
@@ -237,12 +252,10 @@ exports.ordersubmit = function(req,res){
       let da = delivery_address
       let ba = billing_address
       
-      console.log('err =', err);
-      console.log('result = ', result);
       storeDeliveryAddress(customer_id, delivery_address);
       storeBillingAddress(customer_id, billing_address);
-      // storeCartList(order_id, cartList);
-      sendOrderConfirmMail(order_id, customer_id, cartList);
+      storeCartList(order_id, cartList);
+      sendOrderConfirmMail(order_id, customer_id, billing_address, cartList);
       return res.status(200).json({
         status: 'success',
         order_id
