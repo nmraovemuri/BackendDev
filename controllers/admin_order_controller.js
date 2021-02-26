@@ -64,7 +64,7 @@ exports.processingOrders = async function (req, res){
         else if(result.length==0)
             return res.status(422).json({
                 status: "failed",
-                message:"No more new orders"
+                message:"No more Processing orders"
             });
         else if (result.length!=0){
             return res.json({
@@ -99,7 +99,7 @@ exports.closedOrders = async function (req, res){
         else if(result.length==0)
             return res.status(422).json({
                 status: "failed",
-                message:"No more new orders"
+                message:"No more Closed orders"
             });
         else if (result.length!=0){
             return res.json({
@@ -134,7 +134,7 @@ exports.canceledOrders = async function (req, res){
         else if(result.length==0)
             return res.status(422).json({
                 status: "failed",
-                message:"No more new orders"
+                message:"No more Canceled orders"
             });
         else if (result.length!=0){
             return res.json({
@@ -166,6 +166,31 @@ exports.updateOrderStatus = function(req,res){
             return res.json({
                 status: 'success',
                 message: "Order status updated successfully.",
+                });
+        }
+    });
+}
+
+
+exports.orderDetails = function(req,res){
+    console.log("from orderDetails");
+    console.log("body:", req.body);
+    let {order_id, new_status} = req.body;
+    let query = `SELECT * FROM asm_cutomer_order_details
+                    WHERE order_id = ?`
+    asmDb.query(query, [order_id], function (err, result) {
+        console.log("result=", result);
+        console.log("err=", err);
+        if(err){
+            return res.status(501).json({
+            status: 'failed',
+            message: err.message,
+            });
+        }
+        else {
+            return res.json({
+                status: 'success',
+                orderList: result,
                 });
         }
     });
