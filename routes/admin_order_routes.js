@@ -14,7 +14,7 @@ router.get('/admin/processing_orders', adminOrderController.processingOrders);
 router.get('/admin/closed_orders', adminOrderController.closedOrders);
 
 //Get Customers Canceled Orders List
-router.get('/admin/canceled_rders', adminOrderController.canceledOrders);
+router.get('/admin/canceled_orders', adminOrderController.canceledOrders);
 
 // Order Status Updation
 router.post('/admin/update_order_status',   adminOrderController.updateOrderStatus);
