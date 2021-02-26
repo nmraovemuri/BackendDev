@@ -34,7 +34,7 @@ exports.newOrders = async function (req, res){
         else if (result.length!=0){
             return res.json({
                 status: "success",
-                data:   result
+                ordersList:   result
             });
         }
     });
@@ -69,7 +69,7 @@ exports.processingOrders = async function (req, res){
         else if (result.length!=0){
             return res.json({
                 status: "success",
-                data:   result
+                ordersList:   result
             });
         }
     });
@@ -104,7 +104,7 @@ exports.closedOrders = async function (req, res){
         else if (result.length!=0){
             return res.json({
                 status: "success",
-                data:   result
+                ordersList:   result
             });
         }
     });
@@ -139,7 +139,7 @@ exports.canceledOrders = async function (req, res){
         else if (result.length!=0){
             return res.json({
                 status: "success",
-                data:   result
+                ordersList:   result
             });
         }
     });
