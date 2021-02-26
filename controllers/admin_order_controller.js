@@ -175,7 +175,10 @@ exports.updateOrderStatus = function(req,res){
 exports.orderDetails = function(req,res){
     console.log("from orderDetails");
     console.log("body:", req.body);
-    let {order_id, new_status} = req.body;
+    console.log("params:", req.params);
+    // let {order_id, new_status} = req.body;
+    const order_id = req.params.order_id;
+    console.log("order_id=", order_id);
     let query = `SELECT * FROM asm_cutomer_order_details
                     WHERE order_id = ?`
     asmDb.query(query, [order_id], function (err, result) {

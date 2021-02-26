@@ -20,7 +20,7 @@ router.get('/admin/canceled_orders', adminOrderController.canceledOrders);
 router.post('/admin/update_order_status',   adminOrderController.updateOrderStatus);
 
 // Get Order Details By OrderID
-router.post('/admin/order_details',   adminOrderController.orderDetails);
+router.get('/admin/order_details/:order_id',   adminOrderController.orderDetails);
 
 
 module.exports = router
