@@ -23,6 +23,8 @@ app.use(require('./routes/units_routes'));
 
 app.use(require('./routes/customer_routes'));
 app.use(require('./routes/order_routes'));
+app.use(require('./routes/admin_order_routes'));
+
 app.use(express.static('./assets'));
 // app.use(express.static('./public'));
 app.use(express.static(__dirname + '/public'))
