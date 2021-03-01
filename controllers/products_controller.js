@@ -185,6 +185,10 @@ exports.getProductsBySubcatId = function(req,res){
 exports.getProductsBySearchString = function(req,res){
     console.log("from getProductsBySearchString");
     let search_string = req.body.search_string;
+    if(search_string){
+        search_string = search_string.toLocaleLowerCase();
+        search_string  = '%'+search_string+'%';
+    }
     console.log("search_string:", search_string);
     db.query(`SELECT p.id,
             p.product_name,
@@ -202,7 +206,7 @@ exports.getProductsBySearchString = function(req,res){
             asm_product_unit_price pup,
             asm_mt_units u,
             asm_mt_tax amt
-            where (LOWER(p.product_name) like '%'||?||'%' or LOWER(p.description_fst) like '%'||?||'%' ) and 
+            where (LOWER(p.product_name) like ?)  and 
             p.id = pup.product_id and
             p.gst_slab_id = amt.id and
             pup.unit_id = u.id and
@@ -212,7 +216,7 @@ exports.getProductsBySearchString = function(req,res){
             pup.status = 1 and
             amt.status = 1
             order by p.id
-            `, [search_string, search_string],
+            `, [search_string],
             function (err, rows, fields) {
                 console.log(err);
         if (!err)
