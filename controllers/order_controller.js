@@ -3,6 +3,8 @@ let transporter = require('../config/mail_transporter');
 let fs = require('fs');
 let nodemailer = require('nodemailer');
 const strformat = require('string-format');
+const sms = require('../config/sms');
+const https = require('https');
 
 let getCartTotalPrice=(cartList)=>{ 
   if(cartList.length == 0)   
@@ -196,6 +198,33 @@ sendOrderConfirmMail=(order_id, customer_id, billing_address, cartList)=>{
     });
   });
 };
+
+sendSMS=(order_id, first_name, mobile  )=>{
+  console.log("from sendOrderConfirmMail");
+  const message = `Hi ${first_name}: Thanks for shopping with us! Your order ${order_id} is confirmed and will be shipped shortly.`;
+  let url = sms.URL;
+  url += `&mobile=${mobile}&message=${message}`
+  // &mobile=${mobile}
+  // &message=${message}
+  console.log("url = ", url);
+  https.get(url, (resp) => {
+    let data = '';
+  
+    // A chunk of data has been received.
+    resp.on('data', (chunk) => {
+      data += chunk;
+    });
+  
+    // The whole response has been received. Print out the result.
+    resp.on('end', () => {
+      JSON.parse(data);
+      console.log(JSON.parse(data).explanation);
+    });
+  
+  }).on("error", (err) => {
+    console.log("Error: " + err.message);
+  });
+}
 exports.ordersubmit = function(req,res){
   console.log("from ordersubmit");
   console.log("body:", req.body);
@@ -251,17 +280,17 @@ exports.ordersubmit = function(req,res){
       const order_id = result.insertId;
       let da = delivery_address
       let ba = billing_address
-      
+      let first_name = billing_address.first_name;
+      let mobile = billing_address.mobile;
       storeDeliveryAddress(customer_id, delivery_address);
       storeBillingAddress(customer_id, billing_address);
       storeCartList(order_id, cartList);
       sendOrderConfirmMail(order_id, customer_id, billing_address, cartList);
+      sendSMS(order_id, first_name, mobile);
       return res.status(200).json({
         status: 'success',
         order_id
       });
     }
   });
-  
-  
 }
