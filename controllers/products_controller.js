@@ -180,3 +180,49 @@ exports.getProductsBySubcatId = function(req,res){
             }])
     });
 }
+
+
+exports.getProductsBySearchString = function(req,res){
+    let search_string = req.body.search_string;
+    console.log("search_string:", search_string);
+    db.query(`SELECT p.id,
+            p.product_name,
+            CONCAT("/images/products/200/", p.product_img) as product_img, 
+            p.description_fst,
+            p.description_snd,
+            u.unit_value,
+            u.unit_type,
+            pup.mrp,
+            pup.sale_price,
+            amt.gst_slab,
+            (pup.mrp - pup.sale_price) as discount_amount,
+            round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage
+            from asm_products p,
+            asm_product_unit_price pup,
+            asm_mt_units u,
+            asm_mt_tax amt
+            where (LOWER(p.product_name) like LOWER(?) or LOWER(p.description_fst) like LOWER(?)) and 
+            p.id = pup.product_id and
+            p.gst_slab_id = amt.id and
+            pup.unit_id = u.id and
+             
+            p.status = 1 and
+            u.status = 1 and 
+            pup.status = 1 and
+            amt.status = 1
+            order by p.id
+            `, [search_string, search_string],
+            function (err, rows, fields) {
+                console.log(err);
+        if (!err)
+            return res.json({
+                status: 'success',
+                data: rows
+            })
+        else
+            return res.json([{
+                status: 'failed',
+                errMsg: 'Error while performing query.'
+            }])
+    });
+}

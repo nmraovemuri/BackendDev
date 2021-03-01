@@ -18,4 +18,7 @@ router.get('/client/getAllProducts',  productsController.getAllProducts);
 // Get All Products By Subcat Id For Client
 router.post('/client/getProductsBySubcatId',  productsController.getProductsBySubcatId);
 
+// Get All Products By Search String
+router.post('/client/getProductsBySearchString',  productsController.getProductsBySearchString);
+
 module.exports = router
