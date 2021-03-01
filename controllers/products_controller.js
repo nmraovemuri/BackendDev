@@ -201,7 +201,7 @@ exports.getProductsBySearchString = function(req,res){
             asm_product_unit_price pup,
             asm_mt_units u,
             asm_mt_tax amt
-            where (LOWER(p.product_name) like LOWER(?) or LOWER(p.description_fst) like LOWER(?)) and 
+            where (LOWER(p.product_name) like '%LOWER(?)%' or LOWER(p.description_fst) like '%LOWER(?)%') and 
             p.id = pup.product_id and
             p.gst_slab_id = amt.id and
             pup.unit_id = u.id and
