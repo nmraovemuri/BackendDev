@@ -222,15 +222,17 @@ a:focus {
     background: #384042 none repeat scroll 0 0;
 }
 .main-nav-right .btn {
-    border-radius: 0 !important;
+    border-radius: 5px !important;
     border-right: 1px solid #384042;
     color: #fff;
     margin: 0 0 0 -4px;
     padding: 24px;
+    
 }
 .main-nav-right .btn:hover {
      /* background-color: #384042 !important; */
-     background-color: #FF5239 !important;
+     /* background-color: #FF5239 !important; */
+     background: linear-gradient(to bottom, #A8DE1C 0%, #50AC02 100%);
 }
 .main-nav-right li {
     margin: 0 !important;
@@ -283,6 +285,7 @@ a:focus {
     right: 0;
     top: 16px;
     width: 50%;
+    padding-right:65px;
 }
 .top-categories-search .form-control {
     /* border: medium none; */
@@ -353,6 +356,7 @@ a:focus {
     color: #666;
     font-size: 13px;
     padding: 5px 14px !important;
+    
 }
 .osahan-menu-2 .nav-link.shop {
     border-right: 1px solid #ececec;
@@ -951,7 +955,7 @@ body.toggled::after {
     float: right;
     height: 300px;
     list-style: outside none none;
-    margin: 70px auto auto;
+    margin: 70px auto auto 75px;
     width: 322px;
 }
 .form-control {
