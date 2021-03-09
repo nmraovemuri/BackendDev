@@ -294,3 +294,38 @@ exports.ordersubmit = function(req,res){
     }
   });
 }
+
+
+// Orders History
+exports.customerOrdersHistory = function(req,res){
+  console.log("from customerOrdersHistory");
+  console.log("body:", req.body);
+  // console.log("params:", req.params);
+  let {customer_id, new_status} = req.body;
+  // const customer_id = req.params.customer_id;
+  console.log("customer_id=", customer_id);
+
+  let query = `SELECT acom.id as order_id, acom.total_items, 
+                acom.total_amount, acom.status, 
+                FROM_UNIXTIME(acom.created_date, '%Y-%m-%d %H:%i:%s') as created_date
+              FROM asm_customer_order_master acom
+              WHERE acom.customer_id = ? 
+              ORDER BY created_date desc`
+  asmDb.query(query, [customer_id], async function (err, result) {
+      console.log("result=", result.rows);
+      console.log("err=", err);
+      if(err){
+          return res.status(501).json({
+          status: 'failed',
+          message: err.message,
+          });
+      }
+      else {
+          const ordersList = result.rows;
+          res.json({
+              status: 'success',
+              ordersList 
+          });
+      }
+  });
+}
