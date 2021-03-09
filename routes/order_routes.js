@@ -9,4 +9,8 @@ router.post('/client/order_submit',   orderController.ordersubmit);
 // Orders History
 router.post('/client/orders_history',   orderController.customerOrdersHistory);
 
+// Get Order Details By OrderID
+router.get('/client/order_details/:order_id',   orderController.orderDetails);
+
+
 module.exports = router
