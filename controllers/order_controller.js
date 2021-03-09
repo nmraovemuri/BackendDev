@@ -312,7 +312,7 @@ exports.customerOrdersHistory = function(req,res){
               WHERE acom.customer_id = ? 
               ORDER BY created_date desc`
   asmDb.query(query, [customer_id], async function (err, result) {
-      console.log("result=", result.rows);
+      console.log("result=", result);
       console.log("err=", err);
       if(err){
           return res.status(501).json({
@@ -321,7 +321,7 @@ exports.customerOrdersHistory = function(req,res){
           });
       }
       else {
-          const ordersList = result.rows;
+          const ordersList = result;
           res.json({
               status: 'success',
               ordersList 
