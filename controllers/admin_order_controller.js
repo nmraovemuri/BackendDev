@@ -210,7 +210,7 @@ const getShippingAddress=(customer_id)=>{
 }
 const getOrderDetailsList=(order_id)=>{
     task = new Promise((resolve,reject) => {
-        let query = `SELECT * FROM asm_cutomer_order_details
+        let query = `SELECT * FROM asm_customer_order_details
                         WHERE order_id = ?`
         asmDb.query(query, [order_id], function (err, result) {
             // console.log("result=", result);

@@ -110,7 +110,7 @@ const storeBillingAddress = (customer_id, billing_address)=>{
 }
 storeCartList=(order_id, cartList)=>{
   console.log("from storeCartList");
-  let orderDetailsQuery = `INSERT INTO asm_cutomer_order_details 
+  let orderDetailsQuery = `INSERT INTO asm_customer_order_details 
     (order_id, product_id, product_name, unit_value, unit_type, mrp, sale_price, quantity, 
     gst_slab, discount_amount, discount_percentage, total_amount ) VALUES ?`;
   let orderList = [];
@@ -372,7 +372,7 @@ const getShippingAddress=(customer_id)=>{
 }
 const getOrderDetailsList=(order_id)=>{
   task = new Promise((resolve,reject) => {
-      let query = `SELECT * FROM asm_cutomer_order_details
+      let query = `SELECT * FROM asm_customer_order_details
                       WHERE order_id = ?`
       asmDb.query(query, [order_id], function (err, result) {
           // console.log("result=", result);
