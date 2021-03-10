@@ -114,10 +114,11 @@ storeCartList=(order_id, cartList)=>{
     (order_id, product_id, product_name, unit_value, unit_type, mrp, sale_price, quantity, 
     gst_slab, discount_amount, discount_percentage, total_amount ) VALUES ?`;
   let orderList = [];
-  cartList.forEach(item=>{
+  // cartList.forEach(item=>{
+  for(let item of cartList){
     orderList.push([order_id, item.product_id, item.product_name, item.unit_value, item.unit_type, item.mrp, item.sale_price, item.quantity, 
       item.gst_slab, item.discount_amount, item.discount_percentage, item.total_amount]);
-  });
+  };
 
   console.log(orderList);
   asmDb.query(orderDetailsQuery, [orderList], function (odiqErr, odiqResult) {
