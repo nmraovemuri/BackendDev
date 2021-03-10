@@ -116,7 +116,7 @@ storeCartList=(order_id, cartList)=>{
   let orderList = [];
   // cartList.forEach(item=>{
   for(let item of cartList){
-    orderList.push([order_id, item.product_id, item.product_name, item.unit_value, item.unit_type, item.mrp, item.sale_price, item.quantity, 
+    orderList.push([order_id, item.id, item.product_name, item.unit_value, item.unit_type, item.mrp, item.sale_price, item.quantity, 
       item.gst_slab, item.discount_amount, item.discount_percentage, item.total_amount]);
   };
 
