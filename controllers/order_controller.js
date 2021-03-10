@@ -207,23 +207,27 @@ sendSMS=(order_id, first_name, mobile  )=>{
   // &mobile=${mobile}
   // &message=${message}
   console.log("url = ", url);
-  https.get(url, (resp) => {
-    let data = '';
-  
-    // A chunk of data has been received.
-    resp.on('data', (chunk) => {
-      data += chunk;
+  try{
+    https.get(url, (resp) => {
+      let data = '';
+    
+      // A chunk of data has been received.
+      resp.on('data', (chunk) => {
+        data += chunk;
+      });
+    
+      // The whole response has been received. Print out the result.
+      resp.on('end', () => {
+        JSON.parse(data);
+        console.log(JSON.parse(data).explanation);
+      });
+    
+    }).on("error", (err) => {
+      console.log("Error: " + err.message);
     });
-  
-    // The whole response has been received. Print out the result.
-    resp.on('end', () => {
-      JSON.parse(data);
-      console.log(JSON.parse(data).explanation);
-    });
-  
-  }).on("error", (err) => {
-    console.log("Error: " + err.message);
-  });
+  }catch(error){
+    console.log("error=", error);
+  }
 }
 exports.ordersubmit = function(req,res){
   console.log("from ordersubmit");
