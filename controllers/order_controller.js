@@ -291,7 +291,7 @@ exports.ordersubmit = function(req,res){
       storeBillingAddress(customer_id, billing_address);
       storeCartList(order_id, cartList);
       sendOrderConfirmMail(order_id, customer_id, billing_address, cartList);
-      // sendSMS(order_id, first_name, mobile);
+      sendSMS(order_id, first_name, mobile);
       return res.status(200).json({
         status: 'success',
         order_id
