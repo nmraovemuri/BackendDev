@@ -7,8 +7,9 @@ const urls = require('../config/urls');
 
 const strformat = require('string-format');
 const jwt = require('jsonwebtoken');
-
-console.log("urls=", urls);
+const logger = require('../utils/customer_logger');
+// logger.
+logger.info("urls=", urls);
 // let transporter = nodemailer.createTransport({
 //     service: 'gmail',
 //     auth: {
@@ -16,10 +17,10 @@ console.log("urls=", urls);
 //         pass: '112233ti'
 //     }
 // });
-// console.log("transporter =", transporter);
+// logger.info("transporter =", transporter);
 exports.customerSignup = async function(req, res){
-    console.log("from clientSignup");
-    console.log("req.body :", req.body);
+    logger.info("from clientSignup");
+    logger.info("req.body :", req.body);
     let data = req.body;
     const { first_name, last_name, email_id, mobile, password } = data;
 
@@ -68,13 +69,13 @@ exports.customerSignup = async function(req, res){
 
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
-    console.log(hashedPassword);
+    logger.info(hashedPassword);
     // const { first_name, last_name, email_id, mobile, password } = data;
     const query = `INSERT INTO asm_customers (first_name, last_name, email_id, 
         mobile, password, created_on) values (?, ?, ?, ?, ?, now())`;
     asmdb.query( query, [first_name, last_name, email_id, mobile, hashedPassword], function (err, result) {
-        console.log("result=", result);
-        console.log("err=", err);
+        logger.info("result=", result);
+        logger.info("err=", err);
         if (!err && result.affectedRows === 1) {
             let customerDetails = {
                 firstName: first_name,
@@ -88,7 +89,7 @@ exports.customerSignup = async function(req, res){
             
                 let template = data.toString();
                 let msg = strformat(template, customerDetails);
-                // console.log(msg);
+                // logger.info(msg);
                 let mailOptions = {
                     from: 'customercare.aswika@gmail.com',
                     to: 'malli.vemuri@gmail.com'+','+email_id,
@@ -99,13 +100,13 @@ exports.customerSignup = async function(req, res){
             
                 transporter.sendMail(mailOptions, function(error, info){
                     if(error){
-                        console.log(error);
+                        logger.info(error);
                         return res.status(502).json([{
                             status: 'error',
                             message: error.message
                         }]);
                     }else{
-                        console.log("Email send" + info.response);
+                        logger.info("Email send" + info.response);
                         return res.status(200).json([{
                             status: 'success',
                             customer_id: result.insertId
@@ -115,7 +116,7 @@ exports.customerSignup = async function(req, res){
             });
         }
         else{
-            console.log("error=", err);
+            logger.info("error=", err);
             return res.status(502).json([{
                         status: 'failed',
                         message: err.message
@@ -125,19 +126,19 @@ exports.customerSignup = async function(req, res){
 }    
 
 exports.customerSignupActivation = function(req, res){
-    console.log("from customerSignupActivation");
-    console.log("req.body :", req.body);
-    console.log("req.params :", req.params);
+    logger.info("from customerSignupActivation");
+    logger.info("req.body :", req.body);
+    logger.info("req.params :", req.params);
     let data = req.body;
-    console.log(req.params.customer_id);
+    logger.info(req.params.customer_id);
     const customer_id = req.params.customer_id;
-    console.log(customer_id);
+    logger.info(customer_id);
     const query = `UPDATE asm_customers SET email_id_verified= 1, 
                                             is_active =1 
                                         where customer_id = ?`;
     asmdb.query(query, [customer_id], function (err, rows, fields) {
-        console.log("err=", err);
-        console.log("rows=", rows);
+        logger.info("err=", err);
+        logger.info("rows=", rows);
         let CLIENT_ORIGIN = urls.CLIENT;
         if (!err){
             res.redirect(CLIENT_ORIGIN+'/signup-activation-status');
@@ -147,7 +148,7 @@ exports.customerSignupActivation = function(req, res){
             // })
         }
         else{
-            console.log(err);
+            logger.info(err);
             res.status(502).json([{
                 status: 'failed',
                 message: err.message
@@ -157,15 +158,15 @@ exports.customerSignupActivation = function(req, res){
 }
 
 exports.customerSignIn = async function (req, res){
-    console.log("from customerSignIn");
-    console.log("req.body=", req.body);
+    logger.info("from customerSignIn");
+    logger.info("req.body=", req.body);
 
     const {email_id, password} = req.body
     data = req.body
   
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
-    console.log('hashedPassword=', hashedPassword);
+    logger.info('hashedPassword=', hashedPassword);
 
     asmdb.query(`SELECT customer_id, first_name, last_name, email_id, password 
                 from asm_customers 
@@ -173,8 +174,8 @@ exports.customerSignIn = async function (req, res){
                 and email_id_verified = 1 
                 and is_active = 1`, 
                 [email_id], function (err, result, fields) {
-        console.log('err =', err);
-        console.log('result = ', result);
+        logger.info('err =', err);
+        logger.info('result = ', result);
         if(err)
             return res.status(502).json([{
                 status: 'failed',
@@ -188,11 +189,11 @@ exports.customerSignIn = async function (req, res){
             });
         else if (result.length!=0){
             //Email Id is found.
-            console.log("result[0].password=", result[0].password);
+            logger.info("result[0].password=", result[0].password);
             let hashpassowrd = result[0].password;
             bcrypt.compare(password, hashpassowrd, function(err2, bcresult) {
-                console.log('err2 =', err2);
-                console.log("bcresult=", bcresult);
+                logger.info('err2 =', err2);
+                logger.info("bcresult=", bcresult);
                 //If password matched
                 if(bcresult == true){
                     const token = jwt.sign({email_id}, 'my-secret-key');
@@ -215,8 +216,8 @@ exports.customerSignIn = async function (req, res){
 }
 // Customer Forgot Password
 exports.customerForgotPassword = async function (req, res){
-    console.log("from customerForgotPassword");
-    console.log("req.body=", req.body);
+    logger.info("from customerForgotPassword");
+    logger.info("req.body=", req.body);
     const { email_id } = req.body;
     if(!email_id){
         return res.status(422).json({
@@ -232,8 +233,8 @@ exports.customerForgotPassword = async function (req, res){
         });
         let sql = 'SELECT * from asm_customers where email_id = ? ' 
         asmdb.query(sql, [email_id], (err, rows, fields)=>{
-            console.log("err:", err);
-            console.log("rows :", rows)
+            logger.info("err:", err);
+            logger.info("rows :", rows)
             if(err) 
                 return res.status(422).json({
                     status: "failed",
@@ -257,7 +258,7 @@ exports.customerForgotPassword = async function (req, res){
             
                     let template = data.toString();
                     let msg = strformat(template, customerDetails);
-                    // console.log(msg);
+                    // logger.info(msg);
                     let mailOptions = {
                         from: 'customercare.aswika@gmail.com',
                         to: 'malli.vemuri@gmail.com'+','+email_id,
@@ -268,13 +269,13 @@ exports.customerForgotPassword = async function (req, res){
                 
                     transporter.sendMail(mailOptions, function(error, info){
                         if(error){
-                            console.log(error);
+                            logger.info(error);
                             return res.status(502).json([{
                                 status: 'error',
                                 message: error.message
                             }]);
                         }else{
-                            console.log("Email send" + info.response);
+                            logger.info("Email send" + info.response);
                             return res.status(200).json([{
                                 status: 'success',
                             }]);
@@ -287,8 +288,8 @@ exports.customerForgotPassword = async function (req, res){
 
 // customerResetPassword
 exports.customerResetPassword = async function(req, res){
-    console.log("from customerResetPassword");
-    console.log("req.body :", req.body);
+    logger.info("from customerResetPassword");
+    logger.info("req.body :", req.body);
     let data = req.body;
     const {customer_id, new_password} = req.body;
     if(!customer_id)
@@ -305,12 +306,12 @@ exports.customerResetPassword = async function(req, res){
         })
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(new_password, salt);
-    console.log(hashedPassword);
+    logger.info(hashedPassword);
     const query = `UPDATE asm_customers SET password= ? 
                                         where customer_id = ?`;
     asmdb.query(query, [hashedPassword, customer_id], function (err, rows, fields) {
-        console.log("err=", err);
-        console.log("rows=", rows);
+        logger.info("err=", err);
+        logger.info("rows=", rows);
         if (err){
             return res.status(502).json([{
                 status: 'failed',
@@ -326,8 +327,8 @@ exports.customerResetPassword = async function(req, res){
 }
 // CustomerChangePassword
 exports.customerChangePassword = async function(req, res){
-    console.log("from customerChangePassword");
-    console.log("req.body :", req.body);
+    logger.info("from customerChangePassword");
+    logger.info("req.body :", req.body);
     let data = req.body;
     const {customer_id, old_password, new_password} = req.body;
     if(!customer_id)
@@ -350,7 +351,7 @@ exports.customerChangePassword = async function(req, res){
         })
     // const salt = await bcrypt.genSalt();
     // const hashedPassword = await bcrypt.hash(new_password, salt);
-    // console.log(hashedPassword);
+    // logger.info(hashedPassword);
     
     asmdb.query(`SELECT customer_id, password 
                 from asm_customers 
@@ -359,8 +360,8 @@ exports.customerChangePassword = async function(req, res){
                 and is_active = 1`, 
                 [customer_id], function (err, result, fields) {
 
-        console.log('err =', err);
-        console.log('result = ', result);
+        logger.info('err =', err);
+        logger.info('result = ', result);
         if(err)
             return res.status(502).json([{
                 status: 'failed',
@@ -372,11 +373,11 @@ exports.customerChangePassword = async function(req, res){
                 message: 'Invalid Request.'
             });
         else if (result.length!=0){
-            console.log("result[0].password=", result[0].password);
+            logger.info("result[0].password=", result[0].password);
             let hashpassowrd = result[0].password;
             bcrypt.compare(old_password, hashpassowrd, async function(err2, bcresult) {
-                console.log('err2 =', err2);
-                console.log("bcresult=", bcresult);
+                logger.info('err2 =', err2);
+                logger.info("bcresult=", bcresult);
                 //If password matched
                 if(err2){
                     return res.status(502).json([{
@@ -394,12 +395,12 @@ exports.customerChangePassword = async function(req, res){
                 else{
                     const salt = await bcrypt.genSalt();
                     const new_hashedPassword = await bcrypt.hash(new_password, salt);
-                    console.log('new_hashedPassword=', new_hashedPassword);
+                    logger.info('new_hashedPassword=', new_hashedPassword);
                     const query = `UPDATE asm_customers SET password= ? 
                                     where customer_id = ?`;
                     asmdb.query(query, [new_hashedPassword, customer_id], function (err, rows, fields) {
-                        console.log("err=", err);
-                        console.log("rows=", rows);
+                        logger.info("err=", err);
+                        logger.info("rows=", rows);
                         if (err){
                             return res.status(502).json([{
                                 status: 'failed',
