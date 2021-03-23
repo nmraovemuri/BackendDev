@@ -1,6 +1,7 @@
 var db = require('../config/db');
 const jwt = require('jsonwebtoken');
 var nodemailer = require('nodemailer');
+const logger = require('../utils/admin_logger');
 
 var transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -12,8 +13,8 @@ var transporter = nodemailer.createTransport({
 
 // Admin SignIn
 exports.adminSignIn = function (req, res){
-    console.log(req.body);
-    console.log("from adminSignIn");
+    logger.info(req.body);
+    logger.info("from adminSignIn");
     const {emailID, password} = req.body
     if(!emailID || !password){
        return res.status(422).json({
@@ -44,7 +45,7 @@ exports.adminSignIn = function (req, res){
 
 // Admin Change Password
 exports.changeAdminPassword = function (req, res){
-    console.log(req.body);
+    logger.info(req.body);
     const {emailID, oldPassword, newPassword} = req.body
     if(!emailID || !oldPassword || !newPassword){
        return res.status(422).json({
@@ -84,7 +85,7 @@ exports.changeAdminPassword = function (req, res){
                             status: "failed",
                             error: err.message
                         });
-                    console.log(rows);
+                    logger.info(rows);
                     res.json({ 
                         status: "success", 
                         msg: "Password is changed successfully"
@@ -95,8 +96,8 @@ exports.changeAdminPassword = function (req, res){
 }
 // Admin forgot password
 exports.adminForgotPassword = function (req, res){
-    console.log(req.body);
-    console.log("from Forgotpassword");
+    logger.info(req.body);
+    logger.info("from Forgotpassword");
     const {emailID } = req.body
     if(!emailID){
        return res.status(422).json({
@@ -107,8 +108,8 @@ exports.adminForgotPassword = function (req, res){
      let sql = 'SELECT * from asm_admin where email_id = ? '   
     
     db.query(sql, [emailID], (err, rows, fields)=>{
-        console.log("err:",err);
-        console.log("rows length :",rows)
+        logger.info("err:",err);
+        logger.info("rows length :",rows)
         if(err) 
             return res.status(422).json({
                 status: "failed",
@@ -139,9 +140,9 @@ exports.adminForgotPassword = function (req, res){
               };
               transporter.sendMail(mailOptions, function(error, info){
                 if (error) {
-                  console.log(error);
+                  logger.info(error);
                 } else {
-                  console.log('Email sent: ' + info.response);
+                  logger.info('Email sent: ' + info.response);
                   res.send({status:true});                }
               });
               

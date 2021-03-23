@@ -1,9 +1,11 @@
 
 var db = require('../config/db');
 let fs = require('fs');
+const clogger = require('../utils/customer_logger');
+const alogger = require('../utils/admin_logger');
 
 exports.createUnit = function(req,res){
-    console.log("req.body :", req.body);
+    alogger.info("req.body :", req.body);
     let data = req.body;
     
     const unit_value = data.unit_value;
@@ -44,10 +46,10 @@ exports.createUnit = function(req,res){
                     updated_date) 
                     values (?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`;
     db.query(sql, data, (err,rows)=>{
-        console.log(err);
-        console.log(rows);
+        alogger.info(err);
+        alogger.info(rows);
         if(err){
-            console.log(err.message);
+            alogger.info(err.message);
             res.json({
                 status: "failed",
                 error: err.message

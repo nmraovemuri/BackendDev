@@ -5,39 +5,28 @@ let nodemailer = require('nodemailer');
 const strformat = require('string-format');
 const sms = require('../config/sms');
 const https = require('https');
+const logger = require('../utils/customer_logger');
 
 let getCartTotalPrice=(cartList)=>{ 
-  if(cartList.length == 0)   
-    return 0;
-  if(cartList.length == 1)                                                            
-    return cartList[0].sale_price * cartList[0].quantity
-  return cartList.reduce((tot, item)=> (tot instanceof Object? tot.sale_price * tot.quantity : tot) + item.sale_price*item.quantity );
+  return cartList.reduce((tot, item)=> tot + item.sale_price*item.quantity, 0);
 }
 let getCartDiscountPrice=(cartList)=>{
-  if(cartList.length == 0)   
-    return 0;
-  if(cartList.length == 1)  
-    return cartList[0].discount_amount * cartList[0].quantity;
-  return cartList.reduce((tot, item)=> (tot instanceof Object? tot.discount_amount * tot.quantity : tot) + item.discount_amount*item.quantity);
+  return cartList.reduce((tot, item)=> tot + item.discount_amount*item.quantity, 0);
 }
 let getCartQuantity=(cartList)=>{
-  if(cartList.length == 0)   
-    return 0;
-  if(cartList.length == 1)  
-    return cartList[0].quantity;
-  return cartList.reduce((tot, item)=> (tot instanceof Object? tot.quantity : tot) + item.quantity);
+  return cartList.reduce((tot, item)=> tot + item.quantity, 0);
 }
 
 const storeDeliveryAddress = (customer_id, delivery_address)=>{
-  console.log("from storeDeliveryAddress");
+  logger.info("from storeDeliveryAddress");
   let da = delivery_address
   let findCustomerDAQuery = `SELECT id from asm_customer_shipping_address
       where customer_id =?`
   
   asmDb.query(findCustomerDAQuery, 
             [customer_id], function (daErr, daResult, fields) {
-    console.log('daErr =', daErr);
-    console.log('daResult = ', daResult);
+    logger.info('daErr =', daErr);
+    logger.info('daResult = ', daResult);
     if(daResult.length === 0){
       let insertDAQuery = `INSERT INTO asm_customer_shipping_address 
         (first_name, last_name, mobile, email_id, addr_field1, addr_field2, addr_field3,
@@ -49,8 +38,8 @@ const storeDeliveryAddress = (customer_id, delivery_address)=>{
       asmDb.query(insertDAQuery, [da.first_name, da.last_name, da.mobile, da.email_id, 
         da.addr_field1, da.addr_field2, da.addr_field3, da.addr_field4, da.addr_field5, da.addr_field6, 
         da.city, da.state, da.country, da.pin_code, customer_id], function (daInsertErr, daInsertResult) {
-        console.log("daInsertErr=", daInsertErr);
-        console.log("daInsertResult=", daInsertResult);   
+        logger.info("daInsertErr=", daInsertErr);
+        logger.info("daInsertResult=", daInsertResult);   
         });
     }else if(daResult.length === 1){
       let updateDAQuery = `UPDATE asm_customer_shipping_address SET
@@ -62,23 +51,23 @@ const storeDeliveryAddress = (customer_id, delivery_address)=>{
       asmDb.query(updateDAQuery, [da.first_name, da.last_name, da.mobile, da.email_id, da.addr_field1, 
         da.addr_field2, da.addr_field3, da.addr_field4, da.addr_field5, 
         da.addr_field6, da.city, da.state, da.country, da.pin_code, customer_id], function (daUpdatetErr, daUpdateResult) {
-        console.log("daUpdatetErr=", daUpdatetErr);
-        console.log("daUpdateResult=", daUpdateResult);   
+        logger.info("daUpdatetErr=", daUpdatetErr);
+        logger.info("daUpdateResult=", daUpdateResult);   
         });
     }
   });
 }
 
 const storeBillingAddress = (customer_id, billing_address)=>{
-  console.log("from storeBillingAddress");
+  logger.info("from storeBillingAddress");
   let ba = billing_address;
   let findCustomerBAQuery = `SELECT id from asm_customer_billing_address
           where customer_id =?`
       
   asmDb.query(findCustomerBAQuery, 
             [customer_id], function (baErr, baResult, fields) {
-      console.log('baErr =', baErr);
-      console.log('baResult = ', baResult);
+      logger.info('baErr =', baErr);
+      logger.info('baResult = ', baResult);
     if(baResult.length === 0){
       let insertBAQuery = `INSERT INTO asm_customer_billing_address 
       (first_name, last_name, mobile, email_id, addr_field1, addr_field2, addr_field3,
@@ -89,8 +78,8 @@ const storeBillingAddress = (customer_id, billing_address)=>{
       asmDb.query(insertBAQuery, [ba.first_name, ba.last_name, ba.mobile, ba.email_id, ba.addr_field1, 
         ba.addr_field2, ba.addr_field3, ba.addr_field4, ba.addr_field5, 
         ba.addr_field6, ba.city, ba.state, ba.country, ba.pin_code, customer_id], function (baInsertErr, baInsertResult) {
-        console.log("baInsertErr=", baInsertErr);
-        console.log("baInsertResult=", baInsertResult);   
+        logger.info("baInsertErr=", baInsertErr);
+        logger.info("baInsertResult=", baInsertResult);   
       });
     }else if(baResult.length === 1){
       let updateBAQuery = `UPDATE asm_customer_billing_address SET
@@ -102,14 +91,14 @@ const storeBillingAddress = (customer_id, billing_address)=>{
       asmDb.query(updateBAQuery, [ba.first_name, ba.last_name, ba.mobile, ba.email_id, ba.addr_field1, 
         ba.addr_field2, ba.addr_field3, ba.addr_field4, ba.addr_field5, 
         ba.addr_field6, ba.city, ba.state, ba.country, ba.pin_code, customer_id], function (baUpdatetErr, baUpdateResult) {
-        console.log("baUpdatetErr=", baUpdatetErr);
-        console.log("baUpdateResult=", baUpdateResult);   
+        logger.info("baUpdatetErr=", baUpdatetErr);
+        logger.info("baUpdateResult=", baUpdateResult);   
       });
     }
   });
 }
 storeCartList=(order_id, cartList)=>{
-  console.log("from storeCartList");
+  logger.info("from storeCartList");
   let orderDetailsQuery = `INSERT INTO asm_customer_order_details 
     (order_id, product_id, product_name, unit_value, unit_type, mrp, sale_price, quantity, 
     gst_slab, discount_amount, discount_percentage, total_amount ) VALUES ?`;
@@ -120,14 +109,14 @@ storeCartList=(order_id, cartList)=>{
       item.gst_slab, item.discount_amount, item.discount_percentage, item.total_amount]);
   };
 
-  console.log(orderList);
+  logger.info(orderList);
   asmDb.query(orderDetailsQuery, [orderList], function (odiqErr, odiqResult) {
-    console.log("odiqErr=", odiqErr);
-    console.log("odiqResult=", odiqResult);   
+    logger.info("odiqErr=", odiqErr);
+    logger.info("odiqResult=", odiqResult);   
   });
 }
 sendOrderConfirmMail=(order_id, customer_id, billing_address, cartList)=>{
-  console.log("from sendOrderConfirmMail");
+  logger.info("from sendOrderConfirmMail");
   let ba = billing_address;
   let open = `<table>
                 <tr>
@@ -165,7 +154,7 @@ sendOrderConfirmMail=(order_id, customer_id, billing_address, cartList)=>{
   let close= `</table>`
   // let invoice = open + tr + close;
   let invoice = tr;
-  console.log(invoice);
+  logger.info(invoice);
   let orderDetails = {
       firstName: ba.first_name,
       lastName: ba.last_name,
@@ -180,7 +169,7 @@ sendOrderConfirmMail=(order_id, customer_id, billing_address, cartList)=>{
     let template = data.toString();
     let msg = strformat(template, orderDetails);
 
-    // console.log(msg);
+    // logger.info(msg);
     let mailOptions = {
         from: 'customercare.aswika@gmail.com',
         to: 'malli.vemuri@gmail.com,'+ba.email_id,
@@ -192,22 +181,22 @@ sendOrderConfirmMail=(order_id, customer_id, billing_address, cartList)=>{
       
     transporter.sendMail(mailOptions, function(error, info){
         if(error){
-            console.log(error);
+            logger.info(error);
         }else{
-            console.log("Email send" + info.response);
+            logger.info("Email send" + info.response);
         }
     });
   });
 };
 
 sendSMS=(order_id, first_name, mobile  )=>{
-  console.log("from sendOrderConfirmMail");
+  logger.info("from sendOrderConfirmMail");
   const message = `Hi ${first_name}: Thanks for shopping with us! Your order ${order_id} is confirmed and will be shipped shortly.`;
   let url = sms.URL;
   url += `&mobile=${mobile}&message=${message}`
   // &mobile=${mobile}
   // &message=${message}
-  console.log("url = ", url);
+  logger.info("url = ", url);
   try{
     https.get(url, (resp) => {
       let data = '';
@@ -220,24 +209,24 @@ sendSMS=(order_id, first_name, mobile  )=>{
       // The whole response has been received. Print out the result.
       resp.on('end', () => {
         JSON.parse(data);
-        console.log(JSON.parse(data).explanation);
+        logger.info(JSON.parse(data).explanation);
       });
     
     }).on("error", (err) => {
-      console.log("Error: " + err.message);
+      logger.info("Error: " + err.message);
     });
   }catch(error){
-    console.log("error=", error);
+    logger.info("error=", error);
   }
 }
 exports.ordersubmit = function(req,res){
-  console.log("from ordersubmit");
-  console.log("body:", req.body);
+  logger.info("from ordersubmit");
+  logger.info("body:", req.body);
   let {customer_id, delivery_address, billing_address, cartList} = req.body;
-  console.log(customer_id);
-  console.log(delivery_address);
-  console.log(billing_address);
-  console.log(cartList);
+  logger.info(customer_id);
+  logger.info(delivery_address);
+  logger.info(billing_address);
+  logger.info(cartList);
   if(!customer_id){
     return res.status(400).json({
       status: 'Field Error',
@@ -273,8 +262,8 @@ exports.ordersubmit = function(req,res){
       (total_items, total_amount, status, customer_id, created_date, updated_date) 
       values (?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`;
   asmDb.query(orderMasterQuery, [total_items, total_amount, status, customer_id], function (err, result) {
-    console.log("result=", result);
-    console.log("err=", err);
+    logger.info("result=", result);
+    logger.info("err=", err);
     if(err){
       return res.status(501).json({
         status: 'failed',
@@ -303,12 +292,12 @@ exports.ordersubmit = function(req,res){
 
 // Orders History
 exports.customerOrdersHistory = function(req,res){
-  console.log("from customerOrdersHistory");
-  console.log("body:", req.body);
-  // console.log("params:", req.params);
+  logger.info("from customerOrdersHistory");
+  logger.info("body:", req.body);
+  // logger.info("params:", req.params);
   let {customer_id, new_status} = req.body;
   // const customer_id = req.params.customer_id;
-  console.log("customer_id=", customer_id);
+  logger.info("customer_id=", customer_id);
 
   let query = `SELECT acom.id as order_id, acom.total_items, 
                 acom.total_amount, acom.status, 
@@ -317,8 +306,8 @@ exports.customerOrdersHistory = function(req,res){
               WHERE acom.customer_id = ? 
               ORDER BY created_date desc`
   asmDb.query(query, [customer_id], async function (err, result) {
-      console.log("result=", result);
-      console.log("err=", err);
+      logger.info("result=", result);
+      logger.info("err=", err);
       if(err){
           return res.status(501).json({
           status: 'failed',
@@ -339,8 +328,8 @@ const getBillingAddress=(customer_id)=>{
       let query = `SELECT * FROM asm_customer_billing_address
                   WHERE customer_id = ?`
       asmDb.query(query, [customer_id], function (err, result) {
-          // console.log("result=", result);
-          console.log("err=", err);
+          // logger.info("result=", result);
+          logger.info("err=", err);
           if(err){
               reject( err);
           }
@@ -358,8 +347,8 @@ const getShippingAddress=(customer_id)=>{
       let query = `SELECT * FROM asm_customer_shipping_address
                   WHERE customer_id = ?`
       asmDb.query(query, [customer_id], function (err, result) {
-          // console.log("result=", result);
-          console.log("err=", err);
+          // logger.info("result=", result);
+          logger.info("err=", err);
           if(err){
               reject( err );
           }
@@ -376,8 +365,8 @@ const getOrderDetailsList=(order_id)=>{
       let query = `SELECT * FROM asm_customer_order_details
                       WHERE order_id = ?`
       asmDb.query(query, [order_id], function (err, result) {
-          // console.log("result=", result);
-          console.log("err=", err);
+          // logger.info("result=", result);
+          logger.info("err=", err);
           if(err){
               reject (err);
           }
@@ -390,17 +379,17 @@ const getOrderDetailsList=(order_id)=>{
               .catch(error=>error)
 }
 exports.orderDetails = function(req,res){
-  console.log("from orderDetails");
-  console.log("body:", req.body);
-  console.log("params:", req.params);
+  logger.info("from orderDetails");
+  logger.info("body:", req.body);
+  logger.info("params:", req.params);
   // let {order_id, new_status} = req.body;
   const order_id = req.params.order_id;
-  console.log("order_id=", order_id);
+  logger.info("order_id=", order_id);
   let query = `SELECT * FROM asm_customer_order_master
                   WHERE id = ?`
   asmDb.query(query, [order_id], async function (err, result) {
-      // console.log("result=", result);
-      console.log("err=", err);
+      // logger.info("result=", result);
+      logger.info("err=", err);
       if(err){
           return res.status(501).json({
           status: 'failed',
@@ -413,9 +402,9 @@ exports.orderDetails = function(req,res){
           const shipping_address = await getShippingAddress(customer_id);
           const billing_address = await getBillingAddress(customer_id);
           const orderList = await getOrderDetailsList(order_id);
-          // console.log("shipping_address=", shipping_address);
-          // console.log("billing_address=", billing_address);
-          console.log();
+          // logger.info("shipping_address=", shipping_address);
+          // logger.info("billing_address=", billing_address);
+          logger.info();
           res.json({
               status: 'success',
               shipping_address: shipping_address,

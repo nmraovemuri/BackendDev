@@ -1,10 +1,10 @@
-let now = new Date();
-
 let config = {
     appenders: { 
         fileAppender: { 
-            type: "file", 
-            filename: `./logs/customers/ASM_Customer_${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}_${now.getHours()}-${now.getMinutes()}.log`, 
+            type: "dateFile", 
+            filename: `./logs/customers/ASM_Customer.log`, 
+            pattern: "_yyyy-MM-dd-hh-mm-ss",
+            keepFileExt: true, 
             layout: { 
                 type: "pattern", 
                 pattern: "%d{yyyy-MM-dd hh:mm:ss} [%p] %f{2}: %l - %m" 

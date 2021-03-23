@@ -1,10 +1,12 @@
 // updateProduct
 var db = require('../config/db');
 let fs = require('fs');
+const clogger = require('../utils/customer_logger');
+const alogger = require('../utils/admin_logger');
 
 
 exports.createProduct = function(req,res){
-    console.log("req.body :", req.body);
+    alogger.info("req.body :", req.body);
     let data = req.body;
     const product_name = data.product_name
     let product_img = '';
@@ -76,7 +78,7 @@ exports.createProduct = function(req,res){
                 status: "failed",
                 error: 'create product is rejected due to error while Image saving'
             });
-        console.log('Image Saved!');
+        clogger.info('Image Saved!');
     });
     
     const sql = `INSERT INTO asm_products  (product_name, 
@@ -89,10 +91,10 @@ exports.createProduct = function(req,res){
                     updated_date) 
                     values (?, ?, ?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`;
     db.query(sql, data, (err,rows)=>{
-        console.log(err);
-        console.log(rows);
+        alogger.info(err);
+        alogger.info(rows);
         if(err){
-            console.log(err.message);
+            alogger.info(err.message);
             res.json({
                 status: "failed",
                 error: err.message
@@ -121,7 +123,7 @@ exports.getAllProducts = function(req,res){
             from asm_products 
             where status = 1`, 
             function (err, rows, fields) {
-                console.log(err);
+                clogger.info(err);
         if (!err)
             return res.json({
                 status: 'success',
@@ -138,10 +140,11 @@ exports.getAllProducts = function(req,res){
 
 exports.getProductsBySubcatId = function(req,res){
     let subcat_id = req.body.subcat_id;
-    console.log("subcat_id:", subcat_id);
+    clogger.info("subcat_id:", subcat_id);
     db.query(`SELECT p.id,
             p.product_name,
-            CONCAT("/images/products/200/", p.product_img) as product_img, 
+            p.product_brand,
+            CONCAT("/images/products/200/", pup.product_img) as product_img, 
             p.description_fst,
             p.description_snd,
             u.unit_value,
@@ -151,11 +154,11 @@ exports.getProductsBySubcatId = function(req,res){
             amt.gst_slab,
             (pup.mrp - pup.sale_price) as discount_amount,
             round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage
-            from asm_products p,
+            FROM asm_products p,
             asm_product_unit_price pup,
             asm_mt_units u,
             asm_mt_tax amt
-            where p.subcat_id = ? and 
+            WHERE p.subcat_id = ? and 
             p.id = pup.product_id and
             p.gst_slab_id = amt.id and
             pup.unit_id = u.id and
@@ -167,7 +170,7 @@ exports.getProductsBySubcatId = function(req,res){
             order by p.id
             `, [subcat_id],
             function (err, rows, fields) {
-                console.log(err);
+                clogger.info(err);
         if (!err)
             return res.json({
                 status: 'success',
@@ -183,16 +186,17 @@ exports.getProductsBySubcatId = function(req,res){
 
 
 exports.getProductsBySearchString = function(req,res){
-    console.log("from getProductsBySearchString");
+    clogger.info("from getProductsBySearchString");
     let search_string = req.body.search_string;
     if(search_string){
         search_string = search_string.toLocaleLowerCase();
         search_string  = '%'+search_string+'%';
     }
-    console.log("search_string:", search_string);
+    clogger.info("search_string:", search_string);
     db.query(`SELECT p.id,
             p.product_name,
-            CONCAT("/images/products/200/", p.product_img) as product_img, 
+            p.product_brand,
+            CONCAT("/images/products/200/", pup.product_img) as product_img, 
             p.description_fst,
             p.description_snd,
             u.unit_value,
@@ -218,7 +222,7 @@ exports.getProductsBySearchString = function(req,res){
             order by p.id
             `, [search_string],
             function (err, rows, fields) {
-                console.log(err);
+                clogger.info(err);
         if (!err)
             return res.json({
                 status: 'success',

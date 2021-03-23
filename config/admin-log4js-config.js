@@ -3,8 +3,10 @@ let now = new Date();
 let config = {
     appenders: { 
         fileAppender: { 
-            type: "file", 
-            filename: `../logs/customers/ASM_Admin_${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}_${now.getHours()}-${now.getMinutes()}.log`, 
+            type: "dateFile", 
+            filename: `../logs/customers/ASM_Admin.log`, 
+            pattern: "_yyyy-MM-dd-hh-mm-ss",
+            keepFileExt: true, 
             layout: { 
                 type: "pattern", 
                 pattern: "%d{yyyy-MM-dd hh:mm:ss} [%p] %f{2}: %l - %m" 
@@ -20,7 +22,7 @@ let config = {
     },
     categories: { 
         default: { 
-            appenders: process.env.NODE_ENV !== "production"? ["fileAppender"] : ["fileAppender", "consoleAppender"],  
+            appenders: process.env.NODE_ENV === "production"? ["fileAppender"] : ["fileAppender", "consoleAppender"],  
             level: "info",
             enableCallStack: true 
         }

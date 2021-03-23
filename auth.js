@@ -9,7 +9,7 @@ exports.ensureToken = function (req, res, next){
         const bearerToken = bearer[1]
         jwt.verify(bearerToken, 'my-secret-key', function (err, data){
             if(err){
-                res.status(403).json({
+                return res.status(403).json({
                     status: "failed",
                     error:"Invalid Authorization"
                 });

@@ -81,6 +81,7 @@ exports.customerSignup = async function(req, res){
                 firstName: first_name,
                 lastName: last_name,
                 customer_id: result.insertId,
+                time_of_generation: Date.now(),
                 server_origin: urls.SERVER
             };
             
@@ -132,7 +133,14 @@ exports.customerSignupActivation = function(req, res){
     let data = req.body;
     logger.info(req.params.customer_id);
     const customer_id = req.params.customer_id;
+    const tog = req.params.tog;
     logger.info(customer_id);
+    let now = Date.now();
+    logger.info((now - tog))
+    if((now - tog) < 24*60*60*1000)
+        logger.info("right time");
+    else
+        logger.info("too late")
     const query = `UPDATE asm_customers SET email_id_verified= 1, 
                                             is_active =1 
                                         where customer_id = ?`;

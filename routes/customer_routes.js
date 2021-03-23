@@ -7,7 +7,7 @@ const customerController = require('../controllers/customer_controller');
 router.post('/customer_signup', customerController.customerSignup);
 
 //Customer Signup Activation
-router.get('/customer_signup_activate/:customer_id', customerController.customerSignupActivation);
+router.get('/customer_signup_activate/:customer_id/:tog', customerController.customerSignupActivation);
 
 //Customer SignIn
 router.post('/customer_signin', customerController.customerSignIn);

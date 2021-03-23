@@ -2,11 +2,12 @@ var asmDb = require('../config/db');
 let transporter = require('../config/mail_transporter');
 let fs = require('fs');
 const strformat = require('string-format');
+const logger = require('../utils/admin_logger');
 
 
 exports.newOrders = async function (req, res){
-    console.log("from newOrders");
-    console.log("req.body=", req.body);
+    logger.info("from newOrders");
+    logger.info("req.body=", req.body);
     let newOrdersQuery = `SELECT acom.id as order_id, acom.total_items, 
                             acom.total_amount, acom.status, 
                             FROM_UNIXTIME(acom.created_date, '%Y-%m-%d %H:%i:%s') as created_date,
@@ -19,8 +20,8 @@ exports.newOrders = async function (req, res){
                         `
     asmDb.query(newOrdersQuery, 
                  function (err, result, fields) {
-        console.log('err =', err);
-        console.log('result = ', result);
+        logger.info('err =', err);
+        logger.info('result = ', result);
         if(err)
             return res.status(502).json([{
                 status: 'failed',
@@ -40,8 +41,8 @@ exports.newOrders = async function (req, res){
     });
 }
 exports.processingOrders = async function (req, res){
-    console.log("from newOrders");
-    console.log("req.body=", req.body);
+    logger.info("from newOrders");
+    logger.info("req.body=", req.body);
     let query = `SELECT acom.id as order_id, acom.total_items, 
                             acom.total_amount, acom.status, 
                             FROM_UNIXTIME(acom.created_date, '%Y-%m-%d %H:%i:%s') as created_date,
@@ -54,8 +55,8 @@ exports.processingOrders = async function (req, res){
                         `
     asmDb.query(query, 
                  function (err, result, fields) {
-        console.log('err =', err);
-        console.log('result = ', result);
+        logger.info('err =', err);
+        logger.info('result = ', result);
         if(err)
             return res.status(502).json([{
                 status: 'failed',
@@ -75,8 +76,8 @@ exports.processingOrders = async function (req, res){
     });
 }
 exports.closedOrders = async function (req, res){
-    console.log("from newOrders");
-    console.log("req.body=", req.body);
+    logger.info("from newOrders");
+    logger.info("req.body=", req.body);
     let query = `SELECT acom.id as order_id, acom.total_items, 
                             acom.total_amount, acom.status, 
                             FROM_UNIXTIME(acom.created_date, '%Y-%m-%d %H:%i:%s') as created_date,
@@ -89,8 +90,8 @@ exports.closedOrders = async function (req, res){
                         `
     asmDb.query(query, 
                  function (err, result, fields) {
-        console.log('err =', err);
-        console.log('result = ', result);
+        logger.info('err =', err);
+        logger.info('result = ', result);
         if(err)
             return res.status(502).json([{
                 status: 'failed',
@@ -110,8 +111,8 @@ exports.closedOrders = async function (req, res){
     });
 }
 exports.canceledOrders = async function (req, res){
-    console.log("from newOrders");
-    console.log("req.body=", req.body);
+    logger.info("from newOrders");
+    logger.info("req.body=", req.body);
     let query = `SELECT acom.id as order_id, acom.total_items, 
                             acom.total_amount, acom.status, 
                             FROM_UNIXTIME(acom.created_date, '%Y-%m-%d %H:%i:%s') as created_date,
@@ -124,8 +125,8 @@ exports.canceledOrders = async function (req, res){
                         `
     asmDb.query(query, 
                  function (err, result, fields) {
-        console.log('err =', err);
-        console.log('result = ', result);
+        logger.info('err =', err);
+        logger.info('result = ', result);
         if(err)
             return res.status(502).json([{
                 status: 'failed',
@@ -147,15 +148,15 @@ exports.canceledOrders = async function (req, res){
 
 
 exports.updateOrderStatus = function(req,res){
-    console.log("from updateOrderStatus");
-    console.log("body:", req.body);
+    logger.info("from updateOrderStatus");
+    logger.info("body:", req.body);
     let {order_id, new_status} = req.body;
     let query = `UPDATE asm_customer_order_master SET status = ?,
                     updated_date = UNIX_TIMESTAMP()
                     WHERE id = ?`
     asmDb.query(query, [new_status, order_id], function (err, result) {
-        console.log("result=", result);
-        console.log("err=", err);
+        logger.info("result=", result);
+        logger.info("err=", err);
         if(err){
             return res.status(501).json({
             status: 'failed',
@@ -176,8 +177,8 @@ const getBillingAddress=(customer_id)=>{
         let query = `SELECT * FROM asm_customer_billing_address
                     WHERE customer_id = ?`
         asmDb.query(query, [customer_id], function (err, result) {
-            // console.log("result=", result);
-            console.log("err=", err);
+            // logger.info("result=", result);
+            logger.info("err=", err);
             if(err){
                 reject( err);
             }
@@ -195,8 +196,8 @@ const getShippingAddress=(customer_id)=>{
         let query = `SELECT * FROM asm_customer_shipping_address
                     WHERE customer_id = ?`
         asmDb.query(query, [customer_id], function (err, result) {
-            // console.log("result=", result);
-            console.log("err=", err);
+            // logger.info("result=", result);
+            logger.info("err=", err);
             if(err){
                 reject( err );
             }
@@ -213,8 +214,8 @@ const getOrderDetailsList=(order_id)=>{
         let query = `SELECT * FROM asm_customer_order_details
                         WHERE order_id = ?`
         asmDb.query(query, [order_id], function (err, result) {
-            // console.log("result=", result);
-            console.log("err=", err);
+            // logger.info("result=", result);
+            logger.info("err=", err);
             if(err){
                 reject (err);
             }
@@ -227,17 +228,17 @@ const getOrderDetailsList=(order_id)=>{
                 .catch(error=>error)
 }
 exports.orderDetails = function(req,res){
-    console.log("from orderDetails");
-    console.log("body:", req.body);
-    console.log("params:", req.params);
+    logger.info("from orderDetails");
+    logger.info("body:", req.body);
+    logger.info("params:", req.params);
     // let {order_id, new_status} = req.body;
     const order_id = req.params.order_id;
-    console.log("order_id=", order_id);
+    logger.info("order_id=", order_id);
     let query = `SELECT * FROM asm_customer_order_master
                     WHERE id = ?`
     asmDb.query(query, [order_id], async function (err, result) {
-        // console.log("result=", result);
-        console.log("err=", err);
+        // logger.info("result=", result);
+        logger.info("err=", err);
         if(err){
             return res.status(501).json({
             status: 'failed',
@@ -250,9 +251,9 @@ exports.orderDetails = function(req,res){
             const shipping_address = await getShippingAddress(customer_id);
             const billing_address = await getBillingAddress(customer_id);
             const orderList = await getOrderDetailsList(order_id);
-            // console.log("shipping_address=", shipping_address);
-            // console.log("billing_address=", billing_address);
-            console.log();
+            // logger.info("shipping_address=", shipping_address);
+            // logger.info("billing_address=", billing_address);
+            logger.info();
             res.json({
                 status: 'success',
                 shipping_address: shipping_address,

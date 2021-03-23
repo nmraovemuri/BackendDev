@@ -1,9 +1,11 @@
 
 var db = require('../config/db');
 let fs = require('fs');
+const clogger = require('../utils/customer_logger');
+const alogger = require('../utils/admin_logger');
 
 exports.createCategory = function(req,res){
-    console.log("req.body :", req.body);
+    alogger.info("req.body :", req.body);
     let data = req.body;
     const category_name = data.categoryName
     let feature_img = '';
@@ -49,7 +51,7 @@ exports.createCategory = function(req,res){
                 status: "failed",
                 error: 'create category is rejected due to error while Image saving'
             });
-        console.log('Image Saved!');
+        alogger.info('Image Saved!');
     });
     
     data = [
@@ -66,10 +68,10 @@ exports.createCategory = function(req,res){
                     updated_date) 
                     values (?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`;
     db.query(sql, data, (err, rows)=>{
-        console.log(err);
-        console.log(rows);
+        alogger.info(err);
+        alogger.info(rows);
         if(err){
-            console.log(err.message);
+            alogger.info(err.message);
             return res.json({
                 status: "failed",
                 error: err.message

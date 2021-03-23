@@ -1,8 +1,10 @@
 
 var db = require('../config/db');
+const clogger = require('../utils/customer_logger');
+const alogger = require('../utils/admin_logger');
 
 exports.createSubCategory = function(req,res){
-    console.log("req.body :", req.body);
+    alogger.info("req.body :", req.body);
     let data = req.body;
     const sub_category_name = data.subCategoryName
     const category_id = data.categoryId
@@ -33,8 +35,8 @@ exports.createSubCategory = function(req,res){
         status,
     ];
     db.query(sql, data, (err, rows) => {
-        // console.log(err);
-        // console.log(rows);
+        // alogger.info(err);
+        // alogger.info(rows);
         if(err){
             return res.status(503).json({
                 status: "failed",
