@@ -3,7 +3,7 @@ let config = {
         fileAppender: { 
             type: "dateFile", 
             filename: `./logs/customers/ASM_Customer.log`, 
-            pattern: "_yyyy-MM-dd-hh-mm-ss",
+            pattern: "_yyyy-MM-dd",
             keepFileExt: true, 
             layout: { 
                 type: "pattern", 
