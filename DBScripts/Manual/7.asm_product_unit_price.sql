@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS asm_product_unit_price;
 CREATE TABLE asm_product_unit_price (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `product_id` int(25) NOT NULL,
+  `product_img` VARCHAR(250),
   `unit_id` int(10) NOT NULL,
   `mrp` bigint(10) NOT NULL,
   `sale_price` bigint(10) NOT NULL,
