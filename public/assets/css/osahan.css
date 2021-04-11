@@ -223,7 +223,7 @@ a:focus {
 }
 .main-nav-right .btn {
     border-radius: 5px !important;
-    /* border-right: 1px solid #384042; */
+    border-right: 1px solid #384042;
     color: #fff;
     margin: 0 0 0 -4px;
     padding: 24px;
@@ -265,12 +265,11 @@ a:focus {
     font-size: 10px;
     font-weight: 500;
     height: 18px;
-    right: 76px;
+    left: 31px;
     line-height: 17px;
     min-width: 18px;
     position: absolute;
     top: 11px;
-    text-align: center;
 }
 .location-top {
     color: #fff !important;
@@ -576,9 +575,9 @@ a:focus {
     margin-left: 12px;
 }
 /* Cart Sidebar */
-body.toggled {
+/* body.toggled {
     overflow: hidden;
-}
+} */
 body.toggled::after {
     background: #000 none repeat scroll 0 0;
     bottom: 0;
@@ -595,8 +594,7 @@ body.toggled::after {
     background: #fff none repeat scroll 0 0;
     overflow: auto;
     position: fixed;
-    /* right: -400px; */
-    right: 0px;
+    right: -400px;
     top: 0;
     width: 400px;
 	z-index: 99;
@@ -1149,7 +1147,7 @@ label {
 	.top-categories-search {
 		left: 0;
 		margin: auto;
-		padding: 5px 15px 8px;
+		padding: 0 15px 8px;
 		position: relative;
 		right: 0;
 		top: 0;
@@ -1189,12 +1187,11 @@ label {
 	.main-nav-right .btn {
 		font-size: 0;
 		padding: 21px 15px;
-        display: none;
 	}
 	.osahan-menu .my-2.my-lg-0 .main-nav-right {
 		position: absolute;
 		right: 76px;
-		top: 0;        
+		top: 0;
 	}
 	.main-nav-right .btn .mdi {
 		font-size: 17px !important;

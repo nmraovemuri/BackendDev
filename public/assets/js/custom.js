@@ -73,7 +73,7 @@ $(document).ready(function() {
     // ===========Right Sidebar============
     $('[data-toggle="offcanvas"]').on('click', function() {
         $('body').toggleClass('toggled');
-    });    
+    });
 
     // ===========Slider============
     var mainslider = $(".owl-carousel-slider");

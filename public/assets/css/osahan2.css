@@ -534,9 +534,9 @@ a:focus {
     width: 27px;
 }
 /* Cart Sidebar */
-/* body.toggled {
+body.toggled {
     overflow: hidden;
-} */
+}
 body.toggled::after {
     background: #000 none repeat scroll 0 0;
     bottom: 0;
