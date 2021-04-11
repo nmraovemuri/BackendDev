@@ -144,7 +144,7 @@ exports.getProductsBySubcatId = function(req,res){
     db.query(`SELECT p.id,
             p.product_name,
             p.product_brand,
-            CONCAT("images/products/200/", pup.product_img) as product_img, 
+            CONCAT("/images/products/200/", pup.product_img) as product_img, 
             p.description_fst,
             p.description_snd,
             u.unit_value,
