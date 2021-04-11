@@ -176,7 +176,7 @@ exports.customerSignIn = async function (req, res){
     const hashedPassword = await bcrypt.hash(password, salt);
     logger.info('hashedPassword=', hashedPassword);
 
-    asmdb.query(`SELECT customer_id, first_name, last_name, email_id, password 
+    asmdb.query(`SELECT customer_id, first_name, last_name, email_id, password, mobile 
                 from asm_customers 
                 where email_id = ? 
                 and email_id_verified = 1 
