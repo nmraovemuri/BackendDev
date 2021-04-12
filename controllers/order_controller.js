@@ -154,7 +154,7 @@ sendOrderConfirmMail=(order_id, customer_id, billing_address, cartList)=>{
                             `<td>`+sgst+`</td>`+
                             `<td>`+sgst+`</td>`+
                             `<td>`+item.quantity+`</td>`+
-                            `<td>`+item.total_amount+`</td>`+
+                            `<td>`+item.total+`</td>`+
                           `</tr>`
     });
   let close= `</table>`
