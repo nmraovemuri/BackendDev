@@ -11,9 +11,11 @@ let getCartTotalPrice=(cartList)=>{
   return cartList.reduce((tot, item)=> tot + item.sale_price*item.quantity, 0);
 }
 let getCartDiscountPrice=(cartList)=>{
+  logger.info("cartList:", cartList)
   return cartList.reduce((tot, item)=> tot + item.discount_amount*item.quantity, 0);
 }
 let getCartQuantity=(cartList)=>{
+  logger.info("cartList:", cartList)
   return cartList.reduce((tot, item)=> tot + item.quantity, 0);
 }
 
