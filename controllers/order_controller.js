@@ -103,7 +103,7 @@ const storeBillingAddress = (customer_id, billing_address)=>{
     }
   });
 }
-storeCartList=(order_id, cartList)=>{
+const storeCartList=(order_id, cartList)=>{
   logger.info("from storeCartList");
   let orderDetailsQuery = `INSERT INTO asm_customer_order_details 
     (order_id, product_id, product_name, unit_value, unit_type, mrp, sale_price, quantity, 
@@ -112,7 +112,7 @@ storeCartList=(order_id, cartList)=>{
   // cartList.forEach(item=>{
   for(let item of cartList){
     orderList.push([order_id, item.id, item.product_name, item.unit_value, item.unit_type, item.mrp, item.sale_price, item.quantity, 
-      item.gst_slab, item.discount_amount, item.discount_percentage, item.total_amount]);
+      item.gst_slab, item.discount_amount, item.discount_percentage, item.total]);
   };
 
   logger.info(orderList);
