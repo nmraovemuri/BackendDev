@@ -8,13 +8,17 @@ const https = require('https');
 const logger = require('../utils/customer_logger');
 
 let getCartTotalPrice=(cartList)=>{ 
+  logger.info("getCartTotalPrice");
+  logger.info("cartList:", cartList)
   return cartList.reduce((tot, item)=> tot + item.sale_price*item.quantity, 0);
 }
 let getCartDiscountPrice=(cartList)=>{
+  logger.info("getCartDiscountPrice")
   logger.info("cartList:", cartList)
   return cartList.reduce((tot, item)=> tot + item.discount_amount*item.quantity, 0);
 }
 let getCartQuantity=(cartList)=>{
+  logger.info("getCartQuantity")
   logger.info("cartList:", cartList)
   return cartList.reduce((tot, item)=> tot + item.quantity, 0);
 }
