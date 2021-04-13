@@ -21,4 +21,8 @@ router.post('/client/getProductsBySubcatId',  productsController.getProductsBySu
 // Get All Products By Search String
 router.post('/client/getProductsBySearchString',  productsController.getProductsBySearchString);
 
+// Get All Products with high discounts
+router.get('/client/getTopDealsOfDay',  productsController.getTopDealsOfDay);
+
+
 module.exports = router
