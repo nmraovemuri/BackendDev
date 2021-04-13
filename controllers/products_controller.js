@@ -263,7 +263,7 @@ exports.getTopDealsOfDay = function(req,res){
             u.status = 1 and 
             pup.status = 1 and
             amt.status = 1 and
-            round(((pup.mrp - pup.sale_price)/pup.mrp)*100)  >=20
+            round(((pup.mrp - pup.sale_price)/pup.mrp)*100)  >=50
 	        order by discount_percentage desc 
             `, 
             function (err, rows, fields) {
