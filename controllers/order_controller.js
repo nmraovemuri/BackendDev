@@ -22,7 +22,14 @@ let getCartQuantity=(cartList)=>{
   logger.info("cartList:", cartList)
   return cartList.reduce((tot, item)=> tot + item.quantity, 0);
 }
-
+let getCartTotalTax=(cartList)=>{ 
+  logger.info("getCartTotalTax");
+  logger.info("cartList:", cartList)
+  return cartList.reduce((tot, item)=> {
+    let taxable_value = (item.sale_price/(1 + item.gst_slab/100)).toFixed(2);
+    return tot + (taxable_value * item.gst_slab/100).toFixed(2)*item.quantity
+  }, 0);
+}
 const storeDeliveryAddress = (customer_id, delivery_address)=>{
   logger.info("from storeDeliveryAddress");
   let da = delivery_address
@@ -159,13 +166,30 @@ sendOrderConfirmMail=(order_id, customer_id, billing_address, cartList)=>{
                           `</tr>`
     });
   let close= `</table>`
+  let total_amount = getCartTotalPrice(cartList);
+  let total_discount = getCartDiscountPrice(cartList);
+  let total_tax = getCartTotalTax(cartList);
   // let invoice = open + tr + close;
   let invoice = tr;
   logger.info(invoice);
+  let address = ba.addr_field1+", "+ba.addr_field2+"\n"+
+  ba.addr_field3+", "+ba.addr_field4+"\n"+
+  ba.addr_field5+", "+ba.addr_field6;
+  let cur_date = new Date();
+  let str_date = cur_date.getDate()+"-"+(cur_date.getMonth()+1)+"-".cur_date.getFullYear();
   let orderDetails = {
+      order_id,
+      customer_id,
       firstName: ba.first_name,
       lastName: ba.last_name,
-      invoice
+      mobile: ba.mobile,
+      email_id: ba.email_id,
+      str_date,
+      address,
+      invoice,
+      total_discount,
+      total_tax,
+      total_amount
   };
   
   //resources\mail_template\sign-up status.html

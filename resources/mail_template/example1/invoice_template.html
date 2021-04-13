@@ -158,12 +158,13 @@
         <div><a href="customersupport@aswikamart.com">customersupport@aswikamart.com</a></div>
       </div>
       <div id="project">
-        <div><span>Order Number: </span> Website development</div>
-        <div><span>Customer Name:</span> John Doe</div>
-        <div><span>Mobile:</span> 796 Silver Harbour, TX 79273, US</div>
-        <div><span>EMAIL</span> <a href="mailto:john@example.com">john@example.com</a></div>
-        <div><span>Date of Purchase:</span> August 17, 2015</div>
-        <div><span>Billing Address</span> September 17, 2015</div>
+        <div><span>Order Number: </span> {order_id}</div>
+		<div><span>Customer Number: </span> {customer_id}</div>
+        <div><span>Customer Name:</span> {firstName} {lastName}</div>
+        <div><span>Mobile:</span> {mobile}</div>
+        <div><span>EMAIL</span> <a href=`{email_id}`>{email_id}</a></div>
+        <div><span>Date of Purchase:</span> {str_date}</div>
+        <div><span>Billing Address</span> {address}</div>
       </div>
     </header>
     <main>
@@ -189,15 +190,15 @@
           {invoice}
           <tr>
             <td colspan="10">SUBTOTAL</td>
-            <td class="total">5,200.00</td>
+            <td class="total">Rs.{total_discount}</td>
           </tr>
           <tr>
-            <td colspan="10">TAX 25%</td>
-            <td class="total">$1,300.00</td>
+            <td colspan="10">TAX(GST)</td>
+            <td class="total">Rs.{total_tax}</td>
           </tr>
           <tr>
             <td colspan="10" class="grand total">GRAND TOTAL</td>
-            <td class="grand total">{grand_total}</td>
+            <td class="grand total">Rs.{total_amount}</td>
           </tr>
         </tbody>
       </table>
