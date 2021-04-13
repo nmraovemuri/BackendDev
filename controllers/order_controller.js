@@ -112,7 +112,7 @@ const storeCartList=(order_id, cartList)=>{
   // cartList.forEach(item=>{
   for(let item of cartList){
     orderList.push([order_id, item.id, item.product_name, item.unit_value, item.unit_type, item.mrp, item.sale_price, item.quantity, 
-      item.gst_slab, item.discount_amount, item.discount_percentage, item.total]);
+      item.gst_slab, item.discount_amount, item.discount_percentage, item.total_amount]);
   };
 
   logger.info(orderList);
@@ -154,7 +154,7 @@ sendOrderConfirmMail=(order_id, customer_id, billing_address, cartList)=>{
                             `<td>`+sgst+`</td>`+
                             `<td>`+sgst+`</td>`+
                             `<td>`+item.quantity+`</td>`+
-                            `<td>`+item.total+`</td>`+
+                            `<td>`+item.total_amount+`</td>`+
                           `</tr>`
     });
   let close= `</table>`
