@@ -6,6 +6,7 @@ const strformat = require('string-format');
 const sms = require('../config/sms');
 const https = require('https');
 const logger = require('../utils/customer_logger');
+const urls = require('../config/urls');
 
 let getCartTotalPrice=(cartList)=>{ 
   logger.info("getCartTotalPrice");
@@ -166,6 +167,8 @@ sendOrderConfirmMail=(order_id, customer_id, billing_address, cartList)=>{
                           `</tr>`
     });
   let close= `</table>`
+  let server_origin= urls.SERVER;
+  let logo_url = server_origin+"/mail_template/example1/logo1.png"
   let total_amount = getCartTotalPrice(cartList);
   let total_discount = getCartDiscountPrice(cartList);
   let total_tax = getCartTotalTax(cartList);
@@ -178,6 +181,7 @@ sendOrderConfirmMail=(order_id, customer_id, billing_address, cartList)=>{
   let cur_date = new Date();
   let str_date = cur_date.getDate()+"-"+(cur_date.getMonth()+1)+"-".cur_date.getFullYear();
   let orderDetails = {
+      logo_url,
       order_id,
       customer_id,
       firstName: ba.first_name,
