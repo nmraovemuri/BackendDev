@@ -179,7 +179,7 @@ sendOrderConfirmMail=(order_id, customer_id, billing_address, cartList)=>{
   ba.addr_field3+", "+ba.addr_field4+"\n"+
   ba.addr_field5+", "+ba.addr_field6;
   let cur_date = new Date();
-  let str_date = cur_date.getDate()+"-"+(cur_date.getMonth()+1)+"-".cur_date.getFullYear();
+  let str_date = cur_date.getDate()+"-"+(cur_date.getMonth()+1)+"-"+cur_date.getFullYear();
   let orderDetails = {
       logo_url,
       order_id,
