@@ -148,6 +148,7 @@ sendOrderConfirmMail=(order_id, customer_id, billing_address, cartList)=>{
                             `<td>`+item.product_name+`</td>`+
                             `<td>`+item.unit_value+'&nbsp;&nbsp;'+item.unit_type+`</td>`+
                             `<td>`+item.mrp+`</td>`+
+                            `<td>`+item.discount_amount+`</td>`+
                             `<td>`+item.sale_price+`</td>`+
                             `<td>`+taxable_value+`</td>`+
                             `<td>`+item.gst_slab+`</td>`+
