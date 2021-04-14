@@ -280,3 +280,93 @@ exports.getTopDealsOfDay = function(req,res){
             }])
     });
 }
+exports.getTopDealsOfDayByPercentage = function(req,res){
+    clogger.info("from getTopDealsOfDayByPercentage()");
+    console.log("req.params=", req.params);
+    let discount_percentage = req.params.discount_percentage;
+    db.query(`SELECT p.id,
+            p.product_name,
+            p.product_brand,
+            CONCAT("/images/products/200/", pup.product_img) as product_img, 
+            p.description_fst,
+            p.description_snd,
+            u.unit_value,
+            u.unit_type,
+            pup.mrp,
+            pup.sale_price,
+            amt.gst_slab,
+            (pup.mrp - pup.sale_price) as discount_amount,
+            round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage
+            FROM asm_products p,
+            asm_product_unit_price pup,
+            asm_mt_units u,
+            asm_mt_tax amt
+            WHERE p.id = pup.product_id and
+            p.gst_slab_id = amt.id and
+            pup.unit_id = u.id and
+            p.status = 1 and
+            u.status = 1 and 
+            pup.status = 1 and
+            amt.status = 1 and
+            round(((pup.mrp - pup.sale_price)/pup.mrp)*100)  = ${discount_percentage}
+	        order by discount_percentage desc 
+            `, 
+            function (err, rows, fields) {
+                clogger.info(err);
+        if (!err)
+            return res.json({
+                status: 'success',
+                data: rows
+            })
+        else
+            return res.json([{
+                status: 'failed',
+                errMsg: 'Error while performing query.'
+            }])
+    });
+}
+exports.getTopDealsOfDayByPercentageRange = function(req,res){
+    clogger.info("from getTopDealsOfDayByPercentage()");
+    let from_discount = req.body.from_discount;
+    let to_discount = req.body.to_discount;
+    db.query(`SELECT p.id,
+            p.product_name,
+            p.product_brand,
+            CONCAT("/images/products/200/", pup.product_img) as product_img, 
+            p.description_fst,
+            p.description_snd,
+            u.unit_value,
+            u.unit_type,
+            pup.mrp,
+            pup.sale_price,
+            amt.gst_slab,
+            (pup.mrp - pup.sale_price) as discount_amount,
+            round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage
+            FROM asm_products p,
+            asm_product_unit_price pup,
+            asm_mt_units u,
+            asm_mt_tax amt
+            WHERE p.id = pup.product_id and
+            p.gst_slab_id = amt.id and
+            pup.unit_id = u.id and
+            p.status = 1 and
+            u.status = 1 and 
+            pup.status = 1 and
+            amt.status = 1 and
+            round(((pup.mrp - pup.sale_price)/pup.mrp)*100)  >= ${from_discount} and  round(((pup.mrp - pup.sale_price)/pup.mrp)*100)  <= ${to_discount}
+	        order by discount_percentage desc 
+            `, 
+            function (err, rows, fields) {
+                clogger.info(err);
+        if (!err)
+            return res.json({
+                status: 'success',
+                data: rows
+            })
+        else
+            return res.json([{
+                status: 'failed',
+                errMsg: 'Error while performing query.'
+            }])
+    });
+}

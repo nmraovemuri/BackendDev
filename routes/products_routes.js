@@ -24,5 +24,9 @@ router.post('/client/getProductsBySearchString',  productsController.getProducts
 // Get All Products with high discounts
 router.get('/client/getTopDealsOfDay',  productsController.getTopDealsOfDay);
 
+// Get All Products with given discount
+router.get('/client/getTopDealsOfDayByPercentage/:discount_percentage',  productsController.getTopDealsOfDayByPercentage);
+
+
 
 module.exports = router
