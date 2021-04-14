@@ -327,8 +327,8 @@ exports.getTopDealsOfDayByPercentage = function(req,res){
 }
 exports.getTopDealsOfDayByPercentageRange = function(req,res){
     clogger.info("from getTopDealsOfDayByPercentage()");
-    let from_discount = req.body.from_discount;
-    let to_discount = req.body.to_discount;
+    let from_discount = req.params.from_discount;
+    let to_discount = req.params.to_discount;
     db.query(`SELECT p.id,
             p.product_name,
             p.product_brand,
