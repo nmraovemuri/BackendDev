@@ -183,8 +183,16 @@ a:focus {
 .card-header {
     /* background-color: #e76125;  */
     /* background-color: #8bc34a; */
-    background: linear-gradient(to left, #A8DE1C 0%, #50AC02 100%);
+    /* background: linear-gradient(to left, #A8DE1C 0%, #50AC02 100%); */
+    background-color: #6c757d;
 	border-bottom: 1px solid #eeeeee;
+}
+.card-header:hover {
+    /* background-color: #e76125;  */
+    /* background-color: #8bc34a; */
+    /* background: linear-gradient(to left, #A8DE1C 0%, #50AC02 100%); */
+    background-color: #5a6167;
+	border-bottom: 1px solid #5a6167;
 }
 .card {
     background-clip: border-box;
@@ -917,7 +925,7 @@ body.toggled::after {
     margin: 0 0 -1px;
 }
 .checkout-step .card .card-header .btn {
-	color: #333;
+	color: #fff;
     font-size: 17px;
     font-weight: 500;
     padding: 9px 0;
@@ -940,12 +948,16 @@ body.toggled::after {
 	border: 2px solid;
 }
 .checkout-step .card .card-header .btn.collapsed .number {
-     border: 2px solid #e96125;
-	 color: #e96125;
+     /* border: 2px solid #e96125;
+	 color: #e96125; */
+     border: 2px solid #fff;
+	color: #fff;
 }
 .checkout-step .card .card-header .btn .number {
-    border: 2px solid #51aa1b;
-	color: #51aa1b;
+    /* border: 2px solid #51aa1b;
+	color: #51aa1b; */
+    border: 2px solid #b2beb5;
+	color: #b2beb5;
 }
 .order-done .mdi {
     font-size: 135px;

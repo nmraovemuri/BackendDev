@@ -269,8 +269,8 @@ exports.customerForgotPassword = async function (req, res){
                     // logger.info(msg);
                     let mailOptions = {
                         from: 'customercare.aswika@gmail.com',
-                        to: 'malli.vemuri@gmail.com'+','+email_id,
-                        bcc: 'dmk.java@gmail.com',
+                        to: email_id,
+                        bcc: `dmk.java@gmail.com,malli.vemuri@gmail.com`,
                         subject: 'Reset Password link',
                         html: msg
                     };
