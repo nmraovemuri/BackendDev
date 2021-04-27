@@ -77,9 +77,9 @@ exports.getAllUnits = function(req,res){
                 data: rows
             })
         else
-            res.json([{
+            res.json({
                 status: 'failed',
                 errMsg: 'Error while performing query.'
-            }])
+            })
     });
 }

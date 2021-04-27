@@ -103,10 +103,10 @@ exports.getAllCategories = function(req,res){
                 data: rows
             })
         else
-            return res.json([{
+            return res.json({
                 status: 'failed',
                 errMsg: 'Error while performing query.'
-            }])
+            })
     });
 }
 // if(file.mimetype == "image/jpeg" ||file.mimetype == "image/png"||file.mimetype == "image/gif"||file.mimetype == "image/svg" ){

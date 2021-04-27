@@ -23,10 +23,10 @@ exports.newOrders = async function (req, res){
         logger.info('err =', err);
         logger.info('result = ', result);
         if(err)
-            return res.status(502).json([{
+            return res.status(502).json({
                 status: 'failed',
                 message: err.message
-            }]);
+            });
         else if(result.length==0)
             return res.status(422).json({
                 status: "failed",
@@ -58,10 +58,10 @@ exports.processingOrders = async function (req, res){
         logger.info('err =', err);
         logger.info('result = ', result);
         if(err)
-            return res.status(502).json([{
+            return res.status(502).json({
                 status: 'failed',
                 message: err.message
-            }]);
+            });
         else if(result.length==0)
             return res.status(422).json({
                 status: "failed",
@@ -93,10 +93,10 @@ exports.closedOrders = async function (req, res){
         logger.info('err =', err);
         logger.info('result = ', result);
         if(err)
-            return res.status(502).json([{
+            return res.status(502).json({
                 status: 'failed',
                 message: err.message
-            }]);
+            });
         else if(result.length==0)
             return res.status(422).json({
                 status: "failed",
@@ -128,10 +128,10 @@ exports.canceledOrders = async function (req, res){
         logger.info('err =', err);
         logger.info('result = ', result);
         if(err)
-            return res.status(502).json([{
+            return res.status(502).json({
                 status: 'failed',
                 message: err.message
-            }]);
+            });
         else if(result.length==0)
             return res.status(422).json({
                 status: "failed",

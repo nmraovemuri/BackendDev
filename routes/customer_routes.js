@@ -22,6 +22,9 @@ router.post('/customer_reset_password', customerController.customerResetPassword
 // router.post('/customer_change_password', customerController.customerChangePassword);
 router.post('/customer_change_password', ensureToken, customerController.customerChangePassword);
 
+//Customer UpdateProfile
+router.post('/customerUpdateProfile', customerController.customerUpdateProfile);
+
 // Ensuring Authorization
 function ensureToken(req, res, next){
     console.log(req.headers);

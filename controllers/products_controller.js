@@ -131,10 +131,10 @@ exports.getAllProducts = function(req,res){
                 data: rows
             })
         else
-            return res.json([{
+            return res.json({
                 status: 'failed',
                 errMsg: 'Error while performing query.'
-            }])
+            })
     });
 }
 
@@ -178,10 +178,10 @@ exports.getProductsBySubcatId = function(req,res){
                 data: rows
             })
         else
-            return res.json([{
+            return res.json({
                 status: 'failed',
                 errMsg: 'Error while performing query.'
-            }])
+            })
     });
 }
 
@@ -230,10 +230,10 @@ exports.getProductsBySearchString = function(req,res){
                 data: rows
             })
         else
-            return res.json([{
+            return res.json({
                 status: 'failed',
                 errMsg: 'Error while performing query.'
-            }])
+            })
     });
 }
 
@@ -274,10 +274,10 @@ exports.getTopDealsOfDay = function(req,res){
                 data: rows
             })
         else
-            return res.json([{
+            return res.json({
                 status: 'failed',
                 errMsg: 'Error while performing query.'
-            }])
+            })
     });
 }
 exports.getTopDealsOfDayByPercentage = function(req,res){
@@ -319,10 +319,10 @@ exports.getTopDealsOfDayByPercentage = function(req,res){
                 data: rows
             })
         else
-            return res.json([{
+            return res.json({
                 status: 'failed',
                 errMsg: 'Error while performing query.'
-            }])
+            })
     });
 }
 exports.getTopDealsOfDayByPercentageRange = function(req,res){
@@ -364,9 +364,9 @@ exports.getTopDealsOfDayByPercentageRange = function(req,res){
                 data: rows
             })
         else
-            return res.json([{
+            return res.json({
                 status: 'failed',
                 errMsg: 'Error while performing query.'
-            }])
+            })
     });
 }

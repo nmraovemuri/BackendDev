@@ -102,26 +102,26 @@ exports.customerSignup = async function(req, res){
                 transporter.sendMail(mailOptions, function(error, info){
                     if(error){
                         logger.info(error);
-                        return res.status(502).json([{
+                        return res.status(502).json({
                             status: 'error',
                             message: error.message
-                        }]);
+                        });
                     }else{
                         logger.info("Email send" + info.response);
-                        return res.status(200).json([{
+                        return res.status(200).json({
                             status: 'success',
                             customer_id: result.insertId
-                        }]);
+                        });
                     }
                 });
             });
         }
         else{
             logger.info("error=", err);
-            return res.status(502).json([{
+            return res.status(502).json({
                         status: 'failed',
                         message: err.message
-                    }])
+                    })
         }
     });
 }    
@@ -157,10 +157,10 @@ exports.customerSignupActivation = function(req, res){
         }
         else{
             logger.info(err);
-            res.status(502).json([{
+            res.status(502).json({
                 status: 'failed',
                 message: err.message
-            }]);
+            });
         }
     });
 }
@@ -185,10 +185,10 @@ exports.customerSignIn = async function (req, res){
         logger.info('err =', err);
         logger.info('result = ', result);
         if(err)
-            return res.status(502).json([{
+            return res.status(502).json({
                 status: 'failed',
                 message: err.message
-            }]);
+            });
         else if(result.length==0)
             //Email Id is not existed with us.
             return res.status(422).json({
@@ -213,10 +213,10 @@ exports.customerSignIn = async function (req, res){
                 }
                 else{
                     //If password not matched
-                    return res.status(502).json([{
+                    return res.status(502).json({
                         status: 'failed',
                         message: 'Invalid email id or password.'
-                    }]);
+                    });
                 }
             });
         }
@@ -278,15 +278,15 @@ exports.customerForgotPassword = async function (req, res){
                     transporter.sendMail(mailOptions, function(error, info){
                         if(error){
                             logger.info(error);
-                            return res.status(502).json([{
+                            return res.status(502).json({
                                 status: 'error',
                                 message: error.message
-                            }]);
+                            });
                         }else{
                             logger.info("Email send" + info.response);
-                            return res.status(200).json([{
+                            return res.status(200).json({
                                 status: 'success',
-                            }]);
+                            });
                         }
                     });
                 });
@@ -321,10 +321,10 @@ exports.customerResetPassword = async function(req, res){
         logger.info("err=", err);
         logger.info("rows=", rows);
         if (err){
-            return res.status(502).json([{
+            return res.status(502).json({
                 status: 'failed',
                 message: err.message
-            }]);
+            });
         }
         else{
             return res.status(200).json({
@@ -371,10 +371,10 @@ exports.customerChangePassword = async function(req, res){
         logger.info('err =', err);
         logger.info('result = ', result);
         if(err)
-            return res.status(502).json([{
+            return res.status(502).json({
                 status: 'failed',
                 message: err.message
-            }]);
+            });
         else if(result.length==0)
             return res.status(422).json({
                 status: "failed",
@@ -388,17 +388,17 @@ exports.customerChangePassword = async function(req, res){
                 logger.info("bcresult=", bcresult);
                 //If password matched
                 if(err2){
-                    return res.status(502).json([{
+                    return res.status(502).json({
                         status: 'failed',
                         message: err2.message
-                    }]);
+                    });
                 }
                 else if(bcresult != true){
-                    return res.status(502).json([{
+                    return res.status(502).json({
                         status: 'Field Error',
                         field: 'old_password',
                         message: 'Old password is not matched.'
-                    }]);
+                    });
                 }
                 else{
                     const salt = await bcrypt.genSalt();
@@ -410,10 +410,10 @@ exports.customerChangePassword = async function(req, res){
                         logger.info("err=", err);
                         logger.info("rows=", rows);
                         if (err){
-                            return res.status(502).json([{
+                            return res.status(502).json({
                                 status: 'failed',
                                 message: err.message
-                            }]);
+                            });
                         }
                         else{
                             return res.status(200).json({
@@ -426,3 +426,71 @@ exports.customerChangePassword = async function(req, res){
         }
     });
 }
+exports.customerUpdateProfile = async function(req, res){
+    logger.info("from customerUpdateProfile");
+    logger.info("req.body :", req.body);
+    let data = req.body;
+    const {customer_id, first_name, last_name, email_id, mobile, } = data;
+    if(!customer_id)
+        return res.status(400).json({
+        status: 'Field Error',
+        field: 'customer_id',
+        message: 'customer_id is a mandatory field.'
+        })
+    if(!first_name)
+        return res.status(400).json({
+        status: 'Field Error',
+        field: 'first_name',
+        message: 'First Name should not be empty.'
+        })
+    if(!last_name)
+        return res.status(400).json({
+        status: 'Field Error',
+        field: 'last_name',
+        message: 'Last Name should not be empty.'
+        })
+    if(!email_id)
+        return res.status(400).json({
+          status: 'Field Error',
+          field: 'email_id',
+          message: 'Email Id should not be empty.'
+        })
+    else if(!email_id.includes('@') || !email_id.includes('.'))
+        return res.status(400).json({
+          status: 'Field Error',
+          field: 'email_id',
+          message: 'Invalid EmailId'
+        })
+    if(!mobile)
+        return res.status(400).json({
+        status: 'Field Error',
+        field: 'mobile',
+        message: 'Mobile should not be empty.'
+        })
+    
+    const query = `UPDATE asm_customers SET first_name=?, last_name=?, email_id=?, mobile=? where customer_id = ? `;
+    asmdb.query( query, [first_name, last_name, email_id, mobile, customer_id], function (err, result) {
+        logger.info("result=", result);
+        logger.info("err=", err);
+        if (!err && result.affectedRows === 1) {
+            let customerDetails = {
+                customer_id,
+                first_name,
+                last_name,
+                email_id, 
+                mobile
+            };
+            return res.status(200).json({
+                status: 'success',
+                customerDetails
+            })
+        }
+        else{
+            logger.info("error=", err);
+            return res.status(502).json({
+                        status: 'failed',
+                        message: err.message
+                    })
+        }
+    });
+}   

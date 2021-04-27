@@ -33,10 +33,10 @@ exports.loginCheck = function (req,res){
                     let payload = {subject : user[0].user_id}
                     console.log("payload:",payload);
                     let token = jwt.sign({payload},"secret_key"); 
-                    res.json([{
+                    res.json({
                         token : token,
                         usename : user[0].user_id                       
-                    }]);
+                    });
                 }
             }
         }

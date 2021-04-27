@@ -65,9 +65,9 @@ exports.getAllSubCategories = function(req,res){
                 data: rows
             })
         else
-            return res.status(403).json([{
+            return res.status(403).json({
                 status: 'failed',
                 errMsg: 'Error while performing query.'
-            }])
+            })
     });
 }
