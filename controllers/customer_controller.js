@@ -93,8 +93,8 @@ exports.customerSignup = async function(req, res){
                 // logger.info(msg);
                 let mailOptions = {
                     from: 'customercare.aswika@gmail.com',
-                    to: 'malli.vemuri@gmail.com'+','+email_id,
-                    bcc: 'dmk.java@gmail.com',
+                    to: email_id,
+                    bcc: 'malli.vemuri@gmail.com,dmk.java@gmail.com',
                     subject: 'ASM Signup activation link',
                     html: msg
                 };

@@ -207,8 +207,8 @@ sendOrderConfirmMail=(order_id, customer_id, billing_address, cartList)=>{
     // logger.info(msg);
     let mailOptions = {
         from: 'customercare.aswika@gmail.com',
-        to: 'malli.vemuri@gmail.com,'+ba.email_id,
-        bcc: 'dmk.java@gmail.com',
+        to: ba.email_id,
+        bcc: 'malli.vemuri@gmail.com,dmk.java@gmail.com',
         subject: `ASM Service Customer's Order Confirmation`,
         html: msg
     
