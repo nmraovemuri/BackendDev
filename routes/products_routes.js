@@ -27,6 +27,9 @@ router.get('/client/getTopDealsOfDay',  productsController.getTopDealsOfDay);
 // Get All Products with given discount
 router.get('/client/getTopDealsOfDayByPercentage/:discount_percentage',  productsController.getTopDealsOfDayByPercentage);
 
+// get Products by Brand
+router.get('/client/getProductsByBrand/:product_brand',  productsController.getProductsByBrand);
+
 
 
 module.exports = router

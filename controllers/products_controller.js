@@ -370,3 +370,50 @@ exports.getTopDealsOfDayByPercentageRange = function(req,res){
             })
     });
 }
+
+// get Products by Brand
+exports.getProductsByBrand = function(req,res){
+    clogger.info("from getProductsByBrand()");
+    let product_brand = req.params.product_brand;
+    // let to_discount = req.params.to_discount;
+    db.query(`SELECT p.id,
+            p.product_name,
+            p.product_brand,
+            CONCAT("/images/products/200/", pup.product_img) as product_img, 
+            p.description_fst,
+            p.description_snd,
+            u.unit_value,
+            u.unit_type,
+            pup.mrp,
+            pup.sale_price,
+            amt.gst_slab,
+            (pup.mrp - pup.sale_price) as discount_amount,
+            round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage
+            FROM asm_products p,
+            asm_product_unit_price pup,
+            asm_mt_units u,
+            asm_mt_tax amt
+            WHERE p.id = pup.product_id and
+            p.gst_slab_id = amt.id and
+            pup.unit_id = u.id and
+            p.status = 1 and
+            u.status = 1 and 
+            pup.status = 1 and
+            amt.status = 1 and
+            p.product_brand = "${product_brand}"
+	        order by discount_percentage desc 
+            `, 
+            function (err, rows, fields) {
+                clogger.info(err);
+        if (!err)
+            return res.json({
+                status: 'success',
+                data: rows
+            })
+        else
+            return res.json({
+                status: 'failed',
+                errMsg: 'Error while performing query.'
+            })
+    });
+}
