@@ -225,7 +225,7 @@ sendOrderConfirmMail=(order_id, customer_id, billing_address, cartList)=>{
 };
 
 sendSMS=(order_id, customer_name, mobile  )=>{
-  logger.info("from sendOrderConfirmMail");
+  logger.info("from sendSMS");
   const template_id = '1507161536203455185';
   const message = `Hi ${customer_name}, Your order ${order_id} will be shipped shortly.
   Thanks for choosing Aswikamart!`
