@@ -224,11 +224,13 @@ sendOrderConfirmMail=(order_id, customer_id, billing_address, cartList)=>{
   });
 };
 
-sendSMS=(order_id, first_name, mobile  )=>{
+sendSMS=(order_id, customer_name, mobile  )=>{
   logger.info("from sendOrderConfirmMail");
-  const message = `Hi ${first_name}: Thanks for shopping with us! Your order ${order_id} is confirmed and will be shipped shortly.`;
+  const template_id = '1507161536203455185';
+  const message = `Hi ${customer_name}, Your order ${order_id} will be shipped shortly.
+  Thanks for choosing Aswikamart!`
   let url = sms.URL;
-  url += `&mobile=${mobile}&message=${message}`
+  url += `&mobile=${mobile}&message=${message}&template_id=${template_id}`
   // &mobile=${mobile}
   // &message=${message}
   logger.info("url = ", url);
@@ -309,13 +311,13 @@ exports.ordersubmit = function(req,res){
       const order_id = result.insertId;
       let da = delivery_address
       let ba = billing_address
-      let first_name = billing_address.first_name;
+      let customer_name = billing_address.first_name;
       let mobile = billing_address.mobile;
       storeDeliveryAddress(customer_id, delivery_address);
       storeBillingAddress(customer_id, billing_address);
       storeCartList(order_id, cartList);
       sendOrderConfirmMail(order_id, customer_id, billing_address, cartList);
-      sendSMS(order_id, first_name, mobile);
+      sendSMS(order_id, customer_name, mobile);
       return res.status(200).json({
         status: 'success',
         order_id
