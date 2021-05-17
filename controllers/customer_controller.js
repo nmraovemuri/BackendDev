@@ -118,6 +118,17 @@ exports.customerSignup = async function(req, res){
         }
         else{
             logger.info("error=", err);
+            logger.info("error sqlMessage=", err.sqlMessage);
+            logger.info("error=", err);
+            if(err.sqlMessage.includes('Duplicate entry') && err.sqlMessage.includes('asm_customers_email_id_u')){
+                return res.status(502).json({
+                    status: 'failed',
+                    error_type: 'DUP_EMAIL_ID_ENTRY',
+                    message: 'This Email Id is alredy existed.'
+                });
+            }
+            
+
             return res.status(502).json({
                         status: 'failed',
                         message: err.message
