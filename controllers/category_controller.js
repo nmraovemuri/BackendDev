@@ -88,7 +88,7 @@ exports.createCategory = function(req,res){
 
 
 exports.getAllCategories = function(req,res){
-    
+    clogger.info("from getAllCategories");
     db.query(`SELECT id, 
                 category_name, 
                 CONCAT('images/categories/', feature_img) as product_img, 
@@ -98,7 +98,7 @@ exports.getAllCategories = function(req,res){
                 FROM_UNIXTIME(updated_date, '%Y-%m-%d %H:%i:%s') as updated_date
                 from asm_mt_category where status = 1`, function (err, rows, fields) {
         if (!err)
-            return res.json({
+            return res.status(200).json({
                 status: 'success',
                 data: rows
             })

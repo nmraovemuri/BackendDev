@@ -140,6 +140,7 @@ exports.getAllProducts = function(req,res){
 
 
 exports.getProductsBySubcatId = function(req,res){
+    clogger.info("from getProductsBySubcatId");
     let subcat_id = req.body.subcat_id;
     clogger.info("subcat_id:", subcat_id);
     db.query(`SELECT p.id,
@@ -173,7 +174,7 @@ exports.getProductsBySubcatId = function(req,res){
             function (err, rows, fields) {
                 clogger.info(err);
         if (!err)
-            return res.json({
+            return res.status(200).json({
                 status: 'success',
                 data: rows
             })
@@ -269,7 +270,7 @@ exports.getTopDealsOfDay = function(req,res){
             function (err, rows, fields) {
                 clogger.info(err);
         if (!err)
-            return res.json({
+            return res.status(200).json({
                 status: 'success',
                 data: rows
             })
@@ -314,7 +315,7 @@ exports.getTopDealsOfDayByPercentage = function(req,res){
             function (err, rows, fields) {
                 clogger.info(err);
         if (!err)
-            return res.json({
+            return res.status(200).json({
                 status: 'success',
                 data: rows
             })
@@ -359,7 +360,7 @@ exports.getTopDealsOfDayByPercentageRange = function(req,res){
             function (err, rows, fields) {
                 clogger.info(err);
         if (!err)
-            return res.json({
+            return res.status(200).json({
                 status: 'success',
                 data: rows
             })
@@ -406,7 +407,7 @@ exports.getProductsByBrand = function(req,res){
             function (err, rows, fields) {
                 clogger.info(err);
         if (!err)
-            return res.json({
+            return res.status(200).json({
                 status: 'success',
                 data: rows
             })

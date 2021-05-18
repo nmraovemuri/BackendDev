@@ -53,6 +53,7 @@ exports.createSubCategory = function(req,res){
 
 
 exports.getAllSubCategories = function(req,res){
+    clogger.info("from getAllSubCategories");
     let sql = `select sctr.id, sctr.sub_category_name, ctr.category_name, sctr.status
                 from asm_mt_subcategory sctr, asm_mt_category ctr
                 where sctr.category_id = ctr.id 
@@ -60,7 +61,7 @@ exports.getAllSubCategories = function(req,res){
                 and sctr.status = 1`;
     db.query(sql, function (err, rows, fields) {
         if (!err)
-            return res.json({
+            return res.status(200).json({
                 status: 'success',
                 data: rows
             })
