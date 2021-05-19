@@ -60,6 +60,7 @@ exports.getAllSubCategories = function(req,res){
                 and ctr.status = 1 
                 and sctr.status = 1`;
     db.query(sql, function (err, rows, fields) {
+        clogger.info("error=", err);
         if (!err)
             return res.status(200).json({
                 status: 'success',
