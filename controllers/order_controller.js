@@ -27,8 +27,8 @@ let getCartTotalTax=(cartList)=>{
   logger.info("getCartTotalTax");
   logger.info("cartList:", cartList)
   return cartList.reduce((tot, item)=> {
-    let taxable_value = (item.sale_price/(1 + item.gst_slab/100)).toFixed(2);
-    return tot + ((taxable_value * item.gst_slab / 100) * item.quantity).toFixed(2)
+    let taxable_value = parseFloat((item.sale_price/(1 + item.gst_slab/100)).toFixed(2));
+    return tot + parseFloat(((taxable_value * item.gst_slab / 100) * item.quantity).toFixed(2))
   }, 0);
 }
 const storeDeliveryAddress = (customer_id, delivery_address)=>{
