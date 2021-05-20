@@ -4,6 +4,7 @@ let fs = require('fs');
 const clogger = require('../utils/customer_logger');
 const alogger = require('../utils/admin_logger');
 const { logger } = require('../config/mail_transporter');
+const urls = require('../config/urls');
 
 
 exports.createProduct = function(req,res){
@@ -114,7 +115,7 @@ exports.createProduct = function(req,res){
 exports.getAllProducts = function(req,res){
     db.query(`SELECT id,
             product_name,
-            CONCAT("/images/products/", product_img) as product_img, 
+            CONCAT(${urls.SERVER}, "/images/products/", product_img) as product_img, 
             description_fst,
             description_snd,
             status,
@@ -146,8 +147,8 @@ exports.getProductsBySubcatId = function(req,res){
     db.query(`SELECT p.id,
             p.product_name,
             p.product_brand,
-            CONCAT("/images/products/200/", pup.product_img) as product_img_200, 
-            CONCAT("/images/products/400/", pup.product_img) as product_img_400, 
+            CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
+            CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
             p.description_fst,
             p.description_snd,
             u.unit_value,
@@ -199,8 +200,8 @@ exports.getProductsBySearchString = function(req,res){
     db.query(`SELECT p.id,
             p.product_name,
             p.product_brand,
-            CONCAT("/images/products/200/", pup.product_img) as product_img_200, 
-            CONCAT("/images/products/400/", pup.product_img) as product_img_400, 
+            CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
+            CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
             p.description_fst,
             p.description_snd,
             u.unit_value,
@@ -245,8 +246,8 @@ exports.getTopDealsOfDay = function(req,res){
     db.query(`SELECT p.id,
             p.product_name,
             p.product_brand,
-            CONCAT("/images/products/200/", pup.product_img) as product_img_200, 
-            CONCAT("/images/products/400/", pup.product_img) as product_img_400, 
+            CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
+            CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
             p.description_fst,
             p.description_snd,
             u.unit_value,
@@ -291,8 +292,8 @@ exports.getTopDealsOfDayByPercentage = function(req,res){
     db.query(`SELECT p.id,
             p.product_name,
             p.product_brand,
-            CONCAT("/images/products/200/", pup.product_img) as product_img_200, 
-            CONCAT("/images/products/400/", pup.product_img) as product_img_400, 
+            CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
+            CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
             p.description_fst,
             p.description_snd,
             u.unit_value,
@@ -337,8 +338,8 @@ exports.getTopDealsOfDayByPercentageRange = function(req,res){
     db.query(`SELECT p.id,
             p.product_name,
             p.product_brand,
-            CONCAT("/images/products/200/", pup.product_img) as product_img_200, 
-            CONCAT("/images/products/400/", pup.product_img) as product_img_400, 
+            CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
+            CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
             p.description_fst,
             p.description_snd,
             u.unit_value,
@@ -385,8 +386,8 @@ exports.getProductsByBrand = function(req,res){
     db.query(`SELECT p.id,
             p.product_name,
             p.product_brand,
-            CONCAT("/images/products/200/", pup.product_img) as product_img_200, 
-            CONCAT("/images/products/400/", pup.product_img) as product_img_400, 
+            CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
+            CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
             p.description_fst,
             p.description_snd,
             u.unit_value,
