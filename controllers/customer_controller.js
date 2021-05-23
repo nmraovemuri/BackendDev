@@ -18,6 +18,42 @@ logger.info("urls=", urls);
 //     }
 // });
 // logger.info("transporter =", transporter);
+
+exports.checkEmailAlreadyExisted = async function (req, res){
+    logger.info("from checkEmailAlreadyExisted");
+    logger.info("req.body=", req.body);
+
+    const {email_id} = req.body
+    data = req.body
+  
+    asmdb.query(`SELECT email_id 
+                from asm_customers 
+                where email_id = ? 
+                `, 
+                [email_id], function (err, result, fields) {
+        logger.info('err =', err);
+        logger.info('result = ', result);
+        if(err)
+            return res.status(502).json({
+                status: 'failed',
+                message: err.message
+            });
+        else{
+                if(result.length===0){
+                  return res.status(200).json({
+                    status: 'success',
+                    message: "This email id is available for registration"
+                  }); 
+                }else{
+                  return res.status(200).json({
+                    status: 'failed',
+                    message: "This email id is already taken"
+                  });
+                }
+            }
+    });
+}
+
 exports.customerSignup = async function(req, res){
     logger.info("from clientSignup");
     logger.info("req.body :", req.body);

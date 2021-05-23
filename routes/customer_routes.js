@@ -3,6 +3,10 @@ const router = express.Router()
 const jwt = require('jsonwebtoken');
 const customerController = require('../controllers/customer_controller');
 
+
+//Checking Email Id is already existed or available for registration
+router.post('/checkEmailAlreadyExisted', customerController.checkEmailAlreadyExisted);
+
 //Customer Signup
 router.post('/customer_signup', customerController.customerSignup);
 
