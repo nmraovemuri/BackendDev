@@ -29,6 +29,9 @@ router.post('/customer_change_password', ensureToken, customerController.custome
 //Customer UpdateProfile
 router.post('/customerUpdateProfile', customerController.customerUpdateProfile);
 
+//Get Customer Shipping Address
+router.get('/get_customer_shipping_address/:customer_id', customerController.getCustomerShippingAddress);
+
 // Ensuring Authorization
 function ensureToken(req, res, next){
     console.log(req.headers);

@@ -473,6 +473,7 @@ exports.customerChangePassword = async function(req, res){
         }
     });
 }
+
 exports.customerUpdateProfile = async function(req, res){
     logger.info("from customerUpdateProfile");
     logger.info("req.body :", req.body);
@@ -541,3 +542,91 @@ exports.customerUpdateProfile = async function(req, res){
         }
     });
 }   
+
+exports.getCustomerShippingAddress = async function(req, res){
+    logger.info("from getCustomerShippingAddress");
+    logger.info("req.body :", req.body);
+    logger.info("customer_id= ", req.params.customer_id);
+    const customer_id = req.params.customer_id;
+    // let data = req.body;
+    
+    if(!customer_id)
+        return res.status(400).json({
+        status: 'Field Error',
+        field: 'customer_id',
+        message: 'Customer ID is mandatory'
+        })
+    let query = `SELECT ac.customer_id, ac.first_name, 
+                    ac.last_name, ac.email_id, ac.mobile, 
+	                acsa.addr_field1, acsa.addr_field2, 
+                    acsa.addr_field3, acsa.addr_field4, 
+                    acsa.addr_field5, acsa.addr_field6,
+                    acsa.city, acsa.state, 
+                    acsa.country, acsa.pin_code
+                FROM asm_customers ac,
+                    asm_customer_shipping_address acsa
+                WHERE ac.customer_id = ? AND
+                        ac.customer_id = acsa.customer_id`;
+    asmdb.query(query, [customer_id], function (err, result, fields) {
+        logger.info('err =', err);
+        logger.info('result = ', result);
+        if(err)
+            return res.status(502).json({
+                status: 'failed',
+                message: err.message
+            });
+        else if(result.length==0)
+            //Customer Address is not Available
+            return res.status(200).json({
+                status: "failed",
+                key: 'DATA_NOT_AVAILABLE',
+                error:"Invalid customer_id"
+            });
+        else if (result.length!=0){
+            return res.status(200).json({
+                status: 'success',
+                customer_address: result[0],
+            });
+        }
+    });
+}
+const storeDeliveryAddress = (customer_id, delivery_address)=>{
+    logger.info("from storeDeliveryAddress");
+    let da = delivery_address
+    let findCustomerDAQuery = `SELECT id from asm_customer_shipping_address
+        where customer_id =?`
+    
+    asmDb.query(findCustomerDAQuery, 
+              [customer_id], function (daErr, daResult, fields) {
+      logger.info('daErr =', daErr);
+      logger.info('daResult = ', daResult);
+      if(daResult.length === 0){
+        let insertDAQuery = `INSERT INTO asm_customer_shipping_address 
+          (first_name, last_name, mobile, email_id, addr_field1, addr_field2, addr_field3,
+          addr_field4, addr_field5, addr_field6, city, state, country, pin_code,
+          customer_id, created_date, updated_date) values (?, ?, ?, ?, 
+            ?, ?, ?, ?, ?, ?, 
+            ?, ?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`
+            
+        asmDb.query(insertDAQuery, [da.first_name, da.last_name, da.mobile, da.email_id, 
+          da.addr_field1, da.addr_field2, da.addr_field3, da.addr_field4, da.addr_field5, da.addr_field6, 
+          da.city, da.state, da.country, da.pin_code, customer_id], function (daInsertErr, daInsertResult) {
+          logger.info("daInsertErr=", daInsertErr);
+          logger.info("daInsertResult=", daInsertResult);   
+          });
+      }else if(daResult.length === 1){
+        let updateDAQuery = `UPDATE asm_customer_shipping_address SET
+        first_name = ?, last_name = ?, mobile = ?, email_id = ?, addr_field1 = ?, 
+        addr_field2 = ?, addr_field3 = ?, addr_field4 = ?, addr_field5 = ?, 
+        addr_field6 = ?, city = ?, state =? , country = ?, pin_code = ?,
+        updated_date = UNIX_TIMESTAMP() where customer_id = ?
+          `
+        asmDb.query(updateDAQuery, [da.first_name, da.last_name, da.mobile, da.email_id, da.addr_field1, 
+          da.addr_field2, da.addr_field3, da.addr_field4, da.addr_field5, 
+          da.addr_field6, da.city, da.state, da.country, da.pin_code, customer_id], function (daUpdatetErr, daUpdateResult) {
+          logger.info("daUpdatetErr=", daUpdatetErr);
+          logger.info("daUpdateResult=", daUpdateResult);   
+          });
+      }
+    });
+  }
