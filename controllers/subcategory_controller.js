@@ -54,11 +54,13 @@ exports.createSubCategory = function(req,res){
 
 exports.getAllSubCategories = function(req,res){
     clogger.info("from getAllSubCategories");
-    let sql = `select sctr.id, sctr.sub_category_name, ctr.category_name, sctr.status
-                from asm_mt_subcategory sctr, asm_mt_category ctr
-                where sctr.category_id = ctr.id 
-                and ctr.status = 1 
-                and sctr.status = 1`;
+    let sql = `SELECT sctr.id, sctr.sub_category_name,
+                    sctr.category_id,
+                    ctr.category_name, sctr.status
+                FROM asm_mt_subcategory sctr, asm_mt_category ctr
+                WHERE sctr.category_id = ctr.id 
+                AND ctr.status = 1 
+                AND sctr.status = 1`;
     db.query(sql, function (err, rows, fields) {
         clogger.info("error=", err);
         if (!err)
