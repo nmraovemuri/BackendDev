@@ -2,6 +2,7 @@
 var db = require('../config/db');
 const clogger = require('../utils/customer_logger');
 const alogger = require('../utils/admin_logger');
+const urls = require('../config/urls');
 
 exports.createSubCategory = function(req,res){
     alogger.info("req.body :", req.body);
@@ -56,7 +57,9 @@ exports.getAllSubCategories = function(req,res){
     clogger.info("from getAllSubCategories");
     let sql = `SELECT sctr.id, sctr.sub_category_name,
                     sctr.category_id,
-                    ctr.category_name, sctr.status
+                    ctr.category_name, sctr.status,
+                    CONCAT('${urls.SERVER}', "/images/subcategories/sub_cat_home/", sc_img_1) as sc_img_home,
+                    CONCAT('${urls.SERVER}', "/images/subcategories/sub_cat_inner/", sc_img_2) as sc_img_inner
                 FROM asm_mt_subcategory sctr, asm_mt_category ctr
                 WHERE sctr.category_id = ctr.id 
                 AND ctr.status = 1 
