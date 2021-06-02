@@ -3,6 +3,7 @@ var db = require('../config/db');
 let fs = require('fs');
 const clogger = require('../utils/customer_logger');
 const alogger = require('../utils/admin_logger');
+const urls = require('../config/urls');
 
 exports.createCategory = function(req,res){
     alogger.info("req.body :", req.body);
@@ -91,6 +92,7 @@ exports.getAllCategories = function(req,res){
     clogger.info("from getAllCategories");
     db.query(`SELECT id, 
                 category_name, 
+                CONCAT('${urls.SERVER}', "/images/categories/", feature_img) as category_img,
                 CONCAT('images/categories/', feature_img) as product_img, 
                 category_description, 
                 status, 

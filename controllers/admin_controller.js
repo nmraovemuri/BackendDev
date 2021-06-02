@@ -1,4 +1,5 @@
 var db = require('../config/db');
+var bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 var nodemailer = require('nodemailer');
 const logger = require('../utils/admin_logger');
@@ -22,7 +23,7 @@ exports.adminSignIn = function (req, res){
            error:"Please add emailID and password"
         })
     }
-     let sql = 'SELECT * from asm_admin where email_id = ? '   
+    let sql = 'SELECT * from asm_admin where email_id = ? '   
     
     db.query(sql, [emailID], (err, rows, fields)=>{
         if(err) 
@@ -31,20 +32,49 @@ exports.adminSignIn = function (req, res){
                 error:"Invalid EmailID or password"
             });
 
-        else if(rows.length === 0 || rows[0].password !== password)
-                return res.status(422).json({
-                    status: "failed",
-                    error:"Invalid EmailID or password"
-                });
-        else{
-            const token = jwt.sign({emailID}, 'my-secret-key');
-            res.json({status: "success", token, emailID})
+        else if(rows.length === 0)
+            return res.status(422).json({
+                status: "failed",
+                error:"Invalid EmailID or password"
+            });
+        else if(rows.length === 1){
+            let hashedPassword = rows[0].password;
+            bcrypt.compare(password, hashedPassword, function(err2, bcresult) {
+                logger.info('err2 =', err2);
+                logger.info("bcresult=", bcresult);
+                //If password matched
+                if(bcresult == true){
+                    const token = jwt.sign({emailID}, 'my-secret-key');
+                    return res.status(200).json(
+                    //     {
+                    //     status: 'success',
+                    //     customer: result[0],
+                    //     token
+                    // }
+                        {
+                            status: "success", 
+                            token, 
+                            emailID
+                        }
+                    );
+                }
+                else{
+                    //If password not matched
+                    return res.status(502).json({
+                        status: 'failed',
+                        message: 'Invalid email id or password.'
+                    });
+                }
+            });
+
+            // const token = jwt.sign({emailID}, 'my-secret-key');
+            // res.json({status: "success", token, emailID})
         }
     });
 }
 
 // Admin Change Password
-exports.changeAdminPassword = function (req, res){
+exports.changeAdminPassword = async function (req, res){
     logger.info(req.body);
     const {emailID, oldPassword, newPassword} = req.body
     if(!emailID || !oldPassword || !newPassword){
@@ -64,33 +94,58 @@ exports.changeAdminPassword = function (req, res){
             error:"While change password,  old password and new password should not be same"
         })
     let sql = 'SELECT * from asm_admin where email_id = ? '
+    const salt = await bcrypt.genSalt(11);
+    const oldHashedPassword = await bcrypt.hash(oldPassword, salt);
+    const newHashedPassword = await bcrypt.hash(newPassword, salt);
     
     db.query(sql, [emailID], (err, rows, fields)=>{
+        logger.info('err =', err);
+        logger.info("query result=", rows);
         if(err) 
             return res.status(422).json({
                 status: "failed",
                 error:"Invalid EmailID "
             });
 
-        else if(rows.length === 0 || rows[0].password !== oldPassword)
+        else if(rows.length === 0)
                 return res.status(422).json({
                     status: "failed",
                     error:"Invalid EmailID or password"
                 });
-        else{
-            db.query("UPDATE asm_admin SET password = ? where email_id= ? ", 
-                [newPassword, emailID], function (err, rows) {
-                    if(err) 
-                        return res.status(422).json({
-                            status: "failed",
-                            error: err.message
+        else if(rows.length === 1){
+            let dbHashedPassword = rows[0].password;
+            bcrypt.compare(oldPassword, dbHashedPassword, function(err2, bcresult) {
+                logger.info('err2 =', err2);
+                logger.info("bcresult=", bcresult);
+                
+                //If password not matched
+                if(bcresult == false){
+                    return res.status(200).json({
+                            status: "failed", 
+                            key: 'INVALID_OLD_PASSWORD', 
+                            message: "Invalid Old Password"
+                        }
+                    );
+                }
+                else{
+                    //If password matched then update old password with new password.
+                    db.query("UPDATE asm_admin SET password = ? where email_id= ? ", 
+                        [newHashedPassword, emailID], function (err3, result) {
+                            logger.info('err3 =', err3);
+                            logger.info("query result=", result);
+                        if(err3) 
+                            return res.status(422).json({
+                                status: "failed",
+                                error: err3.message
+                            });
+                        
+                        return res.json({ 
+                            status: "success", 
+                            msg: "Password is changed successfully"
                         });
-                    logger.info(rows);
-                    res.json({ 
-                        status: "success", 
-                        msg: "Password is changed successfully"
-                    });
-            })
+                    })
+                }
+            });
         }
     });
 }
@@ -140,9 +195,9 @@ exports.adminForgotPassword = function (req, res){
               };
               transporter.sendMail(mailOptions, function(error, info){
                 if (error) {
-                  logger.info(error);
+                    logger.info(error);
                 } else {
-                  logger.info('Email sent: ' + info.response);
+                    logger.info('Email sent: ' + info.response);
                   res.send({status:true});                }
               });
               
