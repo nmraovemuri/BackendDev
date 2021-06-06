@@ -125,7 +125,7 @@ exports.getAllProducts = function(req,res){
             from asm_products 
             where status = 1`, 
             function (err, rows, fields) {
-                clogger.info(err);
+                clogger.info("error: ", err);
         if (!err)
             return res.json({
                 status: 'success',
@@ -173,7 +173,7 @@ exports.getAllProductsForClient = function(req,res){
                 order by p.id
             `, 
             function (err, rows, fields) {
-                clogger.info("error", err);
+                clogger.info("error:", err);
         if (!err)
             return res.status(200).json({
                 status: 'success',
@@ -224,7 +224,7 @@ exports.getProductsBySubcatId = function(req,res){
                 order by p.id
             `, [subcat_id],
             function (err, rows, fields) {
-                clogger.info(err);
+                clogger.info("error: ", err);
         if (!err)
             return res.status(200).json({
                 status: 'success',
@@ -250,7 +250,7 @@ exports.getProductsBySearchString = function(req,res){
         });
     }
     let tmp_search_string = search_string.replace(/ /g, '');
-    clogger.info("tmp_search_string length=", tmp_search_string.length);
+    clogger.info("tmp_search_string length= ", tmp_search_string.length);
     if(tmp_search_string.length===0){
         return res.status(200).json({
             status: "success",
@@ -261,7 +261,7 @@ exports.getProductsBySearchString = function(req,res){
         search_string = search_string.toLocaleLowerCase();
         search_string  = '%'+search_string+'%';
     }
-    clogger.info("search_string:", search_string);
+    clogger.info("search_string: ", search_string);
     db.query(`SELECT CONCAT(p.id, "-", u.id) as product_unit_id,
                 p.id as product_id,
                 p.product_name,
@@ -294,7 +294,7 @@ exports.getProductsBySearchString = function(req,res){
                 order by p.id
             `, [search_string],
             function (err, rows, fields) {
-                clogger.info(err);
+                clogger.info("error= ", err);
         if (!err)
             return res.json({
                 status: 'success',
@@ -342,7 +342,7 @@ exports.getTopDealsOfDay = function(req,res){
                 order by discount_percentage desc 
             `, 
             function (err, rows, fields) {
-                clogger.info(err);
+                clogger.info("error: ", err);
         if (!err)
             return res.status(200).json({
                 status: 'success',
@@ -391,7 +391,7 @@ exports.getTopDealsOfDayByPercentage = function(req,res){
                 order by discount_percentage desc 
             `, 
             function (err, rows, fields) {
-                clogger.info(err);
+                clogger.info("error: ", err);
         if (!err)
             return res.status(200).json({
                 status: 'success',
@@ -440,7 +440,7 @@ exports.getTopDealsOfDayByPercentageRange = function(req,res){
                 order by discount_percentage desc 
             `, 
             function (err, rows, fields) {
-                clogger.info(err);
+                clogger.info("error: ", err);
         if (!err)
             return res.status(200).json({
                 status: 'success',
@@ -491,7 +491,7 @@ exports.getProductsByBrand = function(req,res){
                 order by discount_percentage desc 
             `, 
             function (err, rows, fields) {
-                clogger.info(err);
+                clogger.info("error: ", err);
         if (!err)
             return res.status(200).json({
                 status: 'success',

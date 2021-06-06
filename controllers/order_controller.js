@@ -10,22 +10,22 @@ const urls = require('../config/urls');
 
 let getCartTotalPrice=(cartList)=>{ 
   logger.info("getCartTotalPrice");
-  logger.info("cartList:", cartList)
+  logger.info("cartList: ", cartList)
   return cartList.reduce((tot, item)=> tot + item.sale_price*item.quantity, 0);
 }
 let getCartDiscountPrice=(cartList)=>{
   logger.info("getCartDiscountPrice")
-  logger.info("cartList:", cartList)
+  logger.info("cartList: ", cartList)
   return cartList.reduce((tot, item)=> tot + item.discount_amount*item.quantity, 0);
 }
 let getCartQuantity=(cartList)=>{
   logger.info("getCartQuantity")
-  logger.info("cartList:", cartList)
+  logger.info("cartList: ", cartList)
   return cartList.reduce((tot, item)=> tot + item.quantity, 0);
 }
 let getCartTotalTax=(cartList)=>{ 
   logger.info("getCartTotalTax");
-  logger.info("cartList:", cartList)
+  logger.info("cartList: ", cartList)
   return cartList.reduce((tot, item)=> {
     let taxable_value = parseFloat((item.sale_price/(1 + item.gst_slab/100)).toFixed(2));
     let tax_amt = (taxable_value * item.gst_slab/100).toFixed(2);
@@ -44,7 +44,7 @@ const storeDeliveryAddress = (customer_id, delivery_address)=>{
   
   asmDb.query(findCustomerDAQuery, 
             [customer_id], function (daErr, daResult, fields) {
-    logger.info('daErr =', daErr);
+    logger.info('daErr = ', daErr);
     logger.info('daResult = ', daResult);
     if(daResult.length === 0){
       let insertDAQuery = `INSERT INTO asm_customer_shipping_address 
@@ -57,8 +57,8 @@ const storeDeliveryAddress = (customer_id, delivery_address)=>{
       asmDb.query(insertDAQuery, [da.first_name, da.last_name, da.mobile, da.email_id, 
         da.addr_field1, da.addr_field2, da.addr_field3, da.addr_field4, da.addr_field5, da.addr_field6, 
         da.city, da.state, da.country, da.pin_code, customer_id], function (daInsertErr, daInsertResult) {
-        logger.info("daInsertErr=", daInsertErr);
-        logger.info("daInsertResult=", daInsertResult);   
+        logger.info("daInsertErr= ", daInsertErr);
+        logger.info("daInsertResult= ", daInsertResult);   
         });
     }else if(daResult.length === 1){
       let updateDAQuery = `UPDATE asm_customer_shipping_address SET
@@ -70,8 +70,8 @@ const storeDeliveryAddress = (customer_id, delivery_address)=>{
       asmDb.query(updateDAQuery, [da.first_name, da.last_name, da.mobile, da.email_id, da.addr_field1, 
         da.addr_field2, da.addr_field3, da.addr_field4, da.addr_field5, 
         da.addr_field6, da.city, da.state, da.country, da.pin_code, customer_id], function (daUpdatetErr, daUpdateResult) {
-        logger.info("daUpdatetErr=", daUpdatetErr);
-        logger.info("daUpdateResult=", daUpdateResult);   
+        logger.info("daUpdatetErr= ", daUpdatetErr);
+        logger.info("daUpdateResult= ", daUpdateResult);   
         });
     }
   });
@@ -85,7 +85,7 @@ const storeBillingAddress = (customer_id, billing_address)=>{
       
   asmDb.query(findCustomerBAQuery, 
             [customer_id], function (baErr, baResult, fields) {
-      logger.info('baErr =', baErr);
+      logger.info('baErr = ', baErr);
       logger.info('baResult = ', baResult);
     if(baResult.length === 0){
       let insertBAQuery = `INSERT INTO asm_customer_billing_address 
@@ -97,8 +97,8 @@ const storeBillingAddress = (customer_id, billing_address)=>{
       asmDb.query(insertBAQuery, [ba.first_name, ba.last_name, ba.mobile, ba.email_id, ba.addr_field1, 
         ba.addr_field2, ba.addr_field3, ba.addr_field4, ba.addr_field5, 
         ba.addr_field6, ba.city, ba.state, ba.country, ba.pin_code, customer_id], function (baInsertErr, baInsertResult) {
-        logger.info("baInsertErr=", baInsertErr);
-        logger.info("baInsertResult=", baInsertResult);   
+        logger.info("baInsertErr= ", baInsertErr);
+        logger.info("baInsertResult= ", baInsertResult);   
       });
     }else if(baResult.length === 1){
       let updateBAQuery = `UPDATE asm_customer_billing_address SET
@@ -110,8 +110,8 @@ const storeBillingAddress = (customer_id, billing_address)=>{
       asmDb.query(updateBAQuery, [ba.first_name, ba.last_name, ba.mobile, ba.email_id, ba.addr_field1, 
         ba.addr_field2, ba.addr_field3, ba.addr_field4, ba.addr_field5, 
         ba.addr_field6, ba.city, ba.state, ba.country, ba.pin_code, customer_id], function (baUpdatetErr, baUpdateResult) {
-        logger.info("baUpdatetErr=", baUpdatetErr);
-        logger.info("baUpdateResult=", baUpdateResult);   
+        logger.info("baUpdatetErr= ", baUpdatetErr);
+        logger.info("baUpdateResult= ", baUpdateResult);   
       });
     }
   });
@@ -130,8 +130,8 @@ const storeCartList=(order_id, cartList)=>{
 
   logger.info(orderList);
   asmDb.query(orderDetailsQuery, [orderList], function (odiqErr, odiqResult) {
-    logger.info("odiqErr=", odiqErr);
-    logger.info("odiqResult=", odiqResult);   
+    logger.info("odiqErr= ", odiqErr);
+    logger.info("odiqResult= ", odiqResult);   
   });
 }
 sendOrderConfirmMail=(order_id, customer_id, billing_address, cartList)=>{
@@ -221,7 +221,7 @@ sendOrderConfirmMail=(order_id, customer_id, billing_address, cartList)=>{
       
     transporter.sendMail(mailOptions, function(error, info){
         if(error){
-            logger.info(error);
+            logger.info("error: ", error);
         }else{
             logger.info("Email send" + info.response);
         }
@@ -258,12 +258,12 @@ sendSMS=(order_id, customer_name, mobile  )=>{
       logger.info("Error: " + err.message);
     });
   }catch(error){
-    logger.info("error=", error);
+    logger.info("error= ", error);
   }
 }
 exports.ordersubmit = function(req,res){
   logger.info("from ordersubmit");
-  logger.info("body:", req.body);
+  logger.info("body: ", req.body);
   let {customer_id, delivery_address, billing_address, cartList} = req.body;
   logger.info(customer_id);
   logger.info(delivery_address);
@@ -304,8 +304,8 @@ exports.ordersubmit = function(req,res){
       (total_items, total_amount, status, customer_id, created_date, updated_date) 
       values (?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`;
   asmDb.query(orderMasterQuery, [total_items, total_amount, status, customer_id], function (err, result) {
-    logger.info("result=", result);
-    logger.info("err=", err);
+    logger.info("result= ", result);
+    logger.info("error= ", err);
     if(err){
       return res.status(501).json({
         status: 'failed',
@@ -335,11 +335,11 @@ exports.ordersubmit = function(req,res){
 // Orders History
 exports.customerOrdersHistory = function(req,res){
   logger.info("from customerOrdersHistory");
-  logger.info("body:", req.body);
+  logger.info("body: ", req.body);
   // logger.info("params:", req.params);
   let {customer_id, new_status} = req.body;
   // const customer_id = req.params.customer_id;
-  logger.info("customer_id=", customer_id);
+  logger.info("customer_id= ", customer_id);
 
   let query = `SELECT acom.id as order_id, acom.total_items, 
                 acom.total_amount, acom.status, 
@@ -348,8 +348,8 @@ exports.customerOrdersHistory = function(req,res){
               WHERE acom.customer_id = ? 
               ORDER BY created_date desc`
   asmDb.query(query, [customer_id], async function (err, result) {
-      logger.info("result=", result);
-      logger.info("err=", err);
+      logger.info("result= ", result);
+      logger.info("error= ", err);
       if(err){
           return res.status(501).json({
           status: 'failed',
@@ -371,7 +371,7 @@ const getBillingAddress=(customer_id)=>{
                   WHERE customer_id = ?`
       asmDb.query(query, [customer_id], function (err, result) {
           // logger.info("result=", result);
-          logger.info("err=", err);
+          logger.info("error= ", err);
           if(err){
               reject( err);
           }
@@ -390,7 +390,7 @@ const getShippingAddress=(customer_id)=>{
                   WHERE customer_id = ?`
       asmDb.query(query, [customer_id], function (err, result) {
           // logger.info("result=", result);
-          logger.info("err=", err);
+          logger.info("error= ", err);
           if(err){
               reject( err );
           }
@@ -408,7 +408,7 @@ const getOrderDetailsList=(order_id)=>{
                       WHERE order_id = ?`
       asmDb.query(query, [order_id], function (err, result) {
           // logger.info("result=", result);
-          logger.info("err=", err);
+          logger.info("error= ", err);
           if(err){
               reject (err);
           }
@@ -422,16 +422,16 @@ const getOrderDetailsList=(order_id)=>{
 }
 exports.orderDetails = function(req,res){
   logger.info("from orderDetails");
-  logger.info("body:", req.body);
-  logger.info("params:", req.params);
+  logger.info("body: ", req.body);
+  logger.info("params: ", req.params);
   // let {order_id, new_status} = req.body;
   const order_id = req.params.order_id;
-  logger.info("order_id=", order_id);
+  logger.info("order_id= ", order_id);
   let query = `SELECT * FROM asm_customer_order_master
                   WHERE id = ?`
   asmDb.query(query, [order_id], async function (err, result) {
       // logger.info("result=", result);
-      logger.info("err=", err);
+      logger.info("error= ", err);
       if(err){
           return res.status(501).json({
           status: 'failed',
@@ -444,8 +444,8 @@ exports.orderDetails = function(req,res){
           const shipping_address = await getShippingAddress(customer_id);
           const billing_address = await getBillingAddress(customer_id);
           const orderList = await getOrderDetailsList(order_id);
-          // logger.info("shipping_address=", shipping_address);
-          // logger.info("billing_address=", billing_address);
+          // logger.info("shipping_address= ", shipping_address);
+          // logger.info("billing_address= ", billing_address);
           logger.info();
           res.json({
               status: 'success',
