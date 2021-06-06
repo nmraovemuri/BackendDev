@@ -249,8 +249,9 @@ exports.getProductsBySearchString = function(req,res){
             data: []
         });
     }
-    let tmp_search_string = search_string.replace(' ', '');
-    if(!tmp_search_string.length===0){
+    let tmp_search_string = search_string.replace(/ /g, '');
+    clogger.info("tmp_search_string length=", tmp_search_string.length);
+    if(tmp_search_string.length===0){
         return res.status(200).json({
             status: "success",
             data: []
