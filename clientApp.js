@@ -27,6 +27,7 @@ app.use(require('./routes/admin_order_routes'));
 
 app.use(express.static('./assets'));
 app.use(express.static('./resources'));
+app.use(express.static('./logs'));
 // app.use(express.static('./public'));
 app.use(express.static(__dirname + '/public'))
 app.get('*', function (request, response){
