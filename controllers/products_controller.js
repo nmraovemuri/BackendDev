@@ -139,39 +139,89 @@ exports.getAllProducts = function(req,res){
     });
 }
 
+exports.getAllProductsForClient = function(req,res){
+    clogger.info("from getAllProductsForClient");
+    db.query(`SELECT CONCAT(p.id, "-", u.id) as product_unit_id, 
+                p.id as product_id,
+                p.product_name,
+                p.product_brand,
+                CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
+                CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
+                p.description_fst,
+                p.description_snd,
+                u.id as unit_id,
+                u.unit_value,
+                u.unit_type,
+                pup.mrp,
+                pup.sale_price,
+                amt.gst_slab,
+                (pup.mrp - pup.sale_price) as discount_amount,
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage,
+                p.subcat_id
+            FROM asm_products p,
+                asm_product_unit_price pup,
+                asm_mt_units u,
+                asm_mt_tax amt
+            WHERE p.id = pup.product_id and
+                p.gst_slab_id = amt.id and
+                pup.unit_id = u.id and
+                
+                p.status = 1 and
+                u.status = 1 and 
+                pup.status = 1 and
+                amt.status = 1
+                order by p.id
+            `, 
+            function (err, rows, fields) {
+                clogger.info("error", err);
+        if (!err)
+            return res.status(200).json({
+                status: 'success',
+                data: rows
+            })
+        else
+            return res.json({
+                status: 'failed',
+                errMsg: 'Error while performing query.'
+            })
+    });
+}
 
 exports.getProductsBySubcatId = function(req,res){
     clogger.info("from getProductsBySubcatId");
     let subcat_id = req.body.subcat_id;
     clogger.info("subcat_id:", subcat_id);
-    db.query(`SELECT p.id,
-            p.product_name,
-            p.product_brand,
-            CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
-            CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
-            p.description_fst,
-            p.description_snd,
-            u.unit_value,
-            u.unit_type,
-            pup.mrp,
-            pup.sale_price,
-            amt.gst_slab,
-            (pup.mrp - pup.sale_price) as discount_amount,
-            round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage
+    db.query(`SELECT CONCAT(p.id, "-", u.id) as product_unit_id, 
+                p.id as product_id,
+                p.product_name,
+                p.product_brand,
+                CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
+                CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
+                p.description_fst,
+                p.description_snd,
+                u.id as unit_id,
+                u.unit_value,
+                u.unit_type,
+                pup.mrp,
+                pup.sale_price,
+                amt.gst_slab,
+                (pup.mrp - pup.sale_price) as discount_amount,
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage,
+                p.subcat_id
             FROM asm_products p,
-            asm_product_unit_price pup,
-            asm_mt_units u,
-            asm_mt_tax amt
+                asm_product_unit_price pup,
+                asm_mt_units u,
+                asm_mt_tax amt
             WHERE p.subcat_id = ? and 
-            p.id = pup.product_id and
-            p.gst_slab_id = amt.id and
-            pup.unit_id = u.id and
-             
-            p.status = 1 and
-            u.status = 1 and 
-            pup.status = 1 and
-            amt.status = 1
-            order by p.id
+                p.id = pup.product_id and
+                p.gst_slab_id = amt.id and
+                pup.unit_id = u.id and
+                
+                p.status = 1 and
+                u.status = 1 and 
+                pup.status = 1 and
+                amt.status = 1
+                order by p.id
             `, [subcat_id],
             function (err, rows, fields) {
                 clogger.info(err);
@@ -197,34 +247,36 @@ exports.getProductsBySearchString = function(req,res){
         search_string  = '%'+search_string+'%';
     }
     clogger.info("search_string:", search_string);
-    db.query(`SELECT p.id,
-            p.product_name,
-            p.product_brand,
-            CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
-            CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
-            p.description_fst,
-            p.description_snd,
-            u.unit_value,
-            u.unit_type,
-            pup.mrp,
-            pup.sale_price,
-            amt.gst_slab,
-            (pup.mrp - pup.sale_price) as discount_amount,
-            round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage
-            from asm_products p,
-            asm_product_unit_price pup,
-            asm_mt_units u,
-            asm_mt_tax amt
-            where (LOWER(p.product_name) like ?)  and 
-            p.id = pup.product_id and
-            p.gst_slab_id = amt.id and
-            pup.unit_id = u.id and
-             
-            p.status = 1 and
-            u.status = 1 and 
-            pup.status = 1 and
-            amt.status = 1
-            order by p.id
+    db.query(`SELECT CONCAT(p.id, "-", u.id) as product_unit_id,
+                p.id as product_id,
+                p.product_name,
+                p.product_brand,
+                CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
+                CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
+                p.description_fst,
+                p.description_snd,
+                u.id as unit_id,
+                u.unit_value,
+                u.unit_type,
+                pup.mrp,
+                pup.sale_price,
+                amt.gst_slab,
+                (pup.mrp - pup.sale_price) as discount_amount,
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage,
+                p.subcat_id
+            FROM asm_products p,
+                asm_product_unit_price pup,
+                asm_mt_units u,
+                asm_mt_tax amt
+            WHERE (LOWER(p.product_name) like ?)  and 
+                p.id = pup.product_id and
+                p.gst_slab_id = amt.id and
+                pup.unit_id = u.id and
+                p.status = 1 and
+                u.status = 1 and 
+                pup.status = 1 and
+                amt.status = 1
+                order by p.id
             `, [search_string],
             function (err, rows, fields) {
                 clogger.info(err);
@@ -243,33 +295,36 @@ exports.getProductsBySearchString = function(req,res){
 
 exports.getTopDealsOfDay = function(req,res){
     clogger.info("from getTopDealsOfDay()")
-    db.query(`SELECT p.id,
-            p.product_name,
-            p.product_brand,
-            CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
-            CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
-            p.description_fst,
-            p.description_snd,
-            u.unit_value,
-            u.unit_type,
-            pup.mrp,
-            pup.sale_price,
-            amt.gst_slab,
-            (pup.mrp - pup.sale_price) as discount_amount,
-            round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage
+    db.query(`SELECT CONCAT(p.id, "-", u.id) as product_unit_id,
+                p.id as product_id,
+                p.product_name,
+                p.product_brand,
+                CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
+                CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
+                p.description_fst,
+                p.description_snd,
+                u.id as unit_id,
+                u.unit_value,
+                u.unit_type,
+                pup.mrp,
+                pup.sale_price,
+                amt.gst_slab,
+                (pup.mrp - pup.sale_price) as discount_amount,
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage,
+                p.subcat_id
             FROM asm_products p,
-            asm_product_unit_price pup,
-            asm_mt_units u,
-            asm_mt_tax amt
+                asm_product_unit_price pup,
+                asm_mt_units u,
+                asm_mt_tax amt
             WHERE p.id = pup.product_id and
-            p.gst_slab_id = amt.id and
-            pup.unit_id = u.id and
-            p.status = 1 and
-            u.status = 1 and 
-            pup.status = 1 and
-            amt.status = 1 and
-            round(((pup.mrp - pup.sale_price)/pup.mrp)*100)  >=50
-	        order by discount_percentage desc 
+                p.gst_slab_id = amt.id and
+                pup.unit_id = u.id and
+                p.status = 1 and
+                u.status = 1 and 
+                pup.status = 1 and
+                amt.status = 1 and
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100)  >=50
+                order by discount_percentage desc 
             `, 
             function (err, rows, fields) {
                 clogger.info(err);
@@ -289,33 +344,36 @@ exports.getTopDealsOfDayByPercentage = function(req,res){
     clogger.info("from getTopDealsOfDayByPercentage()");
     console.log("req.params=", req.params);
     let discount_percentage = req.params.discount_percentage;
-    db.query(`SELECT p.id,
-            p.product_name,
-            p.product_brand,
-            CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
-            CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
-            p.description_fst,
-            p.description_snd,
-            u.unit_value,
-            u.unit_type,
-            pup.mrp,
-            pup.sale_price,
-            amt.gst_slab,
-            (pup.mrp - pup.sale_price) as discount_amount,
-            round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage
+    db.query(`SELECT CONCAT(p.id, "-", u.id) as product_unit_id,
+                p.id as product_id,
+                p.product_name,
+                p.product_brand,
+                CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
+                CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
+                p.description_fst,
+                p.description_snd,
+                u.id as unit_id,
+                u.unit_value,
+                u.unit_type,
+                pup.mrp,
+                pup.sale_price,
+                amt.gst_slab,
+                (pup.mrp - pup.sale_price) as discount_amount,
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage,
+                p.subcat_id
             FROM asm_products p,
-            asm_product_unit_price pup,
-            asm_mt_units u,
-            asm_mt_tax amt
+                asm_product_unit_price pup,
+                asm_mt_units u,
+                asm_mt_tax amt
             WHERE p.id = pup.product_id and
-            p.gst_slab_id = amt.id and
-            pup.unit_id = u.id and
-            p.status = 1 and
-            u.status = 1 and 
-            pup.status = 1 and
-            amt.status = 1 and
-            round(((pup.mrp - pup.sale_price)/pup.mrp)*100)  = ${discount_percentage}
-	        order by discount_percentage desc 
+                p.gst_slab_id = amt.id and
+                pup.unit_id = u.id and
+                p.status = 1 and
+                u.status = 1 and 
+                pup.status = 1 and
+                amt.status = 1 and
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100)  = ${discount_percentage}
+                order by discount_percentage desc 
             `, 
             function (err, rows, fields) {
                 clogger.info(err);
@@ -335,33 +393,36 @@ exports.getTopDealsOfDayByPercentageRange = function(req,res){
     clogger.info("from getTopDealsOfDayByPercentage()");
     let from_discount = req.params.from_discount;
     let to_discount = req.params.to_discount;
-    db.query(`SELECT p.id,
-            p.product_name,
-            p.product_brand,
-            CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
-            CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
-            p.description_fst,
-            p.description_snd,
-            u.unit_value,
-            u.unit_type,
-            pup.mrp,
-            pup.sale_price,
-            amt.gst_slab,
-            (pup.mrp - pup.sale_price) as discount_amount,
-            round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage
+    db.query(`SELECT CONCAT(p.id, "-", u.id) as product_unit_id,
+                p.id as product_id,
+                p.product_name,
+                p.product_brand,
+                CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
+                CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
+                p.description_fst,
+                p.description_snd,
+                u.id as unit_id,
+                u.unit_value,
+                u.unit_type,
+                pup.mrp,
+                pup.sale_price,
+                amt.gst_slab,
+                (pup.mrp - pup.sale_price) as discount_amount,
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage,
+                p.subcat_id
             FROM asm_products p,
-            asm_product_unit_price pup,
-            asm_mt_units u,
-            asm_mt_tax amt
+                asm_product_unit_price pup,
+                asm_mt_units u,
+                asm_mt_tax amt
             WHERE p.id = pup.product_id and
-            p.gst_slab_id = amt.id and
-            pup.unit_id = u.id and
-            p.status = 1 and
-            u.status = 1 and 
-            pup.status = 1 and
-            amt.status = 1 and
-            round(((pup.mrp - pup.sale_price)/pup.mrp)*100)  >= ${from_discount} and  round(((pup.mrp - pup.sale_price)/pup.mrp)*100)  <= ${to_discount}
-	        order by discount_percentage desc 
+                p.gst_slab_id = amt.id and
+                pup.unit_id = u.id and
+                p.status = 1 and
+                u.status = 1 and 
+                pup.status = 1 and
+                amt.status = 1 and
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100)  >= ${from_discount} and  round(((pup.mrp - pup.sale_price)/pup.mrp)*100)  <= ${to_discount}
+                order by discount_percentage desc 
             `, 
             function (err, rows, fields) {
                 clogger.info(err);
@@ -383,33 +444,36 @@ exports.getProductsByBrand = function(req,res){
     clogger.info("from getProductsByBrand()");
     let product_brand = req.params.product_brand;
     // let to_discount = req.params.to_discount;
-    db.query(`SELECT p.id,
-            p.product_name,
-            p.product_brand,
-            CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
-            CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
-            p.description_fst,
-            p.description_snd,
-            u.unit_value,
-            u.unit_type,
-            pup.mrp,
-            pup.sale_price,
-            amt.gst_slab,
-            (pup.mrp - pup.sale_price) as discount_amount,
-            round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage
+    db.query(`SELECT CONCAT(p.id, "-", u.id) as product_unit_id,
+                p.id as product_id,
+                p.product_name,
+                p.product_brand,
+                CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
+                CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
+                p.description_fst,
+                p.description_snd,
+                u.id as unit_id,
+                u.unit_value,
+                u.unit_type,
+                pup.mrp,
+                pup.sale_price,
+                amt.gst_slab,
+                (pup.mrp - pup.sale_price) as discount_amount,
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage,
+                p.subcat_id
             FROM asm_products p,
-            asm_product_unit_price pup,
-            asm_mt_units u,
-            asm_mt_tax amt
+                asm_product_unit_price pup,
+                asm_mt_units u,
+                asm_mt_tax amt
             WHERE p.id = pup.product_id and
-            p.gst_slab_id = amt.id and
-            pup.unit_id = u.id and
-            p.status = 1 and
-            u.status = 1 and 
-            pup.status = 1 and
-            amt.status = 1 and
-            p.product_brand = "${product_brand}"
-	        order by discount_percentage desc 
+                p.gst_slab_id = amt.id and
+                pup.unit_id = u.id and
+                p.status = 1 and
+                u.status = 1 and 
+                pup.status = 1 and
+                amt.status = 1 and
+                p.product_brand = "${product_brand}"
+                order by discount_percentage desc 
             `, 
             function (err, rows, fields) {
                 clogger.info(err);

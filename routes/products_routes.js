@@ -15,6 +15,9 @@ router.get('/admin/getAllProducts',  auth.ensureToken, productsController.getAll
 // Get All Products  For Client
 router.get('/client/getAllProducts',  productsController.getAllProducts);
 
+// Get All Products  For Client V2
+router.get('/client/getAllProductsForClient',  productsController.getAllProductsForClient);
+
 // Get All Products By Subcat Id For Client
 router.post('/client/getProductsBySubcatId',  productsController.getProductsBySubcatId);
 
