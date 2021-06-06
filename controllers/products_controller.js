@@ -242,6 +242,20 @@ exports.getProductsBySubcatId = function(req,res){
 exports.getProductsBySearchString = function(req,res){
     clogger.info("from getProductsBySearchString");
     let search_string = req.body.search_string;
+    clogger.info("search_string=", search_string);
+    if(!search_string){
+        return res.status(200).json({
+            status: "success",
+            data: []
+        });
+    }
+    let tmp_search_string = search_string.replace(' ', '');
+    if(!tmp_search_string.length===0){
+        return res.status(200).json({
+            status: "success",
+            data: []
+        });
+    }
     if(search_string){
         search_string = search_string.toLocaleLowerCase();
         search_string  = '%'+search_string+'%';
