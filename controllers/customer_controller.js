@@ -251,7 +251,9 @@ exports.customerSignIn = async function (req, res){
             //Email Id is found.
             logger.info("result[0].password= ", result[0].password);
             let customer_id = result[0].customer_id;
+            logger.info("customer_id:", customer_id);
             let hashpassowrd = result[0].password;
+            logger.info("hashpassowrd:", hashpassowrd);
             bcrypt.compare(password, hashpassowrd, function(err2, bcresult) {
                 logger.info('err2 = ', err2);
                 logger.info("bcresult= ", bcresult);
@@ -261,6 +263,7 @@ exports.customerSignIn = async function (req, res){
                                     WHERE customer_id = ? AND password = ?`;
                     asmdb.query(updateQry, 
                     [customer_id, hashpassowrd], function (err3, result, fields) {
+                        logger.info("err3 : ", err3 );
 
                     })
                     
