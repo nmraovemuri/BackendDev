@@ -58,7 +58,7 @@ exports.customerSignup = async function(req, res){
     logger.info("from clientSignup");
     logger.info("req.body :", req.body);
     let data = req.body;
-    const { first_name, last_name, email_id, mobile, password } = data;
+    const { first_name, last_name, email_id, mobile, password, location } = data;
     if(!location)
         return res.status(400).json({
         status: 'Field Error',
