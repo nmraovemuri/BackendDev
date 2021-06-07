@@ -8025,7 +8025,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class ASMService {
-    // ASM_SERVER_BASE_URL = "https://aswikamart.com";
     constructor(http) {
         this.http = http;
         this.categories = [];
@@ -8036,7 +8035,8 @@ class ASMService {
         this.dealsOftheDayList30 = [];
         this.dealsOftheDayListByChunk = [];
         //  ASM_SERVER_BASE_URL = "http://43.241.36.16:3000";
-        this.ASM_SERVER_BASE_URL = "http://localhost:3000";
+        // ASM_SERVER_BASE_URL = "http://localhost:3000";
+        this.ASM_SERVER_BASE_URL = "https://aswikamart.com";
         // this.ASM_SERVER_BASE_URL = process.env.NODE_ENV === 'production' ? 'http://43.241.36.16:3000' : 'http://localhost:3000'
         // console.log("service url :", this.ASM_SERVER_BASE_URL);  
     }
@@ -10491,7 +10491,8 @@ class ASMCustomerService {
     constructor(http) {
         this.http = http;
         // ASM_SERVER_BASE_URL = "http://43.241.36.16:3000";
-        this.ASM_SERVER_BASE_URL = "http://localhost:3000";
+        // ASM_SERVER_BASE_URL = "http://localhost:3000";
+        this.ASM_SERVER_BASE_URL = "https://aswikamart.com";
         // this.ASM_SERVER_BASE_URL = process.env.NODE_ENV === 'production' ? 'http://43.241.36.16:3000' : 'http://localhost:3000'
         // console.log("service url :", this.ASM_SERVER_BASE_URL);
     }
