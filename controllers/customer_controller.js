@@ -59,7 +59,12 @@ exports.customerSignup = async function(req, res){
     logger.info("req.body :", req.body);
     let data = req.body;
     const { first_name, last_name, email_id, mobile, password } = data;
-
+    if(!location)
+        return res.status(400).json({
+        status: 'Field Error',
+        field: 'location',
+        message: 'Location should not be empty.'
+        })
     if(!first_name)
         return res.status(400).json({
         status: 'Field Error',
@@ -108,8 +113,8 @@ exports.customerSignup = async function(req, res){
     logger.info(hashedPassword);
     // const { first_name, last_name, email_id, mobile, password } = data;
     const query = `INSERT INTO asm_customers (first_name, last_name, email_id, 
-        mobile, password, created_on) values (?, ?, ?, ?, ?, now())`;
-    asmdb.query( query, [first_name, last_name, email_id, mobile, hashedPassword], function (err, result) {
+        mobile, password, location, created_on) values (?, ?, ?, ?, ?, ?, now() )`;
+    asmdb.query( query, [first_name, last_name, email_id, mobile, hashedPassword, location], function (err, result) {
         logger.info("result= ", result);
         logger.info("error= ", err);
         if (!err && result.affectedRows === 1) {
@@ -245,12 +250,20 @@ exports.customerSignIn = async function (req, res){
         else if (result.length!=0){
             //Email Id is found.
             logger.info("result[0].password= ", result[0].password);
+            let customer_id = result[0].customer_id;
             let hashpassowrd = result[0].password;
             bcrypt.compare(password, hashpassowrd, function(err2, bcresult) {
                 logger.info('err2 = ', err2);
                 logger.info("bcresult= ", bcresult);
                 //If password matched
                 if(bcresult == true){
+                    let updateQry = `UPDATE asm_customers last_login = now() 
+                                    WHERE customer_id = ? AND password = ?`;
+                    asmdb.query(updateQry, 
+                    [customer_id, hashpassowrd], function (err3, result, fields) {
+
+                    })
+                    
                     const token = jwt.sign({email_id}, 'my-secret-key');
                     return res.status(200).json({
                         status: 'success',
