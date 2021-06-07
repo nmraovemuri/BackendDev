@@ -259,7 +259,7 @@ exports.customerSignIn = async function (req, res){
                 logger.info("bcresult= ", bcresult);
                 //If password matched
                 if(bcresult == true){
-                    let updateQry = `UPDATE asm_customers last_login = now() 
+                    let updateQry = `UPDATE asm_customers SET last_login = now() 
                                     WHERE customer_id = ? AND password = ?`;
                     asmdb.query(updateQry, 
                     [customer_id, hashpassowrd], function (err3, result, fields) {
