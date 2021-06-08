@@ -709,7 +709,7 @@ exports.updateCustomerAddress = async function(req, res){
             ?, ?, ?, ?, ?, ?, 
             ?, ?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`
             
-        asmDb.query(insertDAQuery, [da.first_name, da.last_name, da.mobile, da.email_id, 
+        asmdb.query(insertDAQuery, [da.first_name, da.last_name, da.mobile, da.email_id, 
           da.addr_field1, da.addr_field2, da.addr_field3, da.addr_field4, da.addr_field5, da.addr_field6, 
           city, state, country, da.pin_code, customer_id], function (daInsertErr, daInsertResult) {
           logger.info("daInsertErr= ", daInsertErr);
@@ -726,7 +726,7 @@ exports.updateCustomerAddress = async function(req, res){
         addr_field6 = ?, city = ?, state =? , country = ?, pin_code = ?,
         updated_date = UNIX_TIMESTAMP() where customer_id = ?
           `
-        asmDb.query(updateDAQuery, [da.first_name, da.last_name, da.mobile, da.email_id, da.addr_field1, 
+        asmdb.query(updateDAQuery, [da.first_name, da.last_name, da.mobile, da.email_id, da.addr_field1, 
           da.addr_field2, da.addr_field3, da.addr_field4, da.addr_field5, 
           da.addr_field6, city, state, country, da.pin_code, customer_id], function (daUpdatetErr, daUpdateResult) {
           logger.info("daUpdatetErr= ", daUpdatetErr);
