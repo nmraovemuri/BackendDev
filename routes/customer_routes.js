@@ -26,8 +26,11 @@ router.post('/customer_reset_password', customerController.customerResetPassword
 // router.post('/customer_change_password', customerController.customerChangePassword);
 router.post('/customer_change_password', ensureToken, customerController.customerChangePassword);
 
-//Customer UpdateProfile
-router.post('/customerUpdateProfile', customerController.customerUpdateProfile);
+//Update Customer Profile
+router.post('/updateCustomerProfile', customerController.updateCustomerProfile);
+
+//Update Customer Address
+router.post('/updateCustomerAddress', customerController.updateCustomerAddress);
 
 //Get Customer Shipping Address
 router.get('/get_customer_shipping_address/:customer_id', customerController.getCustomerShippingAddress);

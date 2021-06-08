@@ -219,11 +219,11 @@ exports.customerSignupActivation = function(req, res){
 
 exports.customerSignIn = async function (req, res){
     logger.info("from customerSignIn");
-    logger.info("req.body= ", req.body);
+    // logger.info("req.body= ", req.body);
 
     const {email_id, password} = req.body
     data = req.body
-  
+    logger.info("email_id= ", email_id);
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
     logger.info('hashedPassword= ', hashedPassword);
@@ -490,7 +490,7 @@ exports.customerChangePassword = async function(req, res){
     });
 }
 
-exports.customerUpdateProfile = async function(req, res){
+exports.updateCustomerProfile = async function(req, res){
     logger.info("from customerUpdateProfile");
     logger.info("req.body : ", req.body);
     let data = req.body;
@@ -606,8 +606,94 @@ exports.getCustomerShippingAddress = async function(req, res){
         }
     });
 }
-const storeDeliveryAddress = (customer_id, delivery_address)=>{
-    logger.info("from storeDeliveryAddress");
+
+
+exports.updateCustomerAddress = async function(req, res){
+// const storeDeliveryAddress = (customer_id, delivery_address)=>{
+    logger.info("from updateCustomerAddress");
+    logger.info("req.body : ", req.body);
+    let data = req.body;
+    const { customer_id, first_name, last_name, email_id, mobile, 
+        customer_address } = data;
+    const city = 'Hyderabad', state= 'Telangana', country='India';
+
+    if(!customer_id)
+        return res.status(400).json({
+            status: 'Field Error',
+            field: 'customer_id',
+            message: 'customer_id is a mandatory field.'
+        });
+    if(!first_name)
+        return res.status(400).json({
+            status: 'Field Error',
+            field: 'first_name',
+            message: 'first_name is a mandatory field.'
+        });
+    if(!last_name)
+        return res.status(400).json({
+            status: 'Field Error',
+            field: 'last_name',
+            message: 'last_name is a mandatory field.'
+        });
+    if(!email_id)
+        return res.status(400).json({
+            status: 'Field Error',
+            field: 'email_id',
+            message: 'email_id is a mandatory field.'
+        });
+    if(!mobile)
+        return res.status(400).json({
+            status: 'Field Error',
+            field: 'mobile',
+            message: 'mobile is a mandatory field.'
+        });
+
+    if(!customer_address.addr_field1)
+        return res.status(400).json({
+            status: 'Field Error',
+            field: 'addr_field1',
+            message: 'addr_field1 is a mandatory field.'
+        });
+    if(!customer_address.addr_field2)
+        return res.status(400).json({
+            status: 'Field Error',
+            field: 'addr_field2',
+            message: 'addr_field2 is a mandatory field.'
+        });
+    if(!customer_address.addr_field3)
+        return res.status(400).json({
+            status: 'Field Error',
+            field: 'addr_field3',
+            message: 'addr_field3 is a mandatory field.'
+        });
+    if(!customer_address.addr_field4)
+        return res.status(400).json({
+            status: 'Field Error',
+            field: 'addr_field4',
+            message: 'addr_field4 is a mandatory field.'
+        });
+    if(!customer_address.addr_field5)
+        return res.status(400).json({
+            status: 'Field Error',
+            field: 'addr_field5',
+            message: 'addr_field5 is a mandatory field.'
+        });
+    if(!customer_address.addr_field6)
+        return res.status(400).json({
+            status: 'Field Error',
+            field: 'addr_field6',
+            message: 'addr_field6 is a mandatory field.'
+        });
+    if(!customer_address.pin_code)
+        return res.status(400).json({
+            status: 'Field Error',
+            field: 'pin_code',
+            message: 'pin_code is a mandatory field.'
+        });
+
+    // addr_field1, addr_field2, addr_field3,
+    // addr_field4, addr_field5, addr_field6
+
     let da = delivery_address
     let findCustomerDAQuery = `SELECT id from asm_customer_shipping_address
         where customer_id =?`
@@ -624,11 +710,15 @@ const storeDeliveryAddress = (customer_id, delivery_address)=>{
             ?, ?, ?, ?, ?, ?, 
             ?, ?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`
             
-        asmDb.query(insertDAQuery, [da.first_name, da.last_name, da.mobile, da.email_id, 
+        asmDb.query(insertDAQuery, [first_name, last_name, mobile, email_id, 
           da.addr_field1, da.addr_field2, da.addr_field3, da.addr_field4, da.addr_field5, da.addr_field6, 
-          da.city, da.state, da.country, da.pin_code, customer_id], function (daInsertErr, daInsertResult) {
+          city, state, country, da.pin_code, customer_id], function (daInsertErr, daInsertResult) {
           logger.info("daInsertErr= ", daInsertErr);
           logger.info("daInsertResult= ", daInsertResult);   
+          return res.status(200).json({
+                status: 'succes',
+                message: 'address is updated successfully'
+            });
           });
       }else if(daResult.length === 1){
         let updateDAQuery = `UPDATE asm_customer_shipping_address SET
@@ -637,11 +727,15 @@ const storeDeliveryAddress = (customer_id, delivery_address)=>{
         addr_field6 = ?, city = ?, state =? , country = ?, pin_code = ?,
         updated_date = UNIX_TIMESTAMP() where customer_id = ?
           `
-        asmDb.query(updateDAQuery, [da.first_name, da.last_name, da.mobile, da.email_id, da.addr_field1, 
+        asmDb.query(updateDAQuery, [first_name, last_name, mobile, email_id, da.addr_field1, 
           da.addr_field2, da.addr_field3, da.addr_field4, da.addr_field5, 
-          da.addr_field6, da.city, da.state, da.country, da.pin_code, customer_id], function (daUpdatetErr, daUpdateResult) {
+          da.addr_field6, city, state, country, da.pin_code, customer_id], function (daUpdatetErr, daUpdateResult) {
           logger.info("daUpdatetErr= ", daUpdatetErr);
-          logger.info("daUpdateResult= ", daUpdateResult);   
+          logger.info("daUpdateResult= ", daUpdateResult); 
+          return res.status(200).json({
+                status: 'succes',
+                message: 'address is updated successfully'
+            });  
           });
       }
     });
