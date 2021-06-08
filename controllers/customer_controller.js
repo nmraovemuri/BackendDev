@@ -693,7 +693,7 @@ exports.updateCustomerAddress = async function(req, res){
     // addr_field1, addr_field2, addr_field3,
     // addr_field4, addr_field5, addr_field6
 
-    let da = delivery_address
+    let da = customer_address
     let findCustomerDAQuery = `SELECT id from asm_customer_shipping_address
         where customer_id =?`
     
