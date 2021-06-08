@@ -613,8 +613,7 @@ exports.updateCustomerAddress = async function(req, res){
     logger.info("from updateCustomerAddress");
     logger.info("req.body : ", req.body);
     let data = req.body;
-    const { customer_id, first_name, last_name, email_id, mobile, 
-        customer_address } = data;
+    const { customer_id, customer_address } = data;
     const city = 'Hyderabad', state= 'Telangana', country='India';
 
     if(!customer_id)
@@ -623,25 +622,25 @@ exports.updateCustomerAddress = async function(req, res){
             field: 'customer_id',
             message: 'customer_id is a mandatory field.'
         });
-    if(!first_name)
+    if(!customer_address.first_name)
         return res.status(400).json({
             status: 'Field Error',
             field: 'first_name',
             message: 'first_name is a mandatory field.'
         });
-    if(!last_name)
+    if(!customer_address.last_name)
         return res.status(400).json({
             status: 'Field Error',
             field: 'last_name',
             message: 'last_name is a mandatory field.'
         });
-    if(!email_id)
+    if(!customer_address.email_id)
         return res.status(400).json({
             status: 'Field Error',
             field: 'email_id',
             message: 'email_id is a mandatory field.'
         });
-    if(!mobile)
+    if(!customer_address.mobile)
         return res.status(400).json({
             status: 'Field Error',
             field: 'mobile',
@@ -710,7 +709,7 @@ exports.updateCustomerAddress = async function(req, res){
             ?, ?, ?, ?, ?, ?, 
             ?, ?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`
             
-        asmDb.query(insertDAQuery, [first_name, last_name, mobile, email_id, 
+        asmDb.query(insertDAQuery, [da.first_name, da.last_name, da.mobile, da.email_id, 
           da.addr_field1, da.addr_field2, da.addr_field3, da.addr_field4, da.addr_field5, da.addr_field6, 
           city, state, country, da.pin_code, customer_id], function (daInsertErr, daInsertResult) {
           logger.info("daInsertErr= ", daInsertErr);
@@ -727,7 +726,7 @@ exports.updateCustomerAddress = async function(req, res){
         addr_field6 = ?, city = ?, state =? , country = ?, pin_code = ?,
         updated_date = UNIX_TIMESTAMP() where customer_id = ?
           `
-        asmDb.query(updateDAQuery, [first_name, last_name, mobile, email_id, da.addr_field1, 
+        asmDb.query(updateDAQuery, [da.first_name, da.last_name, da.mobile, da.email_id, da.addr_field1, 
           da.addr_field2, da.addr_field3, da.addr_field4, da.addr_field5, 
           da.addr_field6, city, state, country, da.pin_code, customer_id], function (daUpdatetErr, daUpdateResult) {
           logger.info("daUpdatetErr= ", daUpdatetErr);
