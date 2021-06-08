@@ -697,7 +697,7 @@ exports.updateCustomerAddress = async function(req, res){
     let findCustomerDAQuery = `SELECT id from asm_customer_shipping_address
         where customer_id =?`
     
-    asmDb.query(findCustomerDAQuery, 
+    asmdb.query(findCustomerDAQuery, 
               [customer_id], function (daErr, daResult, fields) {
       logger.info('daErr = ', daErr);
       logger.info('daResult = ', daResult);
