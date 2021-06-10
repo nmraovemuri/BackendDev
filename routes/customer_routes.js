@@ -37,7 +37,8 @@ router.get('/get_customer_shipping_address/:customer_id', customerController.get
 
 // Ensuring Authorization
 function ensureToken(req, res, next){
-    logger.info(req.headers);
+    logger.info("from ensureToken");
+    logger.info("req.headers: ", req.headers);
     
     const bearerHeader = req.headers["authorization"];
     if(typeof bearerHeader !== 'undefined'){
