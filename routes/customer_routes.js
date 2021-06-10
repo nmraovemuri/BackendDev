@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const jwt = require('jsonwebtoken');
 const customerController = require('../controllers/customer_controller');
-
+const logger = require('../utils/customer_logger');
 
 //Checking Email Id is already existed or available for registration
 router.post('/checkEmailAlreadyExisted', customerController.checkEmailAlreadyExisted);
@@ -37,11 +37,13 @@ router.get('/get_customer_shipping_address/:customer_id', customerController.get
 
 // Ensuring Authorization
 function ensureToken(req, res, next){
-    console.log(req.headers);
+    logger.info(req.headers);
+    
     const bearerHeader = req.headers["authorization"];
     if(typeof bearerHeader !== 'undefined'){
         const bearer = bearerHeader.split(" ");
-        console.log("baerer=", bearer);
+        logger.info("baerer=", bearer);
+        logger.info("bearer.length=", bearer.length);
         let bearerToken;
         if(bearer.length == 2)
             bearerToken = bearer[1];
@@ -49,6 +51,7 @@ function ensureToken(req, res, next){
             bearerToken = bearer[2]
         jwt.verify(bearerToken, 'my-secret-key', function (err, data){
             if(err){
+                logger.info("Error: ", err);
                 return res.status(403).json({
                     status: "failed",
                     error:"Invalid Authorization-"+err.message
