@@ -156,7 +156,7 @@ exports.getAllProductsForClient = function(req,res){
                 pup.sale_price,
                 amt.gst_slab,
                 (pup.mrp - pup.sale_price) as discount_amount,
-                round(((pup.mrp - pup.sale_price)/pup.mrp)*100, 2) as discount_percentage,
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage,
                 p.subcat_id
             FROM asm_products p,
                 asm_product_unit_price pup,
@@ -206,7 +206,7 @@ exports.getProductsBySubcatId = function(req,res){
                 pup.sale_price,
                 amt.gst_slab,
                 (pup.mrp - pup.sale_price) as discount_amount,
-                round(((pup.mrp - pup.sale_price)/pup.mrp)*100, 2) as discount_percentage,
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage,
                 p.subcat_id
             FROM asm_products p,
                 asm_product_unit_price pup,
@@ -277,7 +277,7 @@ exports.getProductsBySearchString = function(req,res){
                 pup.sale_price,
                 amt.gst_slab,
                 (pup.mrp - pup.sale_price) as discount_amount,
-                round(((pup.mrp - pup.sale_price)/pup.mrp)*100, 2) as discount_percentage,
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage,
                 p.subcat_id
             FROM asm_products p,
                 asm_product_unit_price pup,
@@ -325,7 +325,7 @@ exports.getTopDealsOfDay = function(req,res){
                 pup.sale_price,
                 amt.gst_slab,
                 (pup.mrp - pup.sale_price) as discount_amount,
-                round(((pup.mrp - pup.sale_price)/pup.mrp)*100, 2) as discount_percentage,
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage,
                 p.subcat_id
             FROM asm_products p,
                 asm_product_unit_price pup,
@@ -338,7 +338,7 @@ exports.getTopDealsOfDay = function(req,res){
                 u.status = 1 and 
                 pup.status = 1 and
                 amt.status = 1 and
-                round(((pup.mrp - pup.sale_price)/pup.mrp)*100, 2)  >=50
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100)  >=50
                 order by discount_percentage desc 
             `, 
             function (err, rows, fields) {
@@ -374,7 +374,7 @@ exports.getTopDealsOfDayByPercentage = function(req,res){
                 pup.sale_price,
                 amt.gst_slab,
                 (pup.mrp - pup.sale_price) as discount_amount,
-                round(((pup.mrp - pup.sale_price)/pup.mrp)*100, 2) as discount_percentage,
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage,
                 p.subcat_id
             FROM asm_products p,
                 asm_product_unit_price pup,
@@ -423,7 +423,7 @@ exports.getTopDealsOfDayByPercentageRange = function(req,res){
                 pup.sale_price,
                 amt.gst_slab,
                 (pup.mrp - pup.sale_price) as discount_amount,
-                round(((pup.mrp - pup.sale_price)/pup.mrp)*100, 2) as discount_percentage,
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage,
                 p.subcat_id
             FROM asm_products p,
                 asm_product_unit_price pup,
@@ -474,7 +474,7 @@ exports.getProductsByBrand = function(req,res){
                 pup.sale_price,
                 amt.gst_slab,
                 (pup.mrp - pup.sale_price) as discount_amount,
-                round(((pup.mrp - pup.sale_price)/pup.mrp)*100, 2) as discount_percentage,
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage,
                 p.subcat_id
             FROM asm_products p,
                 asm_product_unit_price pup,
