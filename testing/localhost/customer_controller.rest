@@ -1,0 +1,59 @@
+
+###
+get http://localhost:3000/client/getAllProductsForClient
+
+###
+# Testing not activated a/c
+post http://localhost:3000/customer_signin
+Content-Type: application/json
+
+{
+	"email_id": "murali5@gmail.com",
+	 "password": "welcome"
+}
+
+###
+# Testing activated a/c with wrong credentials
+post http://localhost:3000/customer_signin
+Content-Type: application/json
+
+{
+	"email_id": "murali3@gmail.com",
+	 "password": "welcome1"
+}
+
+###
+# Testing activated a/c with wrong credentials
+post http://localhost:3000/customer_signin
+Content-Type: application/json
+
+{
+	"email_id": "murali3@gmail.com",
+	 "password": "welcome"
+}
+
+
+###
+# Testing customerForgotPassword with not activated account
+post http://localhost:3000/customer_forgot_password
+Content-Type: application/json
+
+{
+	"email_id": "murali5@gmail.com"
+	
+}
+
+###
+# Testing customerForgotPassword with activated account
+post http://localhost:3000/customer_forgot_password
+Content-Type: application/json
+
+{
+	"email_id": "murali3@gmail.com"
+	
+}
+
+
+###
+# request for resendCustomerSignupActivation
+get http://localhost:3000/resend_customer_signup_activate/6

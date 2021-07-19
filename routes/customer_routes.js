@@ -13,6 +13,9 @@ router.post('/customer_signup', customerController.customerSignup);
 //Customer Signup Activation
 router.get('/customer_signup_activate/:customer_id/:tog', customerController.customerSignupActivation);
 
+//Customer Signup Activation
+router.get('/resend_customer_signup_activate/:customer_id', customerController.resendCustomerSignupActivation);
+
 //Customer SignIn
 router.post('/customer_signin', customerController.customerSignIn);
 

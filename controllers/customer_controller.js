@@ -217,6 +217,79 @@ exports.customerSignupActivation = function(req, res){
     });
 }
 
+exports.resendCustomerSignupActivation = function(req, res){
+    logger.info("from resendCustomerSignupActivation");
+    logger.info("req.body : ", req.body);
+    logger.info("req.params : ", req.params);
+    let data = req.body;
+    logger.info(req.params.customer_id);
+    const customer_id = req.params.customer_id;
+    try{
+        const query = `SELECT * FROM asm_customers
+                            WHERE customer_id = ?`;
+        asmdb.query(query, [customer_id], function (err, rows, fields) {
+            logger.info("error= ", err);
+            logger.info("rows= ", rows);
+            let CLIENT_ORIGIN = urls.CLIENT;
+            if (!err && rows.length===1){
+                
+                let customerDetails = {
+                    firstName: rows[0].first_name,
+                    lastName: rows[0].last_name,
+                    customer_id,
+                    time_of_generation: Date.now(),
+                    server_origin: urls.SERVER
+                };
+                let email_id = rows[0].email_id; 
+                //resources\mail_template\customer_signup_status.html
+                fs.readFile('resources/mail_template/customer_signup_status.html', 
+                    function(err, data) {
+                
+                    let template = data.toString();
+                    let msg = strformat(template, customerDetails);
+                    // logger.info(msg);
+                    let mailOptions = {
+                        from: 'customercare.aswika@gmail.com',
+                        to: email_id,
+                        bcc: 'malli.vemuri@gmail.com,dmk.java@gmail.com',
+                        subject: 'ASM Signup activation link',
+                        html: msg
+                    };
+                
+                    transporter.sendMail(mailOptions, function(error, info){
+                        if(error){
+                            logger.info("error: ", error);
+                            return res.status(502).json({
+                                status: 'error',
+                                message: error.message
+                            });
+                        }else{
+                            logger.info("Email send " + info.response);
+                            return res.status(200).json({
+                                status: 'success',
+                                customer_id
+                            });
+                        }
+                    });
+                });
+            }
+            else{
+                logger.info(err);
+                res.status(502).json({
+                    status: 'failed',
+                    message: err.message
+                });
+            }
+        });
+    }catch(error){
+        logger.error(error);
+        res.status(502).json({
+            status: 'failed',
+            message: error.message
+        });
+    }
+}
+
 exports.customerSignIn = async function (req, res){
     logger.info("from customerSignIn");
     // logger.info("req.body= ", req.body);
@@ -231,16 +304,43 @@ exports.customerSignIn = async function (req, res){
     asmdb.query(`SELECT customer_id, first_name, last_name, email_id, password, mobile 
                 from asm_customers 
                 where email_id = ? 
+                and email_id_verified is null  
+                `, 
+                [email_id], function (err1, result1, fields) {
+                    // and is_active = 1
+                err1? logger.error("err1: ", err1): null;
+                result1? logger.info("result1: ", result1): null;
+
+                if(err1){
+                    logger.error("err1: ", err1);
+                    return res.status(502).json({
+                        status: 'failed',
+                        message: err1.message
+                    });
+                }else if(!err1 && result1.length > 0){
+                    return res.status(200).json({
+                        status: 'failed',
+                        key: 'EMAIL_ID_NOT_VERIFIED',
+                        message: 'Your email id verification is not completed'
+                    });
+                }
+    });
+
+    asmdb.query(`SELECT customer_id, first_name, last_name, email_id, password, mobile 
+                from asm_customers 
+                where email_id = ? 
                 and email_id_verified = 1 
                 and is_active = 1`, 
                 [email_id], function (err, result, fields) {
         logger.info('error = ', err);
         logger.info('result = ', result);
-        if(err)
+        if(err){
+            logger.error('error = ', err);
             return res.status(502).json({
                 status: 'failed',
                 message: err.message
             });
+        }
         else if(result.length==0)
             //Email Id is not existed with us.
             return res.status(422).json({
@@ -302,6 +402,34 @@ exports.customerForgotPassword = async function (req, res){
             field: 'email_id',
             message: 'Invalid EmailId'
         });
+        asmdb.query(`SELECT customer_id, first_name, last_name, email_id, password, mobile 
+                from asm_customers 
+                where email_id = ? 
+                and email_id_verified is null  
+                `, 
+                [email_id], function (err1, result1, fields) {
+                    // and is_active = 1
+                err1? logger.error("err1: ", err1): null;
+                result1? logger.info("result1: ", result1): null;
+
+                if(err1){
+                    logger.error("err1: ", err1);
+                    return res.status(502).json({
+                        status: 'failed',
+                        message: err1.message
+                    });
+                }else if(!err1 && result1.length > 0){
+                    return res.status(200).json({
+                        status: 'failed',
+                        key: 'EMAIL_ID_NOT_VERIFIED',
+                        message: 'Your email id verification is not completed'
+                    });
+                }
+
+            });
+
+
+
         let sql = 'SELECT * from asm_customers where email_id = ? ' 
         asmdb.query(sql, [email_id], (err, rows, fields)=>{
             logger.info("error: ", err);

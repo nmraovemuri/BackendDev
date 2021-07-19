@@ -264,7 +264,7 @@ sendSMS=(order_id, customer_name, mobile  )=>{
 exports.ordersubmit = function(req,res){
   logger.info("from ordersubmit");
   logger.info("body: ", req.body);
-  let {customer_id, delivery_address, billing_address, cartList} = req.body;
+  let {customer_id, delivery_address, billing_address, cartList, source_app} = req.body;
   logger.info(customer_id);
   logger.info(delivery_address);
   logger.info(billing_address);
@@ -301,9 +301,12 @@ exports.ordersubmit = function(req,res){
   let total_amount = getCartTotalPrice(cartList);
   let status = "submitted"
   let orderMasterQuery = `INSERT INTO asm_customer_order_master 
-      (total_items, total_amount, status, customer_id, created_date, updated_date) 
-      values (?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`;
-  asmDb.query(orderMasterQuery, [total_items, total_amount, status, customer_id], function (err, result) {
+      (total_items, total_amount, status, customer_id, 
+        source_app, created_date, updated_date) 
+      values (?, ?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`;
+  asmDb.query(orderMasterQuery, [total_items, total_amount, 
+                                    status, customer_id, source_app], 
+    function (err, result) {
     logger.info("result= ", result);
     logger.info("error= ", err);
     if(err){
