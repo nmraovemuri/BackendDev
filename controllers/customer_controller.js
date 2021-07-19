@@ -57,6 +57,7 @@ exports.checkEmailAlreadyExisted = async function (req, res){
 exports.customerSignup = async function(req, res){
     logger.info("from clientSignup");
     logger.info("req.body :", req.body);
+    logger.info("req.headers :", req.headers);
     let data = req.body;
     const { first_name, last_name, email_id, mobile, password, location } = data;
     if(!location)
