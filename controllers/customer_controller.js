@@ -55,11 +55,12 @@ exports.checkEmailAlreadyExisted = async function (req, res){
 }
 
 exports.customerSignup = async function(req, res){
-    logger.info("from clientSignup");
+    logger.info("from customerSignup");
     logger.info("req.body :", req.body);
     logger.info("req.headers :", req.headers);
     let data = req.body;
     const { first_name, last_name, email_id, mobile, password, location } = data;
+    let {source_app} = req.headers;
     if(!location)
         return res.status(400).json({
         status: 'Field Error',
@@ -114,8 +115,8 @@ exports.customerSignup = async function(req, res){
     logger.info(hashedPassword);
     // const { first_name, last_name, email_id, mobile, password } = data;
     const query = `INSERT INTO asm_customers (first_name, last_name, email_id, 
-        mobile, password, location, created_on) values (?, ?, ?, ?, ?, ?, now() )`;
-    asmdb.query( query, [first_name, last_name, email_id, mobile, hashedPassword, location], function (err, result) {
+        mobile, password, location, created_on, source_app) values (?, ?, ?, ?, ?, ?, now(), ?)`;
+    asmdb.query( query, [first_name, last_name, email_id, mobile, hashedPassword, location, source_app], function (err, result) {
         logger.info("result= ", result);
         logger.info("error= ", err);
         if (!err && result.affectedRows === 1) {
