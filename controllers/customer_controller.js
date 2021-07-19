@@ -326,65 +326,66 @@ exports.customerSignIn = async function (req, res){
                         message: 'Your email id verification is not completed'
                     });
                 }
-    });
+    
 
-    asmdb.query(`SELECT customer_id, first_name, last_name, email_id, password, mobile 
-                from asm_customers 
-                where email_id = ? 
-                and email_id_verified = 1 
-                and is_active = 1`, 
-                [email_id], function (err, result, fields) {
-        logger.info('error = ', err);
-        logger.info('result = ', result);
-        if(err){
-            logger.error('error = ', err);
-            return res.status(502).json({
-                status: 'failed',
-                message: err.message
-            });
-        }
-        else if(result.length==0)
-            //Email Id is not existed with us.
-            return res.status(422).json({
-                status: "failed",
-                error:"Invalid EmailID or Password"
-            });
-        else if (result.length!=0){
-            //Email Id is found.
-            logger.info("result[0].password= ", result[0].password);
-            let customer_id = result[0].customer_id;
-            logger.info("customer_id:", customer_id);
-            let hashpassowrd = result[0].password;
-            logger.info("hashpassowrd:", hashpassowrd);
-            bcrypt.compare(password, hashpassowrd, function(err2, bcresult) {
-                logger.info('err2 = ', err2);
-                logger.info("bcresult= ", bcresult);
-                //If password matched
-                if(bcresult == true){
-                    let updateQry = `UPDATE asm_customers SET last_login = now() 
-                                    WHERE customer_id = ? AND password = ?`;
-                    asmdb.query(updateQry, 
-                    [customer_id, hashpassowrd], function (err3, result, fields) {
-                        logger.info("err3 : ", err3 );
+        asmdb.query(`SELECT customer_id, first_name, last_name, email_id, password, mobile 
+                    from asm_customers 
+                    where email_id = ? 
+                    and email_id_verified = 1 
+                    and is_active = 1`, 
+                    [email_id], function (err, result, fields) {
+            logger.info('error = ', err);
+            logger.info('result = ', result);
+            if(err){
+                logger.error('error = ', err);
+                return res.status(502).json({
+                    status: 'failed',
+                    message: err.message
+                });
+            }
+            else if(result.length==0)
+                //Email Id is not existed with us.
+                return res.status(422).json({
+                    status: "failed",
+                    error:"Invalid EmailID or Password"
+                });
+            else if (result.length!=0){
+                //Email Id is found.
+                logger.info("result[0].password= ", result[0].password);
+                let customer_id = result[0].customer_id;
+                logger.info("customer_id:", customer_id);
+                let hashpassowrd = result[0].password;
+                logger.info("hashpassowrd:", hashpassowrd);
+                bcrypt.compare(password, hashpassowrd, function(err2, bcresult) {
+                    logger.info('err2 = ', err2);
+                    logger.info("bcresult= ", bcresult);
+                    //If password matched
+                    if(bcresult == true){
+                        let updateQry = `UPDATE asm_customers SET last_login = now() 
+                                        WHERE customer_id = ? AND password = ?`;
+                        asmdb.query(updateQry, 
+                        [customer_id, hashpassowrd], function (err3, result, fields) {
+                            logger.info("err3 : ", err3 );
 
-                    })
-                    
-                    const token = jwt.sign({email_id}, 'my-secret-key');
-                    return res.status(200).json({
-                        status: 'success',
-                        customer: result[0],
-                        token
-                    });
-                }
-                else{
-                    //If password not matched
-                    return res.status(502).json({
-                        status: 'failed',
-                        message: 'Invalid email id or password.'
-                    });
-                }
-            });
-        }
+                        })
+                        
+                        const token = jwt.sign({email_id}, 'my-secret-key');
+                        return res.status(200).json({
+                            status: 'success',
+                            customer: result[0],
+                            token
+                        });
+                    }
+                    else{
+                        //If password not matched
+                        return res.status(502).json({
+                            status: 'failed',
+                            message: 'Invalid email id or password.'
+                        });
+                    }
+                });
+            }
+        });
     });
 }
 // Customer Forgot Password
