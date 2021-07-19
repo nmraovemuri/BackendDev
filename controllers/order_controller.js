@@ -265,7 +265,7 @@ exports.ordersubmit = function(req,res){
   logger.info("from ordersubmit");
   logger.info("body: ", req.body);
   logger.info("req.headers :", req.headers);
-  let {customer_id, delivery_address, billing_address, cartList, source_app} = req.body;
+  let {customer_id, delivery_address, billing_address, cartList, } = req.body;
   let {source_app} = req.headers;
   logger.info(customer_id);
   logger.info(delivery_address);
