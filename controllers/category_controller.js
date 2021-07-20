@@ -98,7 +98,8 @@ exports.getAllCategories = function(req,res){
                 status, 
                 FROM_UNIXTIME(created_date, '%Y-%m-%d %H:%i:%s') as created_date,
                 FROM_UNIXTIME(updated_date, '%Y-%m-%d %H:%i:%s') as updated_date
-                from asm_mt_category where status = 1`, function (err, rows, fields) {
+                FROM asm_mt_category where status = 1 and
+                id != 9`, function (err, rows, fields) {
         clogger.info("error =", err);
         if (!err)
             return res.status(200).json({
