@@ -1,0 +1,6 @@
+
+###
+# Get All Brands of Products
+get https://aswikamart.com/client/product-brands
+
+
