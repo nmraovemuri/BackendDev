@@ -1,0 +1,17 @@
+
+###
+# Get All Products by Brand
+get https://aswikamart.com/client/getProductsByBrand/:product_brand
+
+
+###
+# Get All Products by Brand
+get https://aswikamart.com/client/getProductsByBrand/:product_brand
+
+
+
+###
+# Get All Products by Brand
+get https://aswikamart.com/client/getProductsByBrand/:product_brand
+
+

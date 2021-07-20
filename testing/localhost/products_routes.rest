@@ -1,0 +1,5 @@
+
+###
+# Get All Products by Brand
+get http://localhost:3000/client/getProductsByBrand/:product_brand
+
