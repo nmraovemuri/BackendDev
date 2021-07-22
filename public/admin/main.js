@@ -11021,7 +11021,7 @@ class AdminService {
     constructor(http) {
         this.http = http;
         //  ASM_ADMIN_SERVER_BASE_URL = "http://localhost:3000";
-        this.ASM_ADMIN_SERVER_BASE_URL = "http://43.241.36.16:4200";
+        this.ASM_ADMIN_SERVER_BASE_URL = "https://aswikamart.com";
     }
     adminLogin(data) {
         console.log("server data:", data);
