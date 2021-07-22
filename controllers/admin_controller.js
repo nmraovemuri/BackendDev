@@ -16,7 +16,7 @@ var transporter = nodemailer.createTransport({
 // Admin SignIn
 exports.adminSignIn = function (req, res){
     logger.info(req.body);
-    logger.info("from adminSignIn");
+    logger.info("from adminSignIn testing");
     const {emailID, password} = req.body
     if(!emailID || !password){
        return res.status(422).json({
@@ -27,6 +27,8 @@ exports.adminSignIn = function (req, res){
     let sql = 'SELECT * from asm_admin where email_id = ? '   
     
     db.query(sql, [emailID], (err, rows, fields)=>{
+        logger.error(err);
+        logger.info("rows: ", rows)
         if(err) 
             return res.status(422).json({
                 status: "failed",
