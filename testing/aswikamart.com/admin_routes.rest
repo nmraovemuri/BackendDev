@@ -1,0 +1,20 @@
+###
+# Testing Admin Login
+post https://aswikamart.com/adminsignin
+Content-Type: application/json
+
+{
+	"emailID": "malli@gmail.com",
+	 "password": "112233"
+}
+
+
+###
+# Testing Admin Login
+post http://43.241.36.16:4200/adminsignin
+Content-Type: application/json
+
+{
+	"emailID": "malli@gmail.com",
+	 "password": "112233"
+}

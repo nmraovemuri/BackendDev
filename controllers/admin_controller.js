@@ -2,7 +2,8 @@ var db = require('../config/db');
 var bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 var nodemailer = require('nodemailer');
-const logger = require('../utils/admin_logger');
+// const logger = require('../utils/admin_logger');
+const logger = require('../utils/customer_logger');
 
 var transporter = nodemailer.createTransport({
   service: 'gmail',
