@@ -9,6 +9,10 @@ INTO TABLE asm_mt_subcategory
 FIELDS TERMINATED BY ','
 OPTIONALLY ENCLOSED BY '"';
 
+LOAD DATA LOCAL INFILE '/root/asm/ASMBackEnd/DBScripts/Data/asm_mt_brands.csv'
+INTO TABLE asm_mt_brands
+FIELDS TERMINATED BY ',';
+
 LOAD DATA LOCAL INFILE '/root/asm/ASMBackEnd/DBScripts/Data/asm_mt_tax.csv'
 INTO TABLE asm_mt_tax
 FIELDS TERMINATED BY ',';

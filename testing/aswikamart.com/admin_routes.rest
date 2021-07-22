@@ -5,7 +5,7 @@ Content-Type: application/json
 
 {
 	"emailID": "malli@gmail.com",
-	 "password": "112233"
+	 "password": "11223344"
 }
 
 
