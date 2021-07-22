@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description-gambolthemes" content="">
+  <meta name="author-gambolthemes" content="">
+  <title>Aswika Supermarket Admin Dashboard</title>
+  <base href="/asmadmin/"/>
+  <link rel="icon" type="image/x-icon" src="./assets/images/favicon.png"> 
+  <link href="assets/css/styles.css" rel="stylesheet">
+  <link href="assets/css/admin-style.css" rel="stylesheet">
+
+  <!-- Vendor Stylesheets -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+<!--   
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="assets/vendor/froala_editor_3.1.1/css/froala_editor.css">
+<link rel="stylesheet" href="assets/vendor/froala_editor_3.1.1/css/froala_style.css">
+<link rel="stylesheet" href="assets/vendor/froala_editor_3.1.1/css/plugins/code_view.css">
+<link rel="stylesheet" href="assets/vendor/froala_editor_3.1.1/css/plugins/colors.css">
+<link rel="stylesheet" href="assets/vendor/froala_editor_3.1.1/css/plugins/emoticons.css">
+<link rel="stylesheet" href="assets/vendor/froala_editor_3.1.1/css/plugins/image_manager.css">
+<link rel="stylesheet" href="assets/vendor/froala_editor_3.1.1/css/plugins/image.css">
+<link rel="stylesheet" href="assets/vendor/froala_editor_3.1.1/css/plugins/line_breaker.css">
+<link rel="stylesheet" href="assets/vendor/froala_editor_3.1.1/css/plugins/table.css">
+<link rel="stylesheet" href="assets/vendor/froala_editor_3.1.1/css/plugins/char_counter.css">
+<link rel="stylesheet" href="assets/vendor/froala_editor_3.1.1/css/plugins/video.css">
+<link rel="stylesheet" href="assets/vendor/froala_editor_3.1.1/css/plugins/fullscreen.css">
+<link rel="stylesheet" href="assets/vendor/froala_editor_3.1.1/css/plugins/file.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.3.0/codemirror.min.css"> -->
+
+<link rel="stylesheet" href="styles.css"></head>
+
+<body>
+  
+  <app-root></app-root>
+
+  <script src="assets/js/jquery-3.4.1.min.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/scripts.js"></script>
+  <script src="assets/js/jquery-3.4.1.min.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/chart/highcharts.js"></script>
+  <script src="assets/vendor/chart/exporting.js"></script>
+  <script src="assets/vendor/chart/export-data.js"></script>
+  <script src="assets/vendor/chart/accessibility.js"></script>
+  <script src="assets/js/scripts.js"></script>
+  <script src="assets/js/chart.js"></script>
+<script src="runtime.js" defer></script><script src="polyfills.js" defer></script><script src="vendor.js" defer></script><script src="main.js" defer></script></body>
+
+</html>
