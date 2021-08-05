@@ -10,13 +10,14 @@ const urls = require('../config/urls');
 
 let getCartTotalPrice=(cartList)=>{ 
   logger.info("getCartTotalPrice");
-  logger.info("cartList: ", cartList)
+  // logger.info("cartList: ", cartList);
+  logger.info("No.of items of cartList : ", cartList.length);
   let totalPrice = cartList.reduce((tot, item) => tot + item.sale_price * item.quantity, 0);
   return totalPrice.toFixed(2);
 }
 let getCartDiscountPrice=(cartList)=>{
-  logger.info("getCartDiscountPrice")
-  logger.info("cartList: ", cartList)
+  logger.info("getCartDiscountPrice");
+  logger.info("No.of items of cartList : ", cartList.length);
   let totalDiscount = cartList.reduce((tot, item) => 
     tot + item.discount_amount * item.quantity, 0.00);
   // console.log("totalDiscount: ", totalDiscount);
@@ -24,21 +25,27 @@ let getCartDiscountPrice=(cartList)=>{
 }
 let getCartQuantity=(cartList)=>{
   logger.info("getCartQuantity")
-  logger.info("cartList: ", cartList)
+  logger.info("No.of items of cartList : ", cartList.length);
+  // logger.info("cartList: ", cartList)
   return cartList.reduce((tot, item)=> tot + item.quantity, 0);
 }
 let getCartTotalTax=(cartList)=>{ 
   logger.info("getCartTotalTax");
-  logger.info("cartList: ", cartList)
-  return cartList.reduce((tot, item)=> {
-    let taxable_value = parseFloat((item.sale_price/(1 + item.gst_slab/100)).toFixed(2));
-    let tax_amt = (taxable_value * item.gst_slab/100).toFixed(2);
-    tax_amt = parseFloat(tax_amt);
-    let total_tax = tot + parseFloat((tax_amt*item.quantity).toFixed(2));
-    total_tax = parseFloat(total_tax).toFixed(2);
-    total_tax = parseFloat(total_tax);
+  logger.info("No.of items of cartList : ", cartList.length);
+  // logger.info("cartList: ", cartList);
+  let total_tax = cartList.reduce((tot, item)=> {
+    // let taxable_value = parseFloat((item.sale_price/(1 + item.gst_slab/100)).toFixed(2));
+    // let tax_amt = (taxable_value * item.gst_slab/100).toFixed(2);
+    let taxable_value = item.sale_price/(1 + item.gst_slab/100);
+    let tax_amt = taxable_value * item.gst_slab/100;
+    // tax_amt = parseFloat(tax_amt);
+    // let total_tax = tot + parseFloat((tax_amt*item.quantity).toFixed(2));
+    let total_tax = tot + tax_amt * item.quantity;
+    // total_tax = parseFloat(total_tax).toFixed(2);
+    // total_tax = parseFloat(total_tax);
     return total_tax;
   }, 0);
+  return total_tax.toFixed(2);
 }
 const storeDeliveryAddress = (customer_id, delivery_address)=>{
   logger.info("from storeDeliveryAddress");
@@ -132,7 +139,7 @@ const storeCartList=(order_id, cartList)=>{
       item.gst_slab, item.discount_amount, item.discount_percentage, item.total_amount]);
   };
 
-  logger.info(orderList);
+  // logger.info(orderList);
   asmDb.query(orderDetailsQuery, [orderList], function (odiqErr, odiqResult) {
     logger.info("odiqErr= ", odiqErr);
     logger.info("odiqResult= ", odiqResult);   
@@ -274,7 +281,7 @@ exports.ordersubmit = function(req,res){
   logger.info(customer_id);
   logger.info(delivery_address);
   logger.info(billing_address);
-  logger.info(cartList);
+  logger.info("No.of items in cartList", cartList.length);
   if(!customer_id){
     return res.status(400).json({
       status: 'Field Error',

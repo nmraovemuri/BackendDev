@@ -1,0 +1,84 @@
+# Testing order submition
+post https://aswikamart.com/client/order_submit
+Content-Type: application/json
+
+{
+	"customer_id" : "4",
+	"mobile" : "1234567890",
+	"delivery_address": {
+		"first_name"  : "MuraliKrishna",
+		"last_name"   : "Dokuparthi",
+		"mobile"      :  "7702477255",
+	    "email_id"    : "murali5@gmail.com",
+		"addr_field1" : "Ist Floor, 105",
+		"addr_field2" : "49-128/5A",
+		"addr_field3" : "Srinivasa Enclave",
+		"addr_field4" :	"Road No-4",
+		"addr_field5" : "Near Central Bank",
+		"addr_field6" : "Kalyan Nagar Phase-1",
+		"city"        : "Hyderabad",
+		"state"       : "Telangana",
+		"country"     : "India",
+		"pin_code"     :  500055
+    },
+	"billing_address": {         	
+		"first_name"  : "MuraliKrishna",
+		"last_name"   : "Dokuparthi",
+		"mobile"      :  "7702477255",
+	    "email_id"    : "murali5@gmail.com",
+		"addr_field1" : "Ist Floor, 105",
+		"addr_field2" : "49-128/5A",
+		"addr_field3" : "Srinivasa Enclave",
+		"addr_field4" :	"Road No-4",
+		"addr_field5" : "Near Central Bank",
+		"addr_field6" : "Kalyan Nagar Phase-1",
+		"city"        : "Hyderabad",
+		"state"       : "Telangana",
+		"country"     : "India",
+		"pin_code"     :  500055
+        },   
+     
+   	"cartList" : [
+   		{
+		"product_id": 1764, 
+		"product_name": "AASHIRWAAD ATTA WITH MULTIGRAINS",
+		"unit_value": "1",
+		"unit_type": "kg",
+		"mrp": 64,
+		"sale_price": 62,
+		"quantity": 3,
+		"gst_slab": 5,
+		"discount_amount": 2,
+		"discount_percentage": 3,
+		"total_amount": 62
+		},
+		{
+		"product_id": 1764, 
+		"product_name": "AASHIRWAAD ATTA WITH MULTIGRAINS",
+		"unit_value": "1",
+		"unit_type": "kg",
+		"mrp": 64,
+		"sale_price": 62,
+		"quantity": 2,
+		"gst_slab": 5,
+		"discount_amount": 2,
+		"discount_percentage": 3,
+		"total_amount": 62
+		},
+		{
+		"product_id": 1764, 
+		"product_name": "AASHIRWAAD ATTA WITH MULTIGRAINS",
+		"unit_value": "1",
+		"unit_type": "kg",
+		"mrp": 64,
+		"sale_price": 62,
+		"quantity": 1,
+		"gst_slab": 5,
+		"discount_amount": 2,
+		"discount_percentage": 3,
+		"total_amount": 62
+		}
+	]    
+}
+
+###
