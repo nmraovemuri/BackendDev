@@ -11,12 +11,16 @@ const urls = require('../config/urls');
 let getCartTotalPrice=(cartList)=>{ 
   logger.info("getCartTotalPrice");
   logger.info("cartList: ", cartList)
-  return cartList.reduce((tot, item)=> tot + item.sale_price*item.quantity, 0);
+  let totalPrice = cartList.reduce((tot, item) => tot + item.sale_price * item.quantity, 0);
+  return totalPrice.toFixed(2);
 }
 let getCartDiscountPrice=(cartList)=>{
   logger.info("getCartDiscountPrice")
   logger.info("cartList: ", cartList)
-  return cartList.reduce((tot, item)=> tot + item.discount_amount*item.quantity, 0);
+  let totalDiscount = cartList.reduce((tot, item) => 
+    tot + item.discount_amount * item.quantity, 0.00);
+  // console.log("totalDiscount: ", totalDiscount);
+  return totalDiscount.toFixed(2);
 }
 let getCartQuantity=(cartList)=>{
   logger.info("getCartQuantity")

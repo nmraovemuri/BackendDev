@@ -412,79 +412,76 @@ exports.customerForgotPassword = async function (req, res){
                 `, 
                 [email_id], function (err1, result1, fields) {
                     // and is_active = 1
-                err1? logger.error("err1: ", err1): null;
-                result1? logger.info("result1: ", result1): null;
+            err1? logger.error("err1: ", err1): null;
+            result1? logger.info("result1: ", result1): null;
 
-                if(err1){
-                    logger.error("err1: ", err1);
-                    return res.status(502).json({
-                        status: 'failed',
-                        message: err1.message
-                    });
-                }else if(!err1 && result1.length > 0){
-                    return res.status(200).json({
-                        status: 'failed',
-                        key: 'EMAIL_ID_NOT_VERIFIED',
-                        message: 'Your email id verification is not completed'
-                    });
-                }
-
-            });
-
-
-
-        let sql = 'SELECT * from asm_customers where email_id = ? ' 
-        asmdb.query(sql, [email_id], (err, rows, fields)=>{
-            logger.info("error: ", err);
-            logger.info("rows : ", rows)
-            if(err) 
-                return res.status(422).json({
-                    status: "failed",
-                    message: err.message
+            if(err1){
+                logger.error("err1: ", err1);
+                return res.status(502).json({
+                    status: 'failed',
+                    message: err1.message
                 });
-            else if(rows.length === 0)
-                    return res.status(422).json({
-                        status: "failed",
-                        message:"This mail id is not registered with us."
-                    });
-            else{
-                const { customer_id, first_name, last_name } = rows[0];
-
-                let customerDetails = {
-                    firstName: first_name,
-                    lastName: last_name,
-                    client_origin: urls.CLIENT,
-                    customer_id
-                };
-                fs.readFile('resources/mail_template/customer_reset_password.html', function(err, data) {
-            
-                    let template = data.toString();
-                    let msg = strformat(template, customerDetails);
-                    // logger.info(msg);
-                    let mailOptions = {
-                        from: 'customercare.aswika@gmail.com',
-                        to: email_id,
-                        bcc: `dmk.java@gmail.com,malli.vemuri@gmail.com`,
-                        subject: 'Reset Password link',
-                        html: msg
-                    };
-                
-                    transporter.sendMail(mailOptions, function(error, info){
-                        if(error){
-                            logger.info("error: ", error);
-                            return res.status(502).json({
-                                status: 'error',
-                                message: error.message
-                            });
-                        }else{
-                            logger.info("Email send " + info.response);
-                            return res.status(200).json({
-                                status: 'success',
-                            });
-                        }
-                    });
+            }else if(!err1 && result1.length > 0){
+                return res.status(200).json({
+                    status: 'failed',
+                    key: 'EMAIL_ID_NOT_VERIFIED',
+                    message: 'Your email id verification is not completed'
                 });
             }
+            console.log("This statement is reaching");
+            let sql = 'SELECT * from asm_customers where email_id = ? ' 
+            asmdb.query(sql, [email_id], (err, rows, fields)=>{
+                logger.info("error: ", err);
+                logger.info("rows : ", rows)
+                if(err) 
+                    return res.status(422).json({
+                        status: "failed",
+                        message: err.message
+                    });
+                else if(rows.length === 0)
+                        return res.status(422).json({
+                            status: "failed",
+                            message:"This mail id is not registered with us."
+                        });
+                else{
+                    const { customer_id, first_name, last_name } = rows[0];
+
+                    let customerDetails = {
+                        firstName: first_name,
+                        lastName: last_name,
+                        client_origin: urls.CLIENT,
+                        customer_id
+                    };
+                    fs.readFile('resources/mail_template/customer_reset_password.html', function(err, data) {
+                
+                        let template = data.toString();
+                        let msg = strformat(template, customerDetails);
+                        // logger.info(msg);
+                        let mailOptions = {
+                            from: 'customercare.aswika@gmail.com',
+                            to: email_id,
+                            bcc: `dmk.java@gmail.com,malli.vemuri@gmail.com`,
+                            subject: 'Reset Password link',
+                            html: msg
+                        };
+                    
+                        transporter.sendMail(mailOptions, function(error, info){
+                            if(error){
+                                logger.info("error: ", error);
+                                return res.status(502).json({
+                                    status: 'error',
+                                    message: error.message
+                                });
+                            }else{
+                                logger.info("Email send " + info.response);
+                                return res.status(200).json({
+                                    status: 'success',
+                                });
+                            }
+                        });
+                    });
+                }
+            });
         });
 }
 
