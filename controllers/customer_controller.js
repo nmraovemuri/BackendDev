@@ -138,7 +138,7 @@ exports.customerSignup = async function(req, res){
                     from: 'customercare.aswika@gmail.com',
                     to: email_id,
                     bcc: 'malli.vemuri@gmail.com,dmk.java@gmail.com',
-                    subject: 'ASM Signup activation link',
+                    subject: 'AswikaSuperMarket signup activation link',
                     html: msg
                 };
             
