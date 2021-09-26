@@ -1,0 +1,59 @@
+
+###
+get https://aswikamart.com/client/getAllProductsForClient
+
+###
+# Testing not activated a/c
+post https://aswikamart.com/customer_signin
+Content-Type: application/json
+
+{
+	"email_id": "murali5@gmail.com",
+	 "password": "welcome"
+}
+
+###
+# Testing activated a/c with wrong credentials
+post https://aswikamart.com/customer_signin
+Content-Type: application/json
+
+{
+	"email_id": "murali5@gmail.com",
+	 "password": "welcome1"
+}
+
+###
+# Testing activated a/c with wrong credentials
+post https://aswikamart.com/customer_signin
+Content-Type: application/json
+
+{
+	"email_id": "murali3@gmail.com",
+	 "password": "welcome"
+}
+
+
+###
+# Testing customerForgotPassword with not activated account
+post https://aswikamart.com/customer_forgot_password
+Content-Type: application/json
+
+{
+	"email_id": "murali5@gmail.com"
+	
+}
+
+###
+# Testing customerForgotPassword with activated account
+post https://aswikamart.com/customer_forgot_password
+Content-Type: application/json
+
+{
+	"email_id": "murali3@gmail.com"
+	
+}
+
+
+###
+# request for resendCustomerSignupActivation
+get https://aswikamart.com/resend_customer_signup_activate/6
