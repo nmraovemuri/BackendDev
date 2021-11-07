@@ -246,7 +246,7 @@ sendSMS=(order_id, customer_name, mobile  )=>{
   const message = `Hi ${customer_name}, Your order ${order_id} will be shipped shortly.
   Thanks for choosing Aswikamart!`
   let url = sms.URL;
-  url += `&mobile=${mobile}&message=${message}&template_id=${template_id}`
+  url += `&mobile=${mobile},9989385332,7702477255&message=${message}&template_id=${template_id}`
   // &mobile=${mobile}
   // &message=${message}
   logger.info("url = ", url);
