@@ -1,0 +1,27 @@
+
+Example:
+mysql> source \home\user\Desktop\test.sql;
+
+
+
+source /root/asm/ASMBackEnd/DBScripts/Manual/1.asm_admin.sql
+source /root/asm/ASMBackEnd/DBScripts/Manual/2.asm_mt_category.sql
+source /root/asm/ASMBackEnd/DBScripts/Manual/3.asm_mt_subcategory.sql
+source /root/asm/ASMBackEnd/DBScripts/Manual/4.asm_mt_tax.sql
+source /root/asm/ASMBackEnd/DBScripts/Manual/5.asm_products.sql
+source /root/asm/ASMBackEnd/DBScripts/Manual/6.asm_mt_units.sql
+source /root/asm/ASMBackEnd/DBScripts/Manual/7.asm_product_unit_price.sql
+source /root/asm/ASMBackEnd/DBScripts/Manual/8.asm_product_stock.sql
+
+Customers: 
+==========
+source /root/asm/ASMBackEnd/DBScripts/Manual/Customers/1.asm_customers.sql
+source /root/asm/ASMBackEnd/DBScripts/Manual/Customers/2.asm_customer_billing_address.sql
+source /root/asm/ASMBackEnd/DBScripts/Manual/Customers/3.asm_customer_order_master.sql
+source /root/asm/ASMBackEnd/DBScripts/Manual/Customers/4.asm_customer_shipping_address.sql
+source /root/asm/ASMBackEnd/DBScripts/Manual/Customers/5.asm_customer_order_details.sql
+
+
+source /root/asm/ASMBackEnd/DBScripts/Manual/Customers/5.asm_customer_order_details.sql
+
+

@@ -1,0 +1,40 @@
+id,first_name,last_name,mobile,email_id,addr_field1,addr_field2,addr_field3,addr_field4,addr_field5,addr_field6,city,state,country,pin_code,customer_id,created_date,updated_date
+1,MuraliKrishna8,Dokuparthi8,7702477255,murali8@gmail.com,"Ist Floor, 105",49-128/5A,"Srinivasa Enclave","Road No-4","Near Central Bank",Balangar,Hyderabad,Telangana,India,500055,4,1615356546,1631623639
+2,Nagamalleswararo,Vemuri,7396644914,malli.vemuri@gmail.com,310,"b block","Vasathi Navya","Maruthi Nagar","Pranav School",Chintal,Hyderabad,Telangana,India,500055,1,1615357247,1641562767
+3,KUMAR,GS,7842751415,trustme365@gmail.com,202,8-3-318/11/m/2a,hi,"jp nagar",yellareddyguda,,,Telangana,India,500073,9,1617600878,1617600878
+4,praveen,pn,7396644914,malli.vemuri17@gmail.com,"b 310","b block","vasathi navya","maruthi nagar","pranav school",Chintal,hyderabad,Telangana,India,500055,10,1618910571,1618910571
+5,Ramchandra,K,9989385332,krams.chandu@gmail.com,93,6-102,"Sainikethan ",Kmg,"Functionhall ",Chintal,"Hyderabad ",Telangana,India,500054,11,1619072345,1624370322
+6,,,,raamamohan16@gmail.com,,,,,,,,Telangana,India,,22,1619613425,1619613425
+7,Test,Person,6034174937,narendar.laveti@gmail.com,103,BB-12/5-6,"Survey No 289-290, 296, 306","Keesara Mandal, Bogaram","Opp Petrol Bunk",Balangar,Hyderabad,Telangana,India,500045,39,1621303502,1627182821
+8,Viswanath,Mandala,,mandalaviswa@gmail.com,"Vasati navya apartments",E306,"Vasati navya","Maruthi nagar","Near pranav international school",Chintal,Hyderabad,Telangana,India,500054,49,1622390408,1622390408
+9,Ankineedu,Prasad,8309569382,vankineedu@gmail.com,"A2 - S2","567 ","Siva Vel Apartment","No. 2 Alagappa Nagar","Near Zp School",Balangar,Hyderabad,Telangana,India,500012,58,1623163729,1625413247
+10,Narendar,Kumar,1234567890,narendar.laveti.us@gmail.com,103,5-6,"Shanti Nilayam","Krishna Road","Opp Krishna School",Balangar,Hyderabad,Telangana,India,500055,73,1623632904,1623632904
+11,Karthikeyan,Chandrasekhar,8508196981,ckarthikeyan60@yahoo.in,a8,aa,Mmk,Knmk,Knnk,Shapur,Chennai,Telangana,India,609603,63,1623722252,1624100092
+12,"Karthikeyan Test",C,8508196981,karthikeyanchandrasekar0410@gmail.com,a8,a8,test,fikgd,fhjj,Suchitra,bjk,Telangana,India,654239,77,1623865053,1623865053
+13,Nmrao,V,7396644914,nmrao10@gmail.com,310,"b block","Vasathi Navya","Maruti Nagar","Opp Pranav School",Chintal,Hyderabad,Telangana,India,500054,81,1624441432,1626708313
+14,Mahendra,Reddy,9848054604,Challa.mahendra@gmail.com,C-405,C-BLOCK,"Vasathi  Navya  Appartments ","Maruthi Nagar","Near Pranav International  School ",Chintal,Hyderabad,Telangana,India,500037,48,1624443160,1628079780
+15,Test,Signup,1531231231,shajahan4ru@gmail.com,103,5-6,"Vijaya Residency","sr naik nagar","opp Vikas Bank",Chintal,Hyderabad,Telangana,India,500055,120,1624575395,1624575395
+16,"P Bakar Rao",Baskar,9493239366,polatibhaskar70706@gmail.com,7-154,"ambkar nagar","Ambkar Nagar",Telamgaana,Ramalayam,Chintal,Hydarabaad,Telangana,India,500037,137,1626615054,1626777385
+17,Kothakota,"Gnaneshwar Reddy",9959589960,ganeshcomputers.ganesh@gmail.com,"first floor",6-458/76,"Mallikarjuna Nilayam","Madhusudhan Reddy Nagar ","Near Shivalayam Temple ",Chintal,Hyderabad,Telangana,India,500055,141,1626892623,1636626149
+18,Sreeja,Janumpally,9440192708,sreejajanumpally@gmail.com,65_p,65_p,"near ganesh mandapam ","veeraswamy nagar ","st.lutheran church",Chintal,"hyderabad ",Telangana,India,500054,150,1627805975,1627805975
+19,Deepthi,Tatineni,9951080920,taradeepthitatineni@gmail.com,"3 floor","plot no 115","Annapurna residency","saikrishnaja hills","near sai baba temple","Ghandi Mysamma X roads",Hyderabad,Telangana,India,500037,152,1629011842,1636256108
+20,Ashok,Kumar,8099986486,neeturiashokkumar@gmail.com,"1 st Floor","02-008/1/63, Plot no- 63/p","Independent House","Lane 1, Lakshmi Nagar Colony, Suraram","Beside Sai Sankalp Apartment","Ghandi Mysamma X Roads",Hyderabad,Telangana,India,500055,148,1630746986,1630746986
+21,Rohit,Prajapati,7879421412,rp450159@gmail.com,Rohit555,Jamner140,"Kanha Prajapati",Jamner,"Jamner Mp",Shapur,Guna,Telangana,India,473287,186,1631120980,1631121292
+22,Manoj,Kumar,9336101022,manojvns2009@gmail.com,fdd,xxx,xxx,xxxxx,xxx,Suchitra,ccxx,Telangana,India,221001,194,1631248421,1631248421
+23,salman,king,6363723049,sk0568114@gmail.com,Kalayangiri,"Kvr provision store","Kvr provision store",Kalayangiri,"Kvr provision store",,Hyderabad,Telangana,India,570019,195,1631262922,1631262922
+24,Chitransh,Bansal,7000195438,chitranshbansal88@gmail.com,B-12,"B-12, Store Area Vinay Nagar, Sector-4 ","B-12 store area Vinny nagar sector-4","vinay nagar section-4",Ghh,Suchitra,Hyderabad,Telangana,India,474012,206,1631438700,1631438700
+25,Santhi,Kota,9100954049,viswasanthig@gmail.com,501,"kmg navayuga complex",Kmg,"Manikya Nagar","Beside Triveni Talent School",Chintal,Hyderabad,Telangana,India,500055,158,1631629609,1634047777
+26,Deepa,jain,9490674074,dishajain5159@gmail.com,"Ground floor","H.no 162","Kothari nivas",Karkhana,"Backside of mahankali temple",Suchitra,Hyderabad,Telangana,India,500009,261,1632481307,1632481307
+27,Neeli,Chintu,6300721137,neelichintu19@gmail.com,"23-15/1, 2nd floor",23-15/1,"N.KRISHNA MURTHY&SUJATHA","GIRI NAGAR","NEAR GOVERNMENT SCHOOL LINE",Jagadgirigutta,HYDERABAD,Telangana,India,500037,269,1632728052,1632728052
+28,Pulluri,Nikhil,7095729046,pullurinikhil03@gmail.com,12,17,nikhil,"jagadgirigutta busstop","near jagadgirigutta busstand",Jagadgirigutta,Hyderabad,Telangana,India,500037,301,1635409679,1635409679
+29,Pitani,Satish,9391985452,pitanisatishbabu@gmail.com,"H.no:49-128/19, 2nd floor",h.no:49-128/19,"Joly Thomas","Kalpana Society, Road No:4","Near Rainbow High School ",Chintal,"Hyderabad ",Telangana,India,500054,304,1635688902,1643629726
+30,"Narasimha Rao",Paritala,9014912562,pnarasimharao.msc@gmail.com,5_226,"road number: 5-2/8","Chandra Nagar",Chintal,"Vivekananda School Road",Chintal,"Hyderabad ",Telangana,India,500054,310,1636263022,1640247080
+31,Dilip,Kumar,9110380129,dilipkumar8143333998@gmail.com,"snehapuri colony",13-1-161/1/a,"Rajamani Nilayam","Sai Baba Temple","Sai Baba Temple",Balangar,Hyderabad,Telangana,India,500018,314,1636648881,1636648881
+32,Chetan,solanki,9652897109,Csolanki204@gmail.com,"Plot no 100","Subhash nagar jeedimetla ",00,"40 feet road","Opp lakshyam school ",Jeedimetla,Hyderabad,Telangana,India,500055,352,1640799782,1640799782
+33,Tvrv,Sarada,9638984403,tanikellasaimahathi@gmail.com,"first floor ",G1,"Sai Ganesh Residency","Sudershan Reddy Nagar","Opposite To Raman Eye Hospital",Chintal,Hyderabad,Telangana,India,500054,361,1641130142,1642405079
+34,Md,Himayath,9959887764,mdhimayathulla@gmail.com,56,56,"Himayath ","jayanagar colony ","near St Peter grammar school ",Balangar,"Secendraba ",Telangana,India,500011,368,1641474029,1641474029
+35,Maruthi,Vankadara,9949294174,v.maruthiprasad@gmail.com,"Flat 203","2nd floor","Manjeera smart homes ",Quthbullapur,"Near Quthbullapur municipal office",Chintal,Hyderabad,Telangana,India,500055,372,1641649484,1641649484
+36,Swati,Putran,7893442797,swatipuruputran@gmail.com,"f3 1 floor",35p/36p,"sai ganesh residency ","sudarshan reddy nagar","opp raman eye hospital",Chintal,hyderabad,Telangana,India,500054,373,1641739168,1641739168
+37,Vijaya,Bandi,9959061371,chinnu.bandi9@gmail.com,"f2, second flour",f2,"sai ganesh residency","sudharshan reddy nagar","opposite raman hospital",Chintal,hyderabad,Telangana,India,500054,378,1643279211,1643279211
+38,Vijay,Nagamalla,8886076668,vijay.nmca@gmail.com,"h-no 8-323/1","road no6","Sagar house","new Vivekananda nagar colony","Near Geetanjali High School",Chintal,Hyderabad,Telangana,India,500054,383,1644757057,1646190764
+39,Krishna,Yadav,9908845241,jvkrishnayadav@gmail.com,"GROUND FLOOR","GEV TULASI","GEV TULASI","PRAGATHI NAGAR","INDIAN BANK BUILDING","Pragathi Nagar",Hyderabad,Telangana,India,500090,386,1646823675,1646823675

@@ -1,0 +1,62 @@
+id,sub_category_name,category_id,status,created_date,updated_date,sc_img_1,sc_img_2
+1,"Atta Flours & Sooji",1,1,1608197844,1608197844,atta.png,aata_wheat1.png
+2,"Dals & Pulses",1,1,1608197844,1608197844,dasl_pulses.png,dals_pulses1.png
+3,"Rice  & Rice By Products",1,1,1608197844,1608197844,rice_by_products.png,rice_group1.png
+4,"Edible Oils",1,1,1608197844,1608197844,edible_oils.png,edible_oil1.png
+5,"Masala & Spices",1,1,1608197844,1608197844,masala_spices.png,masala_spices1.png
+6,"Salt & Sugar & Jaggery",1,1,1608197844,1608197844,salt_sugar.png,salt_sugar1.png
+7,"Soya products, wheat & Other Grians",1,1,1608197844,1608197844,soya.png,soya1.png
+8,"Dry Fruits & Nuts",1,1,1608197844,1608197844,dry_fruits.png,dry_fruits1.png
+9,"Biscuits & Cookies",2,1,1608197844,1608197844,biscuits_cookies.png,biscuits_cookies1.png
+10,"Noodle Pasta & Vermicelli",2,1,1608197844,1608197844,noodle_pasta_vermicelli.png,noodles1.png
+11,"Breakfast Cereals",2,1,1608197844,1608197844,breakfast_Cerelacs.png,breakfast_cereals1.png
+12,"Snacks & Namkeen",2,1,1608197844,1608197844,snacks_and_namkeen.png,snacks_namkeen1.png
+13,"Chocaltes & Candies",2,1,1608197844,1608197844,biscuits_cookies.png,biscuits_cookies.png
+14,"Ready to Cook & Eat",2,1,1608197844,1608197844,ready_to_cook_and_eat.png,ready_cook_eat1.png
+15,"Frozen Veggies  & Snacks",2,1,1608197844,1608197844,frogen_veggies.png,frozen1.png
+16,"Spreads sauces & katcheup",2,1,1608197844,1608197844,spread_sauces.png,spread_sauce1.png
+17,"Indian Sweets",2,1,1608197844,1608197844,India_sweets.png,indian_sweets1.png
+18,"Pickels & Chtuneys",2,1,1608197844,1608197844,pickles_chutney.png,pickles1.png
+19,Dairy,3,1,1608197844,1608197844,dairy.png,dairy1.png
+20,"Toast & Khari",3,1,1608197844,1608197844,toast_khari.png,toast_khari1.png
+21,"Cakes & Muffins",3,1,1608197844,1608197844,cakes_muffins.png,cakes_muffins1.png
+22,Bread,3,1,1608197844,1608197844,bread.png,bread1.png
+23,Buns,3,1,1608197844,1608197844,buns.png,buns1.png
+24,"Baked Cookies",3,1,1608197844,1608197844,baked_cookies.png,baked_cookies1.png
+25,"Bakery Snacks",3,1,1608197844,1608197844,bakery_snacks.png,bakery_snacks1.png
+26,"Butter,Cheese & Panner",3,1,1608197844,1608197844,butter_cheese.png,butter_cheese1.png
+27,Ghee,3,1,1608197844,1608197844,ghee.png,ghee1.png
+28,Detergents,4,1,1608197844,1608197844,detergents.png,detergents1.png
+29,Dishwash,4,1,1608197844,1608197844,dishwash.png,dishwash1.png
+30,"All Purpose Cleans",4,1,1608197844,1608197844,all_purpose_cleans.png,all_purpose_cleans1.png
+31,Repellents,4,1,1608197844,1608197844,repellents.png,repellents1.png
+32,"Mops, Brushes & Scurbs",4,1,1608197844,1608197844,mops.png,mops_brushes1.png
+33,Electrical,4,1,1608197844,1608197844,electrical.png,electrical1.png
+34,Disposables,4,1,1608197844,1608197844,disposable.png,disposable.png
+35,"Pooja Needs",4,1,1608197844,1608197844,pooja.png,pooja_needs1.png
+36,"Shoe Care",4,1,1608197844,1608197844,shoe_care.png,shoecare1.png
+37,Stationery,4,1,1608197844,1608197844,stationery.png,stationery.png
+38,"Kitchen Ware",4,1,1608197844,1608197844,kitchen_ware.png,kitchen1.png
+39,"Hair Care",5,1,1608197844,1608197844,hair_Care.png,hair_care1.png
+40,"Oral Care",5,1,1608197844,1608197844,oral_care.png,oral_care1.png
+41,"Skin Care",5,1,1608197844,1608197844,skin_care.png,skincare1.png
+42,"Bath & Hand Wash",5,1,1608197844,1608197844,bath_handwash.png,bath_handwash1.png
+43,"Body Wash",5,1,1608197844,1608197844,body_wash.png,body_wash1.png
+44,"Bath & Accessories",5,1,1608197844,1608197844,bath_accesosories.png,bath_accessories1.png
+45,"Women Accessories",5,1,1608197844,1608197844,women_accessories.png,women_accessories1.png
+46,"Mens Grooming",5,1,1608197844,1608197844,mens_grooming.png,mens_grooming1.png
+47,"Health Wellness",5,1,1608197844,1608197844,health.png,health.png
+48,"Deo & Fragrance",5,1,1608197844,1608197844,deo_fragrance.png,deo_fragrance1.png
+49,Makeup,5,1,1608197844,1608197844,makeup.png,makeup1.png
+50,"Covid Essentials",5,1,1608197844,1608197844,covid_essentials.png,covid_essentials1.png
+51,Tea,6,1,1608197844,1608197844,tea.png,tea1.png
+52,Coffee,6,1,1608197844,1608197844,coffe.png,coffe1.png
+53,"Fruit Juices",6,1,1608197844,1608197844,fruit_juices.png,fruit_juices1.png
+54,"Energy & Soft drinks",6,1,1608197844,1608197844,energy_soft_drinks.png,energy_soft_dringks1.png
+55,"Health Drink & Supplement",6,1,1608197844,1608197844,health_supplement.png,health_drinks1.png
+56,"Soda & Flavoured Water",6,1,1608197844,1608197844,soda_flavour.png,soda1.png
+57,"Baby Grooming",7,1,1608197844,1608197844,baby_grooming.png,baby_grooming1.png
+58,"Baby Bath & Hygiene",7,1,1608197844,1608197844,baby_bath_hygiene.png,baby_bath_hygiene1.png
+59,"Diapers & wipes",7,1,1608197844,1608197844,diapers.png,diapers_wipes1.png
+60,"Health & wellness",7,1,1608197844,1608197844,health_wellness.png,health_wellness1.png
+61,"Herbs & Seasonings",8,1,1608197844,1608197844,health_wellness.png,health_wellness1.png
