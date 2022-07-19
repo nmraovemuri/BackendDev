@@ -10,6 +10,7 @@ const jwt = require('jsonwebtoken');
 const logger = require('../utils/customer_logger');
 // logger.
 logger.info("urls= ", urls);
+logger.info("Environment Variable NODE_ENV: ", process.env.NODE_ENV)
 // let transporter = nodemailer.createTransport({
 //     service: 'gmail',
 //     auth: {

@@ -5,6 +5,9 @@ const clogger = require('../utils/customer_logger');
 const alogger = require('../utils/admin_logger');
 const urls = require('../config/urls');
 
+clogger.info("urls= ", urls);
+clogger.info("Environment Variable NODE_ENV: ", process.env.NODE_ENV);
+
 exports.createCategory = function(req,res){
     alogger.info("req.body :", req.body);
     let data = req.body;
