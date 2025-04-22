@@ -62,8 +62,8 @@ exports.getAllSubCategories = function(req,res){
     let sql = `SELECT sctr.id, sctr.sub_category_name,
                     sctr.category_id,
                     ctr.category_name, sctr.status,
-                    CONCAT('${urls.SERVER}', "/images/subcategories/sub_cat_home/", sc_img_1) as sc_img_home,
-                    CONCAT('${urls.SERVER}', "/images/subcategories/sub_cat_inner/", sc_img_2) as sc_img_inner
+                    CONCAT('${urls.SERVER}', "/assets/images/subcategories/sub_cat_home/", sctr.feature_img) as sc_img_home,
+                    CONCAT('${urls.SERVER}', "/assets/images/subcategories/sub_cat_inner/", sctr.feature_img_1) as sc_img_inner
                 FROM asm_mt_subcategory sctr, asm_mt_category ctr
                 WHERE sctr.category_id = ctr.id 
                 AND ctr.status = 1 
@@ -75,6 +75,47 @@ exports.getAllSubCategories = function(req,res){
                 status: 'success',
                 data: rows
             })
+        else
+            return res.status(403).json({
+                status: 'failed',
+                errMsg: 'Error while performing query.'
+            })
+    });
+}
+
+exports.getAllSubCategoriesByCategories = function(req,res){
+   // clogger.info("from getAllSubCategories");
+    let sql = `SELECT c.id AS category_id,c.category_name,s.id AS subcategory_id,s.sub_category_name FROM asm_mt_category c join asm_mt_subcategory s on c.id=s.category_id order by c.id;`;
+    db.query(sql, function (err, rows, fields) {
+        clogger.info("error=", err);
+        if (!err)
+        {
+            const result = {};
+
+            rows.forEach(row => {
+                const categoryId = row.category_id;
+                if (!result[categoryId]) {
+                    result[categoryId] = {
+                        category_id: categoryId,
+                        category_name: row.category_name,
+                        subcategories: []
+                    };
+                }
+    
+                result[categoryId].subcategories.push({
+                    subcategory_id: row.subcategory_id,
+                    sub_category_name: row.sub_category_name
+                });
+            });
+    
+            // If you want an array instead of object:
+            const output = Object.values(result);
+
+            return res.status(200).json({
+                status: 'success',
+                data: output
+            })
+        }
         else
             return res.status(403).json({
                 status: 'failed',

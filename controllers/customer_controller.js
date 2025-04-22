@@ -20,40 +20,73 @@ logger.info("Environment Variable NODE_ENV: ", process.env.NODE_ENV)
 // });
 // logger.info("transporter =", transporter);
 
-exports.checkEmailAlreadyExisted = async function (req, res){
-    logger.info("from checkEmailAlreadyExisted");
-    logger.info("req.body= ", req.body);
+exports.checkEmailAlreadyExisted = async function (req, res) {
+    try {
+        logger.info("from checkEmailAlreadyExisted");
+        logger.info("req.body= ", req.body);
 
-    const {email_id} = req.body
-    data = req.body
-  
-    asmdb.query(`SELECT email_id 
-                from asm_customers 
-                where email_id = ? 
-                `, 
-                [email_id], function (err, result, fields) {
-        logger.info('error = ', err);
-        logger.info('result = ', result);
-        if(err)
-            return res.status(502).json({
-                status: 'failed',
-                message: err.message
+        const { email_id } = req.body;
+        exports.checkEmailAlreadyExisted = async function (req, res) {
+    try {
+        logger.info("from checkEmailAlreadyExisted");
+        logger.info("req.body= ", req.body);
+
+        const { email_id } = req.body;
+        
+        // Using async/await for cleaner query handling
+        const [rows] = await asmdb.query(`SELECT email_id 
+                                          FROM asm_customers 
+                                          WHERE email_id = ?`, [email_id]);
+
+        if (rows.length === 0) {
+            return res.status(200).json({
+                status: 'success',
+                message: "This email id is available for registration"
             });
-        else{
-                if(result.length===0){
-                  return res.status(200).json({
-                    status: 'success',
-                    message: "This email id is available for registration"
-                  }); 
-                }else{
-                  return res.status(200).json({
-                    status: 'failed',
-                    message: "This email id is already taken"
-                  });
-                }
-            }
-    });
-}
+        } else {
+            return res.status(200).json({
+                status: 'failed',
+                message: "This email id is already taken"
+            });
+        }
+
+    } catch (err) {
+        // Improved error logging with more context
+        logger.error('Error occurred in checkEmailAlreadyExisted:', err);
+        return res.status(502).json({
+            status: 'failed',
+            message: err.message || 'An error occurred while checking email availability'
+        });
+    }
+};
+
+        
+        // Using async/await for cleaner query handling
+         const [rows] = await asmdb.query(`SELECT email_id 
+                                          FROM asm_customers 
+                                          WHERE email_id = ?`, [email_id]);
+
+        if (rows.length === 0) {
+            return res.status(200).json({
+                status: 'success',
+                message: "This email id is available for registration"
+            });
+        } else {
+            return res.status(200).json({
+                status: 'failed',
+                message: "This email id is already taken"
+            });
+        }
+
+    } catch (err) {
+        // Improved error logging with more context
+        logger.error('Error occurred in checkEmailAlreadyExisted:', err);
+        return res.status(502).json({
+            status: 'failed',
+            message: err.message || 'An error occurred while checking email availability'
+        });
+    }
+};
 
 exports.customerSignup = async function(req, res){
     logger.info("from customerSignup");
@@ -74,7 +107,7 @@ exports.customerSignup = async function(req, res){
         field: 'first_name',
         message: 'First Name should not be empty.'
         })
-    if(!last_name)
+    if(!last_name || last_name===null)
         return res.status(400).json({
         status: 'Field Error',
         field: 'last_name',

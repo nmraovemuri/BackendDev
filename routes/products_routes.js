@@ -18,8 +18,14 @@ router.get('/client/getAllProducts',  productsController.getAllProducts);
 // Get All Products  For Client V2
 router.get('/client/getAllProductsForClient',  productsController.getAllProductsForClient);
 
+// Get All Products  For Client V2 new arrivals
+router.get('/client/getAllProductsForNewArrivals',  productsController.getAllProductsForNewArrivals);
+
 // Get All Products By Subcat Id For Client
 router.post('/client/getProductsBySubcatId',  productsController.getProductsBySubcatId);
+ 
+// Get All Products By Subcat Id For Client by get method
+router.get('/client/getAllProductsBySubcatId/:subcat_id',  productsController.getAllProductsBySubcatId); 
 
 // Get All Products By Search String
 router.post('/client/getProductsBySearchString',  productsController.getProductsBySearchString);

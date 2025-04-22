@@ -10,6 +10,6 @@ router.post('/create_category',  auth.ensureToken, categoryController.createCate
 router.get('/admin/getAllCategories',  auth.ensureToken, categoryController.getAllCategories);
 
 // Get All Categories  For Client
-router.get('/client/getAllCategories/:random',  categoryController.getAllCategories);
-
+//router.get('/client/getAllCategories/:random',  categoryController.getAllCategories);
+router.get('/client/getAllCategories',  categoryController.getAllCategories);
 module.exports = router

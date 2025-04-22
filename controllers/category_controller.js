@@ -93,16 +93,16 @@ exports.createCategory = function(req,res){
 
 exports.getAllCategories = function(req,res){
     clogger.info("from getAllCategories");
-    db.query(`SELECT id, 
-                category_name, 
-                CONCAT('${urls.SERVER}', "/images/categories/", feature_img) as category_img,
-                CONCAT('images/categories/', feature_img) as product_img, 
-                category_description, 
-                status, 
-                FROM_UNIXTIME(created_date, '%Y-%m-%d %H:%i:%s') as created_date,
-                FROM_UNIXTIME(updated_date, '%Y-%m-%d %H:%i:%s') as updated_date
-                FROM asm_mt_category where status = 1 and
-                id != 9`, function (err, rows, fields) {
+    db.query(`SELECT c.id,  
+                c.category_name, 
+                CONCAT('${urls.SERVER}', "/images/categories/", c.feature_img) as category_img,
+                CONCAT('images/categories/', c.feature_img) as product_img, 
+                c.category_description, 
+                c.status, 
+                FROM_UNIXTIME(c.created_date, '%Y-%m-%d %H:%i:%s') as created_date,
+                FROM_UNIXTIME(c.updated_date, '%Y-%m-%d %H:%i:%s') as updated_date,
+                count(*) as productcount
+               from asm_products p join asm_mt_subcategory s on s.id=p.subcat_id join asm_mt_category c on  c.id=s.category_id group by c.id having c.status=1`, function (err, rows, fields) {
         clogger.info("error =", err);
         if (!err)
             return res.status(200).json({

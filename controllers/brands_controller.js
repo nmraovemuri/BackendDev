@@ -5,7 +5,7 @@ const clogger = require('../utils/customer_logger');
 const alogger = require('../utils/admin_logger');
 const urls = require('../config/urls');
 
-
+ 
 exports.getAllProductBrands = function(req, res){
     clogger.info("from getAllProductBrands");
     db.query(`SELECT id, 

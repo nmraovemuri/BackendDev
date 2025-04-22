@@ -32,10 +32,11 @@ app.use(express.static('./resources'));
 app.use(express.static('./logs'));
 // app.use(express.static('./public'));
 app.use(express.static(__dirname + '/public'))
-app.get('*', function (request, response){
-    response.sendFile(path.resolve(__dirname, 'public', 'index.html'))
-  })
-app.listen(3000,function(err){
+// app.get('*', function (request, response){
+//     response.sendFile(path.resolve(__dirname, 'public', 'index.html'))
+//   })
+app.listen(4000,function(err){
     if(err) throw err;
-    console.log("The port is connecte on 3000")
+    console.log("The port is connecte on 4000")
 })
+

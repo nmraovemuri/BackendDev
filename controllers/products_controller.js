@@ -16,6 +16,7 @@ exports.createProduct = function(req,res){
     const description_snd = data.description_snd;
     const status = data.status;
     const subcat_id = data.subcat_id;
+    const gst_slab=data.gst_slab;
     const created_date = `UNIX_TIMESTAMP()`;
     const updated_date = `UNIX_TIMESTAMP()`;
 
@@ -70,6 +71,7 @@ exports.createProduct = function(req,res){
         product_img,
         description_fst,
         description_snd,
+        gst_slab,
         status,
         subcat_id,
     ]
@@ -87,11 +89,12 @@ exports.createProduct = function(req,res){
                     product_img, 
                     description_fst,
                     description_snd,
+                    gst_slab_id,
                     status,
                     subcat_id, 
                     created_date,
                     updated_date) 
-                    values (?, ?, ?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`;
+                    values (?, ?, ?, ?, ?, ?,?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`;
     db.query(sql, data, (err,rows)=>{
         alogger.info(err);
         alogger.info(rows);
@@ -115,7 +118,7 @@ exports.createProduct = function(req,res){
 exports.getAllProducts = function(req,res){
     db.query(`SELECT id,
             product_name,
-            CONCAT(${urls.SERVER}, "/images/products/", product_img) as product_img, 
+            CONCAT('${urls.SERVER}', "/images/products/", product_img) as product_img, 
             description_fst,
             description_snd,
             status,
@@ -187,6 +190,54 @@ exports.getAllProductsForClient = function(req,res){
     });
 }
 
+exports.getAllProductsForNewArrivals = function(req,res){
+    clogger.info("from getAllProductsForClient");
+    db.query(`SELECT CONCAT(p.id, "-", u.id) as product_unit_id, 
+                p.id as product_id,
+                p.product_name,
+                p.product_brand,
+                CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
+                CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
+                p.description_fst,
+                p.description_snd,
+                u.id as unit_id,
+                u.unit_value,
+                u.unit_type,
+                pup.mrp,
+                pup.sale_price,
+                amt.gst_slab,
+                (pup.mrp - pup.sale_price) as discount_amount,
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage,
+                p.subcat_id
+            FROM asm_products p,
+                asm_product_unit_price pup,
+                asm_mt_units u,
+                asm_mt_tax amt
+            WHERE p.id = pup.product_id and
+                p.gst_slab_id = amt.id and
+                pup.unit_id = u.id and
+                
+                p.status = 1 and
+                u.status = 1 and 
+                pup.status = 1 and
+                amt.status = 1
+                order by p.id desc limit 10 offset 50
+            `, 
+            function (err, rows, fields) {
+                clogger.info("error:", err);
+        if (!err)
+            return res.status(200).json({
+                status: 'success',
+                data: rows
+            })
+        else
+            return res.json({
+                status: 'failed',
+                errMsg: 'Error while performing query.'
+            })
+    });
+}
+
 exports.getProductsBySubcatId = function(req,res){
     clogger.info("from getProductsBySubcatId");
     let subcat_id = req.body.subcat_id;
@@ -238,6 +289,68 @@ exports.getProductsBySubcatId = function(req,res){
     });
 }
 
+exports.getAllProductsBySubcatId = function(req,res){
+    //clogger.info("from getProductsBySubcatId");
+    let subcat_id = req.params.subcat_id;
+    //clogger.info("subcat_id:", subcat_id);
+    db.query(`SELECT CONCAT(p.id, "-", u.id) as product_unit_id, 
+                p.id as product_id,
+                p.product_name,
+                p.product_brand,
+                CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
+                CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
+                p.description_fst,
+                p.description_snd,
+                u.id as unit_id,
+                u.unit_value,
+                u.unit_type,
+                pup.mrp,
+                pup.sale_price,
+                amt.gst_slab,
+                (pup.mrp - pup.sale_price) as discount_amount,
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage,
+                p.subcat_id
+            FROM asm_products p,
+                asm_product_unit_price pup,
+                asm_mt_units u,
+                asm_mt_tax amt
+            WHERE p.subcat_id = ? and 
+                p.id = pup.product_id and
+                p.gst_slab_id = amt.id and
+                pup.unit_id = u.id and
+                
+                p.status = 1 and
+                u.status = 1 and 
+                pup.status = 1 and
+                amt.status = 1
+                order by p.id
+            `, [subcat_id],
+            function (err, rows, fields) {
+                clogger.info("error: ", err);
+        if (!err)
+        {
+            db.query(`SELECT c.category_name as catName,s.sub_category_name as subCatName FROM asm_mt_subcategory s 
+                join asm_mt_category c on c.id=s.category_id where s.id=?`,[subcat_id],
+                function (err, details, fields) {
+                 if(!err)
+                 {
+                    return res.status(200).json({
+                        status: 'success',
+                        data: rows,
+                        details:details
+                    })
+                    
+                 }
+                    
+        })
+        }  
+        else
+            return res.json({
+                status: 'failed',
+                errMsg: 'Error while performing query.'
+            })
+    });
+}
 
 exports.getProductsBySearchString = function(req,res){
     clogger.info("from getProductsBySearchString");
@@ -397,7 +510,7 @@ exports.getTopDealsOfDayByPercentage = function(req,res){
                 status: 'success',
                 data: rows
             })
-        else
+        else 
             return res.json({
                 status: 'failed',
                 errMsg: 'Error while performing query.'
