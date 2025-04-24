@@ -11,12 +11,15 @@ router.post('/create_product',  auth.ensureToken, productsController.createProdu
 
 // Get All Products for Admin
 router.get('/admin/getAllProducts',  auth.ensureToken, productsController.getAllProducts);
-
+ 
 // Get All Products  For Client
 router.get('/client/getAllProducts',  productsController.getAllProducts);
 
-// Get All Products  For Client V2
+// Get All Products  For Client V2 
 router.get('/client/getAllProductsForClient',  productsController.getAllProductsForClient);
+
+// Get Product Details  For Client V2 by product id and unit id
+router.get('/client/getProductDetailsById/product/:id/unit/:unit_id',  productsController.getProductDetailsById);
 
 // Get All Products  For Client V2 new arrivals
 router.get('/client/getAllProductsForNewArrivals',  productsController.getAllProductsForNewArrivals);
@@ -29,6 +32,9 @@ router.get('/client/getAllProductsBySubcatId/:subcat_id',  productsController.ge
 
 // Get All Products By Search String
 router.post('/client/getProductsBySearchString',  productsController.getProductsBySearchString);
+
+// Get All Products list By Search String
+router.get('/client/getProductsListBySearchString/:search_string',  productsController.getProductsListBySearchString);
 
 // Get All Products with high discounts
 router.get('/client/getTopDealsOfDay',  productsController.getTopDealsOfDay);

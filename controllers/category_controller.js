@@ -98,6 +98,7 @@ exports.getAllCategories = function(req,res){
                 CONCAT('${urls.SERVER}', "/images/categories/", c.feature_img) as category_img,
                 CONCAT('images/categories/', c.feature_img) as product_img, 
                 c.category_description, 
+                s.id as subcatid,
                 c.status, 
                 FROM_UNIXTIME(c.created_date, '%Y-%m-%d %H:%i:%s') as created_date,
                 FROM_UNIXTIME(c.updated_date, '%Y-%m-%d %H:%i:%s') as updated_date,

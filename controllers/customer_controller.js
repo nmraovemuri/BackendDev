@@ -777,7 +777,7 @@ exports.updateCustomerAddress = async function(req, res){
     let data = req.body;
     const { customer_id, customer_address } = data;
     const city = 'Hyderabad', state= 'Telangana', country='India';
-
+ 
     if(!customer_id)
         return res.status(400).json({
             status: 'Field Error',

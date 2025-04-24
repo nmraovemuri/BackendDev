@@ -189,6 +189,68 @@ exports.getAllProductsForClient = function(req,res){
             })
     });
 }
+exports.getProductDetailsById = function(req,res){
+   // clogger.info("from getAllProductsForClient");
+   let id = req.params.id;
+   let unit_id=req.params.unit_id;
+    db.query(`SELECT CONCAT(p.id, "-", u.id) as product_unit_id, 
+                p.id as product_id,
+                p.product_name,
+                p.product_brand,
+                CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
+                CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
+                p.description_fst,
+                p.description_snd,
+                u.id as unit_id,
+                u.unit_value,
+                u.unit_type,
+                pup.mrp,
+                pup.sale_price,
+                amt.gst_slab,
+                (pup.mrp - pup.sale_price) as discount_amount,
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage,
+                p.subcat_id
+            FROM asm_products p,
+                asm_product_unit_price pup,
+                asm_mt_units u,
+                asm_mt_tax amt
+            WHERE p.id = pup.product_id and
+                p.gst_slab_id = amt.id and
+                pup.unit_id = u.id and
+                p.id=? and
+                u.id=? and
+                p.status = 1 and
+                u.status = 1 and 
+                pup.status = 1 and
+                amt.status = 1
+                order by p.id
+            `, [id,unit_id],
+            function (err, rows, fields) {
+                clogger.info("error:", err);
+        if (!err)
+        {
+            db.query(`SELECT s.id sid,p.product_name as productname,c.category_name as catName,s.sub_category_name as subCatName FROM asm_mt_subcategory s 
+                join asm_mt_category c on c.id=s.category_id join asm_products p on p.subcat_id=s.id where p.id=?`,[id],
+                function (err, details, fields) {
+                 if(!err)
+                 {
+                    return res.status(200).json({
+                        status: 'success',
+                        data: rows,
+                        details:details
+                    })
+                    
+                 }
+                    
+            })
+        }
+        else
+            return res.json({
+                status: 'failed',
+                errMsg: 'Error while performing query.'
+            })
+    });
+}
 
 exports.getAllProductsForNewArrivals = function(req,res){
     clogger.info("from getAllProductsForClient");
@@ -352,7 +414,138 @@ exports.getAllProductsBySubcatId = function(req,res){
     });
 }
 
-exports.getProductsBySearchString = function(req,res){
+// exports.getProductDetailsId = function(req,res){
+//     //clogger.info("from getProductsBySubcatId");
+//     let poduct_id = req.params.product_id;
+//     //clogger.info("subcat_id:", subcat_id);
+//     db.query(`SELECT CONCAT(p.id, "-", u.id) as product_unit_id, 
+//                 p.id as product_id,
+//                 p.product_name,
+//                 p.product_brand,
+//                 CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
+//                 CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
+//                 p.description_fst,
+//                 p.description_snd,
+//                 u.id as unit_id,
+//                 u.unit_value,
+//                 u.unit_type,
+//                 pup.mrp,
+//                 pup.sale_price,
+//                 amt.gst_slab,
+//                 (pup.mrp - pup.sale_price) as discount_amount,
+//                 round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage,
+//                 p.subcat_id
+//             FROM asm_products p,
+//                 asm_product_unit_price pup,
+//                 asm_mt_units u,
+//                 asm_mt_tax amt
+//             WHERE p.subcat_id = ? and 
+//                 p.id = pup.product_id and
+//                 p.gst_slab_id = amt.id and
+//                 pup.unit_id = u.id and
+                
+//                 p.status = 1 and
+//                 u.status = 1 and 
+//                 pup.status = 1 and
+//                 amt.status = 1
+//                 order by p.id
+//             `, [poduct_id],
+//             function (err, rows, fields) {
+//                 clogger.info("error: ", err);
+//         if (!err)
+//         {
+//             db.query(`SELECT c.category_name as catName,s.sub_category_name as subCatName FROM asm_mt_subcategory s 
+//                 join asm_mt_category c on c.id=s.category_id where s.id=?`,[subcat_id],
+//                 function (err, details, fields) {
+//                  if(!err)
+//                  {
+//                     return res.status(200).json({
+//                         status: 'success',
+//                         data: rows,
+//                         details:details
+//                     })
+                    
+//                  }
+                    
+//         })
+//         }  
+//         else
+//             return res.json({
+//                 status: 'failed',
+//                 errMsg: 'Error while performing query.'
+//             })
+//     });
+// }
+exports.getProductsListBySearchString = function(req,res){ 
+    clogger.info("from getProductsBySearchString");
+    let search_string = req.params.search_string;
+    clogger.info("search_string=", search_string);
+    if(!search_string){
+        return res.status(200).json({
+            status: "success",
+            data: []
+        });
+    }
+    let tmp_search_string = search_string.replace(/ /g, '');
+    clogger.info("tmp_search_string length= ", tmp_search_string.length);
+    if(tmp_search_string.length===0){
+        return res.status(200).json({
+            status: "success",
+            data: []
+        });
+    }
+    if(search_string){
+        search_string = search_string.toLocaleLowerCase();
+        search_string  = '%'+search_string+'%';
+    }
+    clogger.info("search_string: ", search_string);
+    db.query(`SELECT CONCAT(p.id, "-", u.id) as product_unit_id,
+                p.id as product_id,
+                p.product_name,
+                p.product_brand,
+                CONCAT('${urls.SERVER}', "/images/products/200/", pup.product_img) as product_img_200, 
+                CONCAT('${urls.SERVER}', "/images/products/400/", pup.product_img) as product_img_400, 
+                p.description_fst,
+                p.description_snd,
+                u.id as unit_id,
+                u.unit_value,
+                u.unit_type,
+                pup.mrp,
+                pup.sale_price,
+                amt.gst_slab,
+                (pup.mrp - pup.sale_price) as discount_amount,
+                round(((pup.mrp - pup.sale_price)/pup.mrp)*100) as discount_percentage,
+                p.subcat_id
+            FROM asm_products p,
+                asm_product_unit_price pup,
+                asm_mt_units u,
+                asm_mt_tax amt
+            WHERE (LOWER(p.product_name) like ?)  and 
+                p.id = pup.product_id and
+                p.gst_slab_id = amt.id and
+                pup.unit_id = u.id and
+                p.status = 1 and
+                u.status = 1 and 
+                pup.status = 1 and
+                amt.status = 1
+                order by p.id
+            `, [search_string],
+            function (err, rows, fields) {
+                clogger.info("error= ", err);
+        if (!err)
+            return res.json({
+                status: 'success',
+                data: rows
+            })
+        else
+            return res.json({
+                status: 'failed',
+                errMsg: 'Error while performing query.'
+            })
+    });
+}
+
+exports.getProductsBySearchString = function(req,res){ 
     clogger.info("from getProductsBySearchString");
     let search_string = req.body.search_string;
     clogger.info("search_string=", search_string);
