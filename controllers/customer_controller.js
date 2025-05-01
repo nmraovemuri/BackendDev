@@ -93,8 +93,14 @@ exports.customerSignup = async function(req, res){
     logger.info("req.body :", req.body);
     logger.info("req.headers :", req.headers);
     let data = req.body;
-    const { first_name, last_name, email_id, mobile, password, location } = data;
+    const { username, first_name, last_name, email_id, mobile, password, location } = data;
     let {source_app} = req.headers;
+    if(!username)
+        return res.status(400).json({
+        status: 'Field Error',
+        field: 'username',
+        message: 'username should not be empty.'
+        })
     if(!location)
         return res.status(400).json({
         status: 'Field Error',
@@ -148,9 +154,9 @@ exports.customerSignup = async function(req, res){
     const hashedPassword = await bcrypt.hash(password, salt);
     logger.info(hashedPassword);
     // const { first_name, last_name, email_id, mobile, password } = data;
-    const query = `INSERT INTO asm_customers (first_name, last_name, email_id, 
-        mobile, password, location, created_on, source_app) values (?, ?, ?, ?, ?, ?, now(), ?)`;
-    asmdb.query( query, [first_name, last_name, email_id, mobile, hashedPassword, location, source_app], function (err, result) {
+    const query = `INSERT INTO asm_customers ( username, first_name, last_name, email_id, 
+        mobile, password, location, created_on, source_app) values (?, ?, ?, ?, ?, ?, ?, now(), ?)`;
+    asmdb.query( query, [username, first_name, last_name, email_id, mobile, hashedPassword, location, source_app], function (err, result) {
         logger.info("result= ", result);
         logger.info("error= ", err);
         if (!err && result.affectedRows === 1) {
@@ -161,7 +167,7 @@ exports.customerSignup = async function(req, res){
                 time_of_generation: Date.now(),
                 server_origin: urls.SERVER
             };
-            
+           
             //resources\mail_template\customer_signup_status.html
             fs.readFile('resources/mail_template/customer_signup_status.html', function(err, data) {
             
@@ -183,6 +189,7 @@ exports.customerSignup = async function(req, res){
                             status: 'error',
                             message: error.message
                         });
+                        
                     }else{
                         logger.info("Email send " + info.response);
                         return res.status(200).json({
@@ -337,7 +344,7 @@ exports.customerSignIn = async function (req, res){
     const hashedPassword = await bcrypt.hash(password, salt);
     logger.info('hashedPassword= ', hashedPassword);
 
-    asmdb.query(`SELECT customer_id, first_name, last_name, email_id, password, mobile, is_active
+    asmdb.query(`SELECT customer_id, first_name, last_name, email_id, password, mobile 
                 from asm_customers 
                 where email_id = ? 
                 and email_id_verified is null  
@@ -362,7 +369,7 @@ exports.customerSignIn = async function (req, res){
                 }
     
 
-        asmdb.query(`SELECT customer_id, first_name, last_name, email_id, password, mobile 
+        asmdb.query(`SELECT customer_id, first_name, last_name, email_id, password, mobile, is_active 
                     from asm_customers 
                     where email_id = ? 
                     and email_id_verified = 1 
@@ -426,7 +433,7 @@ exports.customerSignIn = async function (req, res){
 exports.customerForgotPassword = async function (req, res){
     logger.info("from customerForgotPassword");
     logger.info("req.body= ", req.body);
-    const { email_id } = req.body;
+    const email_id = req.body.email_id.email_id || req.body.email_id; 
     if(!email_id){
         return res.status(422).json({
             status: 'Field Error',
@@ -777,7 +784,7 @@ exports.updateCustomerAddress = async function(req, res){
     let data = req.body;
     const { customer_id, customer_address } = data;
     const city = 'Hyderabad', state= 'Telangana', country='India';
- 
+
     if(!customer_id)
         return res.status(400).json({
             status: 'Field Error',
