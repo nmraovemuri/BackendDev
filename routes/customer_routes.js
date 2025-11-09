@@ -38,6 +38,12 @@ router.post('/updateCustomerAddress', customerController.updateCustomerAddress);
 //Get Customer Shipping Address
 router.get('/get_customer_shipping_address/:customer_id', customerController.getCustomerShippingAddress);
 
+ //Get Customer Shipping Address
+router.get('/getCustomerDetailsById/:customer_id', customerController.getCustomerDetailsById);
+
+//update update Status Customer
+router.put('/updateStatusCustomer',customerController.updateStatusCustomer)
+
 // Ensuring Authorization
 function ensureToken(req, res, next){
     logger.info("from ensureToken");

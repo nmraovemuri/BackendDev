@@ -1,6 +1,6 @@
 var express = require('express');
-var mysql = require('mysql');
-var mysqlConnect = mysql.createConnection({
+var mysql = require('mysql2');
+var pool = mysql.createConnection({
     host : 'localhost',
     user : 'root',
     // password : 'root',
@@ -8,10 +8,11 @@ var mysqlConnect = mysql.createConnection({
     password: '',
     database : 'asm',
     multipleStatements : 'true'
-}) 
-mysqlConnect.connect((err)=>{
+})
+pool.connect((err)=>{
     if(err) throw err;
     else
     console.log("Ecommerce database is connected.");
 })
-module.exports= mysqlConnect;
+module.exports= pool;
+

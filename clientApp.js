@@ -27,14 +27,21 @@ app.use(require('./routes/customer_routes'));
 app.use(require('./routes/order_routes'));
 app.use(require('./routes/admin_order_routes'));
 
-app.use(express.static('./assets'));
+app.use(require('./routes/cart_routes'));
+
+//app.use(express.static('./assets'));
 app.use(express.static('./resources'));
 app.use(express.static('./logs'));
 // app.use(express.static('./public'));
 app.use(express.static(__dirname + '/public'))
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
+app.use('/images', express.static(path.join(__dirname, 'assets/images')));
 // app.get('*', function (request, response){
 //     response.sendFile(path.resolve(__dirname, 'public', 'index.html'))
 //   })
+// Serve static React files
+
+
 app.listen(4000,function(err){
     if(err) throw err;
     console.log("The port is connecte on 4000")

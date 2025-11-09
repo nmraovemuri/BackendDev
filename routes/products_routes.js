@@ -6,12 +6,20 @@ const productsController = require('../controllers/products_controller');
 // Create a new Product 
 router.post('/create_product',  auth.ensureToken, productsController.createProduct);
 
+//create a new Product Unit 
+router.post('/createProductUnit',  auth.ensureToken, productsController.createProductUnit);
+
+//update status product updateStatusProduct
+router.put('/updateStatusProduct',  auth.ensureToken, productsController.updateStatusProduct);
 // Update a Product 
 // router.post('/update_product',  auth.ensureToken, productsController.updateProduct);
 
 // Get All Products for Admin
-router.get('/admin/getAllProducts',  auth.ensureToken, productsController.getAllProducts);
+router.get('/admin/getAllProducts',  auth.ensureToken, productsController.getAllProductsForAdmin);
  
+//get product details by id 
+router.get('/Admin/getProductDetailsById/product/:id/unit/:unit_id',  productsController.getProductDetailsByIdForAdmin);
+
 // Get All Products  For Client
 router.get('/client/getAllProducts',  productsController.getAllProducts);
 
@@ -45,6 +53,10 @@ router.get('/client/getTopDealsOfDayByPercentage/:discount_percentage',  product
 // get Products by Brand
 router.get('/client/getProductsByBrand/:product_brand',  productsController.getProductsByBrand);
 
+//update updateProductWithUnitDetails
+router.put('/admin/updateProductWithUnitDetails',  auth.ensureToken,productsController.updateProductWithUnitDetails)
 
+//delete deleteProductUnitDetails
+router.delete('/admin/deleteProductUnitDetails/:id/:unitId',  auth.ensureToken,productsController.deleteProductUnitDetails)
 
 module.exports = router

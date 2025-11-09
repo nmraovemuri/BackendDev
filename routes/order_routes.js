@@ -12,5 +12,8 @@ router.post('/client/orders_history',   orderController.customerOrdersHistory);
 // Get Order Details By OrderID
 router.get('/client/order_details/:order_id',   orderController.orderDetails);
 
+//billig address
+router.post('/client/ordersubmit',  auth.ensureToken,   orderController.ordersubmit);
+
 
 module.exports = router

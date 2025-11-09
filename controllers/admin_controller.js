@@ -8,10 +8,60 @@ const logger = require('../utils/admin_logger');
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'testengine82@gmail.com',
-    pass: 'DigitalLync@123'
+    user: 'manirojam450@gmail.com',
+    pass: 'outz qdlh oxtx hlab'
   }
 });
+
+exports.adminTokenDetails=function(req,res){
+    //console.log(req.headers);
+        const bearerHeader = req.headers["authorization"];
+        if(typeof bearerHeader !== 'undefined'){
+            const bearer = bearerHeader.split(" ");
+            const bearerToken = bearer[1]
+            
+            jwt.verify(bearerToken, 'my-secret-key', function (err, data){
+               
+                if(err){
+                    return res.status(403).json({
+                        status: "failed",
+                        error:"Invalid Authorization"
+                    });
+                }
+                else{
+                    let sql = 'SELECT * from asm_admin where email_id = ? '
+                db.query(sql, [data.emailID], (err, rows, fields)=>{
+                    if(err) 
+                    {
+                        return res.status(422).json({
+                            status: "failed",
+                            error:"Invalid EmailID"
+                        });
+                    }
+                    else if(rows.length === 0)
+                        return res.status(422).json({
+                            status: "failed",
+                            error:"Invalid EmailID"
+                        });
+                    else if(rows.length === 1){
+                        return res.status(200).json({
+                        status: "success",
+                        emailID:data.emailID,
+                        role:"admin"
+                    });
+                    }
+                })
+                    
+                }
+            });
+            
+        }else{
+            return res.status(403).json({
+                status: "failed",
+                error:"Forbidden"
+            });
+        }
+}
 
 // Admin SignIn
 exports.adminSignIn = function (req, res){
@@ -81,7 +131,7 @@ exports.changeAdminPassword = async function (req, res){
     logger.info(req.body);
     const {emailID, oldPassword, newPassword} = req.body
     if(!emailID || !oldPassword || !newPassword){
-       return res.status(422).json({
+       return res.status(422).json({ 
            status: "failed",
            error:"Please provide emailID, old password and new password"
         })
@@ -126,7 +176,7 @@ exports.changeAdminPassword = async function (req, res){
                     return res.status(200).json({
                             status: "failed", 
                             key: 'INVALID_OLD_PASSWORD', 
-                            message: "Invalid Old Password"
+                            error: "Invalid Old Password"
                         }
                     );
                 }
@@ -164,6 +214,7 @@ exports.adminForgotPassword = function (req, res){
         })
     }
      let sql = 'SELECT * from asm_admin where email_id = ? '   
+
     
     db.query(sql, [emailID], (err, rows, fields)=>{
         logger.info("err:",err);
@@ -180,6 +231,12 @@ exports.adminForgotPassword = function (req, res){
                     error:"Invalid EmailID"
                 });
         else{
+            const token = jwt.sign(
+                                { emailID },
+                               'my-secret-key',
+                                { expiresIn: '15m' } // valid for 15 minutes
+                            );
+            const resetLink = `http://localhost:5173/forgot-confirm-password/${token}`;                
             // const token = jwt.sign({emailID}, 'my-secret-key');
             // res.json({status: "success", token, emailID})
             var mailOptions = {
@@ -189,10 +246,8 @@ exports.adminForgotPassword = function (req, res){
                 html: `
                 
                     <h1>This is the final email</h1>
-              
-                    <a href="http://localhost:4200/forgot-confirm-password">Click here</a>
-              
-        
+                    <h3>This below link will be expire in 15 minutes</h3>
+                    <a href="${resetLink}">Click here</a>
                 
                 `
               };
@@ -207,5 +262,43 @@ exports.adminForgotPassword = function (req, res){
 
         }
     });
+} 
+//Admin forget password
+// Admin Change Password
+exports.changeAdminForgetPassword = async function (req, res){
+    logger.info(req.body);
+    const {token, newPassword} = req.body
+    if(!token || !newPassword){
+       return res.status(422).json({ 
+           status: "failed",
+           error:"Please provide emailID and new password"
+        })
+    }
+    if(newPassword.length === 0 || newPassword.length<4)
+        return res.status(422).json({
+            status: "failed",
+            error:"New password is too short"
+        })
+    const decoded = jwt.verify(token, 'my-secret-key');
+    const emailID = decoded.emailID;  
+    const salt = await bcrypt.genSalt(11);
+    const newHashedPassword = await bcrypt.hash(newPassword, salt);
+    //If password matched then update old password with new password.
+        db.query("UPDATE asm_admin SET password = ? where email_id= ? ", 
+            [newHashedPassword, emailID], function (err3, result) {
+                            logger.info('err3 =', err3);
+                            logger.info("query result=", result);
+                        if(err3) 
+                            return res.status(422).json({
+                                status: "failed",
+                                error: err3.message
+                            });
+                        
+                        return res.json({ 
+                            status: "success", 
+                            msg: "Password is changed successfully"
+                        });
+                    
+            });
 }
-
+    

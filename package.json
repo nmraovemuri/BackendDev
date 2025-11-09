@@ -18,8 +18,10 @@
     "log4js": "^6.3.0",
     "multer": "^1.4.2",
     "mysql": "^2.18.1",
+    "mysql2": "^3.14.1",
     "nodemailer": "^6.4.16",
     "nodemon": "^2.0.6",
+    "sharp": "^0.34.2",
     "string-format": "^2.0.0"
   }
 }

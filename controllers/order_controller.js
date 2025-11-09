@@ -7,13 +7,14 @@ const sms = require('../config/sms');
 const https = require('https');
 const logger = require('../utils/customer_logger');
 const urls = require('../config/urls');
-
+ 
 let getCartTotalPrice=(cartList)=>{ 
   logger.info("getCartTotalPrice");
   // logger.info("cartList: ", cartList);
   logger.info("No.of items of cartList : ", cartList.length);
   let totalPrice = cartList.reduce((tot, item) => tot + item.sale_price * item.quantity, 0);
-  return totalPrice.toFixed(2);
+  var gstToal=cartList.reduce((count, item) => count + item.gst_slab * item.quantity, 0);
+  return (totalPrice+gstToal).toFixed(2);
 }
 let getCartDiscountPrice=(cartList)=>{
   logger.info("getCartDiscountPrice");
@@ -33,18 +34,8 @@ let getCartTotalTax=(cartList)=>{
   logger.info("getCartTotalTax");
   logger.info("No.of items of cartList : ", cartList.length);
   // logger.info("cartList: ", cartList);
-  let total_tax = cartList.reduce((tot, item)=> {
-    // let taxable_value = parseFloat((item.sale_price/(1 + item.gst_slab/100)).toFixed(2));
-    // let tax_amt = (taxable_value * item.gst_slab/100).toFixed(2);
-    let taxable_value = item.sale_price/(1 + item.gst_slab/100);
-    let tax_amt = taxable_value * item.gst_slab/100;
-    // tax_amt = parseFloat(tax_amt);
-    // let total_tax = tot + parseFloat((tax_amt*item.quantity).toFixed(2));
-    let total_tax = tot + tax_amt * item.quantity;
-    // total_tax = parseFloat(total_tax).toFixed(2);
-    // total_tax = parseFloat(total_tax);
-    return total_tax;
-  }, 0);
+  const total_tax = cartList.reduce((count, item) => count + item.quantity * item.gst_slab, 0);
+  
   return total_tax.toFixed(2);
 }
 const storeDeliveryAddress = (customer_id, delivery_address)=>{
@@ -125,7 +116,7 @@ const storeBillingAddress = (customer_id, billing_address)=>{
         logger.info("baUpdateResult= ", baUpdateResult);   
       });
     }
-  });
+  }); 
 }
 const storeCartList=(order_id, cartList)=>{
   logger.info("from storeCartList");
@@ -221,7 +212,7 @@ sendOrderConfirmMail=(order_id, customer_id, billing_address, cartList)=>{
     let msg = strformat(template, orderDetails);
 
     // logger.info(msg);
-    let mailOptions = {
+    let mailOptions = { 
         from: 'customercare.aswika@gmail.com',
         to: ba.email_id,
         bcc: 'malli.vemuri@gmail.com,dmk.java@gmail.com',
@@ -315,7 +306,7 @@ exports.ordersubmit = function(req,res){
   let status = "submitted"
   let orderMasterQuery = `INSERT INTO asm_customer_order_master 
       (total_items, total_amount, status, customer_id, 
-        source_app, created_date, updated_date) 
+        source, created_date, updated_date) 
       values (?, ?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())`;
   asmDb.query(orderMasterQuery, [total_items, total_amount, 
                                     status, customer_id, source_app], 
@@ -338,7 +329,7 @@ exports.ordersubmit = function(req,res){
       storeBillingAddress(customer_id, billing_address);
       storeCartList(order_id, cartList);
       sendOrderConfirmMail(order_id, customer_id, billing_address, cartList);
-      sendSMS(order_id, customer_name, mobile);
+      //sendSMS(order_id, customer_name, mobile);
       return res.status(200).json({
         status: 'success',
         order_id
@@ -349,7 +340,7 @@ exports.ordersubmit = function(req,res){
 
 
 // Orders History
-exports.customerOrdersHistory = function(req,res){
+exports.customerOrdersHistory = function(req,res){ 
   logger.info("from customerOrdersHistory");
   logger.info("body: ", req.body);
   // logger.info("params:", req.params);

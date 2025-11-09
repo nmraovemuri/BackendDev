@@ -4,7 +4,6 @@ let transporter = require('../config/mail_transporter');
 let fs = require('fs');
 var bcrypt = require('bcrypt');
 const urls = require('../config/urls');
-
 const strformat = require('string-format');
 const jwt = require('jsonwebtoken');
 const logger = require('../utils/customer_logger');
@@ -25,30 +24,35 @@ exports.checkEmailAlreadyExisted = async function (req, res) {
         logger.info("from checkEmailAlreadyExisted");
         logger.info("req.body= ", req.body);
 
-        const { email_id } = req.body;
-        exports.checkEmailAlreadyExisted = async function (req, res) {
-    try {
-        logger.info("from checkEmailAlreadyExisted");
-        logger.info("req.body= ", req.body);
-
-        const { email_id } = req.body;
-        
+        const { email_id,id } = req.body;
         // Using async/await for cleaner query handling
-        const [rows] = await asmdb.query(`SELECT email_id 
-                                          FROM asm_customers 
-                                          WHERE email_id = ?`, [email_id]);
-
-        if (rows.length === 0) {
-            return res.status(200).json({
-                status: 'success',
-                message: "This email id is available for registration"
-            });
-        } else {
-            return res.status(200).json({
-                status: 'failed',
-                message: "This email id is already taken"
-            });
+        let sql=`SELECT email_id  FROM asm_customers  WHERE email_id = ?`;
+        let params = [email_id];
+        if (id) {
+            sql += ` AND customer_id != ?`;
+            params.push(id);
         }
+        asmdb.query(sql, params, (err, rows)=>{
+            // logger.error("lenght",rows.length)
+            if (err) {
+                logger.error("SQL error", err);
+                return res.status(500).json({
+                    status: 'failed',
+                    message: "Database error"
+                });
+            }
+            if (rows.length === 0) {
+                return res.status(200).json({
+                    status: 'success',
+                    message: "This email id is available for registration"
+                });
+            } else {
+                return res.status(200).json({
+                    status: 'failed',
+                    message: "This email id is already taken"
+                });
+            }
+        });
 
     } catch (err) {
         // Improved error logging with more context
@@ -58,42 +62,172 @@ exports.checkEmailAlreadyExisted = async function (req, res) {
             message: err.message || 'An error occurred while checking email availability'
         });
     }
-};
+}
 
+exports.createCustomer = async function(req, res){
+    logger.info("from create customer");
+    logger.info("req.body :", req.body);
+   // logger.info("req.headers :", req.headers);
+    let data = req.body;
+    const { username ,first_name, last_name, email_id, mobile, password, location ,email_id_verified,phone_verified,is_active,source_app } = data;
+    
+    if(!username)
+        return res.status(400).json({
+        status: 'Field Error',
+        field: 'username',
+        message: 'username should not be empty.'
+        })
+    if(!location)
+        return res.status(400).json({
+        status: 'Field Error',
+        field: 'location',
+        message: 'Location should not be empty.'
+        })
+    if(!first_name)
+        return res.status(400).json({
+        status: 'Field Error',
+        field: 'first_name',
+        message: 'First Name should not be empty.'
+        })
+    if(!last_name || last_name===null)
+        return res.status(400).json({
+        status: 'Field Error',
+        field: 'last_name',
+        message: 'Last Name should not be empty.'
+        })
+    if(!email_id)
+        return res.status(400).json({
+          status: 'Field Error',
+          field: 'email_id',
+          message: 'Email Id should not be empty.'
+        })
+    else if(!email_id.includes('@') || !email_id.includes('.'))
+        return res.status(400).json({
+          status: 'Field Error',
+          field: 'email_id',
+          message: 'Invalid EmailId'
+        })
+    if(!mobile)
+        return res.status(400).json({
+        status: 'Field Error',
+        field: 'mobile',
+        message: 'Mobile should not be empty.'
+        })
+    if(!password)
+        return res.status(400).json({
+          status: 'Field Error',
+          field: 'password',
+          message: 'Password should not be empty.'
+        })
+
+    // return res.status(400).json({
+    //     status: 'Field Error',
+    //     field: 'project_title',
+    //     message: 'Project Title should not be empty.'
+    // });
+
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+    logger.info(hashedPassword);
+    // const { first_name, last_name, email_id, mobile, password } = data;
+    const query = `INSERT INTO asm_customers (username,first_name, last_name, email_id, 
+        mobile, password, location, created_on, source_app,email_id_verified,phone_verified,is_active) values (?,?, ?, ?, ?, ?, ?, now(), ?,?,?,?)`;
+    asmdb.query( query, [username, first_name, last_name, email_id, mobile, hashedPassword, location, source_app,email_id_verified,phone_verified,is_active], function (err, result) {
+        logger.info("result= ", result);
+        logger.info("error= ", err);
+        if(err){
+                logger.error('error = ', err);
+                return res.status(502).json({
+                    status: 'failed',
+                    message: err.message
+                });
+            }
+        if(result)
+        return res.status(200).json({
+                            status: 'success',
+                            customer_id: result.insertId
+                        });
+           
         
-        // Using async/await for cleaner query handling
-         const [rows] = await asmdb.query(`SELECT email_id 
-                                          FROM asm_customers 
-                                          WHERE email_id = ?`, [email_id]);
+    
+    });
+}
 
-        if (rows.length === 0) {
+exports.updateCustomerProfileByAdmin = async function(req, res){
+    logger.info("from customerUpdateProfile");
+    logger.info("req.body : ", req.body);
+    let data = req.body;
+    const {id, username ,first_name, last_name, email_id, mobile, location ,email_id_verified,phone_verified,is_active,source_app } = data;
+    if(!id)
+        return res.status(400).json({
+        status: 'Field Error',
+        field: 'customer_id',
+        message: 'customer_id is a mandatory field.'
+        })
+    if(!first_name)
+        return res.status(400).json({
+        status: 'Field Error',
+        field: 'first_name',
+        message: 'First Name should not be empty.'
+        })
+    if(!last_name)
+        return res.status(400).json({
+        status: 'Field Error',
+        field: 'last_name',
+        message: 'Last Name should not be empty.'
+        })
+    if(!email_id)
+        return res.status(400).json({
+          status: 'Field Error',
+          field: 'email_id',
+          message: 'Email Id should not be empty.'
+        })
+    else if(!email_id.includes('@') || !email_id.includes('.'))
+        return res.status(400).json({
+          status: 'Field Error',
+          field: 'email_id',
+          message: 'Invalid EmailId'
+        })
+    if(!mobile)
+        return res.status(400).json({
+        status: 'Field Error',
+        field: 'mobile',
+        message: 'Mobile should not be empty.'
+        })
+    
+    const query = `UPDATE asm_customers SET username=?,first_name=?, last_name=?, email_id=?, mobile=?,email_id_verified=?,phone_verified=?,is_active=?,location=?,source_app=? where customer_id = ? `;
+    asmdb.query( query, [username,first_name, last_name, email_id, mobile,email_id_verified,phone_verified,is_active,location,source_app, id], function (err, result) {
+        logger.info("result= ", result);
+        logger.info("error= ", err);
+        if (!err && result.affectedRows === 1) {
+            let customerDetails = {
+                id,
+                first_name,
+                last_name,
+                email_id, 
+                mobile
+            };
             return res.status(200).json({
                 status: 'success',
-                message: "This email id is available for registration"
-            });
-        } else {
-            return res.status(200).json({
-                status: 'failed',
-                message: "This email id is already taken"
-            });
+                customerDetails
+            })
         }
-
-    } catch (err) {
-        // Improved error logging with more context
-        logger.error('Error occurred in checkEmailAlreadyExisted:', err);
-        return res.status(502).json({
-            status: 'failed',
-            message: err.message || 'An error occurred while checking email availability'
-        });
-    }
-};
+        else{
+            logger.info("error= ", err);
+            return res.status(502).json({
+                        status: 'failed',
+                        message: err.message
+                    })
+        }
+    });
+}
 
 exports.customerSignup = async function(req, res){
     logger.info("from customerSignup");
     logger.info("req.body :", req.body);
     logger.info("req.headers :", req.headers);
     let data = req.body;
-    const { username, first_name, last_name, email_id, mobile, password, location } = data;
+    const { username ,first_name, last_name, email_id, mobile, password, location } = data;
     let {source_app} = req.headers;
     if(!username)
         return res.status(400).json({
@@ -154,8 +288,8 @@ exports.customerSignup = async function(req, res){
     const hashedPassword = await bcrypt.hash(password, salt);
     logger.info(hashedPassword);
     // const { first_name, last_name, email_id, mobile, password } = data;
-    const query = `INSERT INTO asm_customers ( username, first_name, last_name, email_id, 
-        mobile, password, location, created_on, source_app) values (?, ?, ?, ?, ?, ?, ?, now(), ?)`;
+    const query = `INSERT INTO asm_customers (username,first_name, last_name, email_id, 
+        mobile, password, location, created_on, source_app) values (?,?, ?, ?, ?, ?, ?, now(), ?)`;
     asmdb.query( query, [username, first_name, last_name, email_id, mobile, hashedPassword, location, source_app], function (err, result) {
         logger.info("result= ", result);
         logger.info("error= ", err);
@@ -167,7 +301,7 @@ exports.customerSignup = async function(req, res){
                 time_of_generation: Date.now(),
                 server_origin: urls.SERVER
             };
-           
+            
             //resources\mail_template\customer_signup_status.html
             fs.readFile('resources/mail_template/customer_signup_status.html', function(err, data) {
             
@@ -189,7 +323,6 @@ exports.customerSignup = async function(req, res){
                             status: 'error',
                             message: error.message
                         });
-                        
                     }else{
                         logger.info("Email send " + info.response);
                         return res.status(200).json({
@@ -274,7 +407,7 @@ exports.resendCustomerSignupActivation = function(req, res){
             logger.info("error= ", err);
             logger.info("rows= ", rows);
             let CLIENT_ORIGIN = urls.CLIENT;
-            if (!err && rows.length===1){
+            if (!err && rows.length===1){ 
                 
                 let customerDetails = {
                     firstName: rows[0].first_name,
@@ -369,7 +502,7 @@ exports.customerSignIn = async function (req, res){
                 }
     
 
-        asmdb.query(`SELECT customer_id, first_name, last_name, email_id, password, mobile, is_active 
+        asmdb.query(`SELECT customer_id, first_name, last_name, email_id, password, mobile, is_active
                     from asm_customers 
                     where email_id = ? 
                     and email_id_verified = 1 
@@ -429,11 +562,12 @@ exports.customerSignIn = async function (req, res){
         });
     });
 }
+
 // Customer Forgot Password
 exports.customerForgotPassword = async function (req, res){
     logger.info("from customerForgotPassword");
     logger.info("req.body= ", req.body);
-    const email_id = req.body.email_id.email_id || req.body.email_id; 
+    const { email_id } = req.body;
     if(!email_id){
         return res.status(422).json({
             status: 'Field Error',
@@ -527,7 +661,7 @@ exports.customerForgotPassword = async function (req, res){
 }
 
 // customerResetPassword
-exports.customerResetPassword = async function(req, res){
+exports.customerResetPassword = async function(req, res){ 
     logger.info("from customerResetPassword");
     logger.info("req.body : ", req.body);
     let data = req.body;
@@ -565,6 +699,7 @@ exports.customerResetPassword = async function(req, res){
         }
     });
 }
+
 // CustomerChangePassword
 exports.customerChangePassword = async function(req, res){
     logger.info("from customerChangePassword");
@@ -741,17 +876,15 @@ exports.getCustomerShippingAddress = async function(req, res){
         field: 'customer_id',
         message: 'Customer ID is mandatory'
         })
-    let query = `SELECT ac.customer_id, ac.first_name, 
-                    ac.last_name, ac.email_id, ac.mobile, 
-	                acsa.addr_field1, acsa.addr_field2, 
-                    acsa.addr_field3, acsa.addr_field4, 
-                    acsa.addr_field5, acsa.addr_field6,
-                    acsa.city, acsa.state, 
-                    acsa.country, acsa.pin_code
-                FROM asm_customers ac,
-                    asm_customer_shipping_address acsa
-                WHERE ac.customer_id = ? AND
-                        ac.customer_id = acsa.customer_id`;
+    let query = `SELECT customer_id, first_name, 
+                    last_name, email_id, mobile, 
+	                addr_field1, addr_field2, 
+                    addr_field3, addr_field4, 
+                    addr_field5, addr_field6,
+                    city, state, 
+                    country, pin_code
+                FROM  asm_customer_shipping_address 
+                WHERE customer_id = ? `;
     asmdb.query(query, [customer_id], function (err, result, fields) {
         logger.info('error = ', err);
         logger.info('result = ', result);
@@ -776,6 +909,41 @@ exports.getCustomerShippingAddress = async function(req, res){
     });
 }
 
+exports.getCustomerDetailsById = async function(req, res){
+    
+    const customer_id = req.params.customer_id;
+    // let data = req.body;
+    
+    if(!customer_id)
+        return res.status(400).json({
+        status: 'Field Error',
+        field: 'customer_id',
+        message: 'Customer ID is mandatory'
+        })
+    let query = `SELECT customer_id,username,first_name,last_name,email_id,mobile,email_id_verified,phone_verified,is_active,created_on,last_login,location,source_app,asm_customerscol FROM asm_customers WHERE customer_id=? `;
+    asmdb.query(query, [customer_id], function (err, result, fields) {
+        logger.info('error = ', err);
+        logger.info('result = ', result);
+        if(err)
+            return res.status(502).json({
+                status: 'failed',
+                message: err.message
+            });
+        else if(result.length==0)
+            //Customer Address is not Available
+            return res.status(200).json({
+                status: "failed",
+                key: 'DATA_NOT_AVAILABLE',
+                error:"Invalid customer_id"
+            });
+        else if (result.length!=0){
+            return res.status(200).json({
+                status: 'success',
+                customer_details: result[0],
+            });
+        }
+    });
+}
 
 exports.updateCustomerAddress = async function(req, res){
 // const storeDeliveryAddress = (customer_id, delivery_address)=>{
@@ -784,7 +952,7 @@ exports.updateCustomerAddress = async function(req, res){
     let data = req.body;
     const { customer_id, customer_address } = data;
     const city = 'Hyderabad', state= 'Telangana', country='India';
-
+ 
     if(!customer_id)
         return res.status(400).json({
             status: 'Field Error',
@@ -870,7 +1038,7 @@ exports.updateCustomerAddress = async function(req, res){
               [customer_id], function (daErr, daResult, fields) {
       logger.info('daErr = ', daErr);
       logger.info('daResult = ', daResult);
-      if(daResult.length === 0){
+      if(daResult.length === 0){ 
         let insertDAQuery = `INSERT INTO asm_customer_shipping_address 
           (first_name, last_name, mobile, email_id, addr_field1, addr_field2, addr_field3,
           addr_field4, addr_field5, addr_field6, city, state, country, pin_code,
@@ -907,4 +1075,134 @@ exports.updateCustomerAddress = async function(req, res){
           });
       }
     });
-  }
+}
+
+exports.getAllCustomers = async function(req, res) {
+    const query = `SELECT customer_id, username, first_name, last_name, email_id, mobile, is_active, location, created_on FROM asm_customers`;
+
+    asmdb.query(query, function(err, result, fields) {
+       // logger.info('error = ', err);
+       // logger.info('result = ', result);
+
+        if (err) {
+            return res.status(502).json({
+                status: 'failed',
+                message: err.message
+            });
+        }
+
+        if (result.length === 0) {
+            return res.status(200).json({
+                status: "failed",
+                key: 'DATA_NOT_AVAILABLE',
+                error: "No customers found"
+            });
+        }
+
+        return res.status(200).json({
+            status: 'success',
+            customer_details: result
+        });
+    });
+};
+
+exports.updateStatusCustomer = function(req,res){
+   logger.info("req.body :", req.body);
+    let data = req.body;
+    
+    const status = data.status;
+    var id=data.id;
+    if(!status){
+        return res.status(503).json({
+            status: "failed",
+            error: 'customer status is mandatory'
+        });
+    }
+
+    if(!id){
+        return res.status(503).json({
+            status: "failed",
+            error: 'customer id is mandatory'
+        });
+    }
+    
+    data = [
+        status,id
+    ];
+    const sql = `UPDATE asm_customers SET is_active=? WHERE customer_id=?`;
+    asmdb.query(sql, data, (err, rows)=>{
+       // alogger.info(err);
+       // alogger.info(rows);
+        if(err){
+           // alogger.info(err.message);
+            return res.json({
+                status: "failed",
+                error: err.message
+            });
+        }
+        else{
+           return res.json({
+                status: "succes",
+                message: `Updated customer with id ${id}`,
+                id: rows.affectedRows
+            });
+        }
+    })
+}
+
+exports.deleteCustomer = function(req,res){
+    var id=req.params.id;
+
+    if(!id){
+        return res.status(503).json({
+            status: "failed",
+            error: 'customer id is mandatory'
+        });
+    }
+
+    const sql = `DELETE from  asm_customers  WHERE customer_id=?`;
+    asmdb.query(sql, [id], (err, result)=>{
+        if(err){
+            return res.json({
+                status: "failed",
+                error: err.message
+            });
+        }
+        else{
+           return res.json({
+                status: "succes",
+                message: `Deleted category with id ${id}`,
+                id: result.affectedRows
+            });
+        }
+    })
+}
+
+exports.getCountMonthsCustomers = async function(req, res) {
+    const query = `SELECT DATE_FORMAT(created_on, '%b/%y') AS month, COUNT(*) AS customer_count FROM asm_customers WHERE created_on >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH) GROUP BY month ORDER BY month`;
+
+    asmdb.query(query, function(err, result, fields) {
+       // logger.info('error = ', err);
+       // logger.info('result = ', result);
+
+        if (err) {
+            return res.status(502).json({
+                status: 'failed',
+                message: err.message
+            });
+        }
+
+        if (result.length === 0) {
+            return res.status(200).json({
+                status: "failed",
+                key: 'DATA_NOT_AVAILABLE',
+                error: "No customers found"
+            });
+        }
+
+        return res.status(200).json({
+            status: 'success',
+            customer_details: result
+        });
+    });
+};
